@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/madebyshape/commercewidgets/master/screenshots/icon.png" width="50">
+<img src="https://raw.githubusercontent.com/madebyshape/commerce-widgets/master/screenshots/icon.png" width="50">
 
 # Commerce Widgets
 
