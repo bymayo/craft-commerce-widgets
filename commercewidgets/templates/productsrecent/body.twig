@@ -1,0 +1,38 @@
+{#
+/**
+ * Commerce Widgets
+ *
+ * @author    Jason Mayo
+ * @twitter   @madebymayo
+ * @package   Commerce Widgets
+ *
+ */
+#}
+
+{% set commerce = craft.commerce.cart %}
+
+<div class="commercewidgets productsrecent">
+	{% if products|length %}
+	    <table class="data fullwidth">
+	        <thead>
+	            <tr>
+	                <th>{{ "Title"|t }}</th>
+					<th>{{ "Price"|t }}</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            {% for product in products %}
+	                <tr>
+	                    <td>
+	                    	<a href="{{ product.getCpEditUrl() }}">{{ product.title }}</a><br>
+	                    	<span class="light sku"><code>{{ product.defaultVariant.sku }}</code></span>
+	                    </td>
+	                   <td>{{ product.defaultVariant.price|currency(commerce.currency) }}</td>
+	                </tr>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	{% else %}
+		<p>{{ "No Products."|t }}</p>
+	{% endif %}
+</div>
