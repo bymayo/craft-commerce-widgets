@@ -25,6 +25,7 @@ You must have Craft Commerce installed to use this plugin. Download it from http
 - Total Orders (Per Month etc) (Soon)
 - Total Revenue (Per Month etc) (Soon)
 - Products Out of Stock / Low Stock (Soon)
+- Inactive Carts (Soon)
 
 ## Roadmap
 
