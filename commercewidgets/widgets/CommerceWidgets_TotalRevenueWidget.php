@@ -8,7 +8,7 @@
  *
  */
 namespace Craft;
-class CommerceWidgets_ProductsRecentWidget extends BaseWidget
+class CommerceWidgets_TotalRevenueWidget extends BaseWidget
 {
 
     /**
@@ -16,7 +16,7 @@ class CommerceWidgets_ProductsRecentWidget extends BaseWidget
      */	
     public function getTitle()
     {
-		return Craft::t('Recent Products');
+		return Craft::t('Total Revenue');
         return parent::getTitle();
     }
     
@@ -46,9 +46,9 @@ class CommerceWidgets_ProductsRecentWidget extends BaseWidget
         craft()->templates->includeJsResource('commercewidgets/js/script.js');
         
         return craft()->templates->render(
-        	'commercewidgets/productsrecent/body',
+        	'commercewidgets/totalrevenue/body',
         	array(
-	        	'products' => $this->getProducts()
+	        	'today' => $this->getTotals(date('Y-m-d') . ' 00:00:00', date('Y-m-d'))
         	)
         );
         
@@ -61,7 +61,7 @@ class CommerceWidgets_ProductsRecentWidget extends BaseWidget
     {
 
         return craft()->templates->render(
-        	'commercewidgets/productsrecent/settings', 
+        	'commercewidgets/totalrevenue/settings', 
         	array(
 				'settings' => $this->getSettings()
 			)
@@ -72,12 +72,28 @@ class CommerceWidgets_ProductsRecentWidget extends BaseWidget
     /**
      * @return array
      */	
-	public function getProducts() 
+	public function getTotals($dateFrom, $dateTo) 
 	{
+		
+		$query = craft()->db->createCommand()
+			->select('*')
+			->from('commerce_orders')
+			->where('dateOrdered >= 2016-09-08 00:00:00')
+			->queryAll();
+				
+		
+/*
+		$date = new DateTime();
+		$timezone = new \DateTimeZone(DateTime::UTC);
+		$date = $date->format(DateTime::MYSQL_DATETIME, $timezone);
 	
-		$criteria = craft()->elements->getCriteria('Commerce_Product');
-		$criteria->limit = $this->getSettings()->limit;
-		return $criteria->find();
+		$criteria = craft()->elements->getCriteria('Commerce_Order');
+		$criteria->after = $dateFrom;
+*/
+		
+// 		[£12.00, 12]
+				
+		return $query;
 	
 	}
      
