@@ -22,6 +22,7 @@ You must have Craft Commerce installed to use this plugin. Download it from http
 
 - Recent Products
 - Total Revenue & Orders (Per Day, Week, Month etc)
+- Cart Abandonment
 
 #### Coming Soon 
 
@@ -31,7 +32,6 @@ You must have Craft Commerce installed to use this plugin. Download it from http
 - Active Sales
 - Active Promotions
 - Products Out of Stock / Low Stock
-- Inactive Carts
 
 ## Roadmap
 
