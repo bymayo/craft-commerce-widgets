@@ -1,0 +1,37 @@
+{#
+/**
+ * Commerce Widgets
+ *
+ * @author    Jason Mayo
+ * @twitter   @madebymayo
+ * @package   Commerce Widgets
+ *
+ */
+#}
+{% import "_includes/forms" as forms %}
+
+{% set cartAbandonmentDateRangeOptions = [
+	{
+		label: 'Day',
+		value: 'day'
+	},
+	{
+		label: 'Week',
+		value: 'week'
+	},
+	{
+		label: 'Month',
+		value: 'month'
+	},
+	{
+		label: 'Year',
+		value: 'year'
+	}
+] %}
+
+{{ forms.selectField({
+    label: 'Date Range'|t,
+    name: 'cartAbandonmentDateRange',
+    value: settings.cartAbandonmentDateRange,
+	options: cartAbandonmentDateRangeOptions
+}) }}

@@ -1,0 +1,51 @@
+{#
+/**
+ * Commerce Widgets
+ *
+ * @author    Jason Mayo
+ * @twitter   @madebymayo
+ * @package   Commerce Widgets
+ *
+ */
+#}
+
+{% set commerce = craft.commerce.cart %}
+
+<div class="commercewidgets cartabandonment">
+	
+	<div class="column-equal">
+		<div class="chart-container">
+			<canvas id="cart-abandonment-chart" class="chart" width="250" height="250" data-chart="{{ cartCompleted }},{{ cartAbandoned }}"></canvas>
+		</div>
+	</div>
+	
+	<div class="column-equal">
+	
+		<div class="heading-group">
+			<span class="heading">{{ settings.cartAbandonmentDateRange|title }}</span>
+			<span class="sub-heading">
+				{% if settings.cartAbandonmentDateRange == 'day' %}
+					{{ now|date('j F') }}
+				{% elseif settings.cartAbandonmentDateRange == 'week' %}
+					{{ now|date('j F') }}
+				{% elseif settings.cartAbandonmentDateRange == 'month' %}
+					{{ now|date('F') }}				
+				{% elseif settings.cartAbandonmentDateRange == 'year' %}
+					{{ now|date('Y') }}				
+				{% endif %}
+			</span>
+		</div>
+	
+		<div class="number-row">
+			<span class="number">{{ cartCompleted }}</span>
+			<span class="number-label">Completed Carts</span>
+		</div>
+		
+		<div class="number-row">
+			<span class="number">{{ cartAbandoned }}</span>
+			<span class="number-label">Abandoned Carts</span>
+		</div>
+	
+	</div>
+	
+</div>
