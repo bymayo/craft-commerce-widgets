@@ -4,7 +4,7 @@
 
 Commerce Widgets is a Craft CMS plugin that gives you helpful dashboard widgets for your Craft Commerce store.
 
-<img src="https://raw.githubusercontent.com/madebyshape/commerce-widgets/master/screenshots/screenshot.png">
+<img src="https://raw.githubusercontent.com/madebyshape/commerce-widgets/master/screenshots/example.png">
 
 ## Install
 
