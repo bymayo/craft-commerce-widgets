@@ -16,16 +16,20 @@ You must have Craft Commerce installed to use this plugin. Download it from http
 
 ## Widgets
 
+#### Complete
+
 - Recent Products
-- Popular Products (Soon)
-- Popular Payment Method (Soon)
-- Popular Customers (Soon)
-- Active Sales (Soon)
-- Active Promotions (Soon)
-- Total Orders (Per Month etc) (Soon)
-- Total Revenue (Per Month etc) (Soon)
-- Products Out of Stock / Low Stock (Soon)
-- Inactive Carts (Soon)
+- Total Revenue & Orders (Per Day, Week, Month etc)
+
+#### Coming Soon 
+
+- Popular Products
+- Popular Payment Method
+- Popular Customers
+- Active Sales
+- Active Promotions
+- Products Out of Stock / Low Stock
+- Inactive Carts
 
 ## Roadmap
 

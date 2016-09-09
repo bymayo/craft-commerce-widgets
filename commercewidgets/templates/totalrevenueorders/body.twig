@@ -1,0 +1,68 @@
+{#
+/**
+ * Commerce Widgets
+ *
+ * @author    Jason Mayo
+ * @twitter   @madebymayo
+ * @package   Commerce Widgets
+ *
+ */
+#}
+
+{% set commerce = craft.commerce.cart %}
+
+<div class="commercewidgets productsrecent">
+
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th>{{ "Time"|t }}</th>
+				<th>{{ "Total"|t }}</th>
+				<th>{{ "Orders"|t }}</th>
+            </tr>
+        </thead>
+        <tbody>
+			<tr>
+        		<td>
+        			Today<br>
+        			<span class="light small">{{ today.dateFrom|date("j F") }}</span>
+        		</td>
+        		<td>{{ today.revenueTotal|currency(commerce.currency) }}</td>
+        		<td>{{ today.orderTotal }}</td>
+        	</tr>
+			<tr>
+        		<td>
+        			Yesterday<br>
+        			<span class="light small">{{ yesterday.dateFrom|date("j F") }}</span>
+        		</td>
+        		<td>{{ yesterday.revenueTotal|currency(commerce.currency) }}</td>
+        		<td>{{ yesterday.orderTotal }}</td>
+        	</tr>
+        	<tr>
+        		<td>
+        			Week<br>
+        			<span class="light small">{{ week.dateFrom|date("j F") }} - {{ week.dateTo|date("j F") }}</span>
+        		</td>
+        		<td>{{ week.revenueTotal|currency(commerce.currency) }}</td>
+        		<td>{{ week.orderTotal }}</td>
+        	</tr>
+        	<tr>
+        		<td>
+        			Month<br>
+        			<span class="light small">{{ month.dateFrom|date("F") }}</span>
+        		</td>
+        		<td>{{ month.revenueTotal|currency(commerce.currency) }}</td>
+        		<td>{{ month.orderTotal }}</td>
+        	</tr>
+        	<tr>
+        		<td>
+        			Year<br>
+        			<span class="light small">{{ today.dateFrom|date("Y") }}</span>
+        		</td>
+        		<td>{{ year.revenueTotal|currency(commerce.currency) }}</td>
+        		<td>{{ year.orderTotal }}</td>
+        	</tr>
+        </tbody>
+    </table>
+    
+</div>
