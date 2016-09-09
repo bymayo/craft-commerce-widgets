@@ -50,8 +50,8 @@ class CommerceWidgets_TotalRevenueOrdersWidget extends BaseWidget
         	array(
 	        	'today' => $this->getTotals(strtotime('now'), strtotime('now')),
 	        	'yesterday' => $this->getTotals(strtotime('-1 day'), strtotime('-1 day')),
-	        	'week' => $this->getTotals(strtotime('last Monday'), strtotime('next Saturday')),
-	        	'month' => $this->getTotals(strtotime('first day of ' . date( 'F Y')), strtotime('last day of ' . date( 'F Y'))),
+	        	'week' => $this->getTotals(strtotime('last Monday'), strtotime('next Sunday')),
+	        	'month' => $this->getTotals(strtotime('first day of ' . date( 'F Y')), strtotime('last day of ' . date('F Y'))),
 	        	'year' => $this->getTotals(strtotime('first day of ' . date( 'Y')), strtotime('last day of ' . date( 'Y'))),
         	)
         );
