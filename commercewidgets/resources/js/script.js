@@ -18,17 +18,19 @@ $(function() {
 			chart = document.getElementById('cart-abandonment-chart');
 		
 		var options = {
-			cutoutPercentage: 50,
+			cutoutPercentage: (chartData == '0,0') ? 0 : 50,
 			tooltips: {
 				enabled: false
 			}
 		}
-	
+		
+		console.log(chartDataArray);
+
 		var data = {
 		    labels: false,
 		    datasets: [
 		        {
-		            data: chartDataArray,
+		            data: (chartData == '0,0') ? [0,1] : chartDataArray,
 		            backgroundColor: [
 		                "#6CBC15",
 		                "#EBEBEB"
@@ -39,7 +41,7 @@ $(function() {
 		            ]
 		        }
 			]
-		};
+		};	
 		
 		var myDoughnutChart = new Chart(
 			chart, {
