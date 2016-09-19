@@ -51,7 +51,7 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
         	'commercewidgets/cartabandonment/body',
         	array(
 	        	'cartCompleted' => $this->getOrdersByCompletedStatus('1'),
-	        	'cartAbandoned' => $this->getOrdersByCompletedStatus('0'),
+	        	'cartAbandoned' => $this->getOrdersByCompletedStatus('not 1'),
 	        	'settings' => $this->getSettings()
         	)
         );
@@ -76,22 +76,41 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
     /**
      * @return array
      */	
+    public function getDateRange($start, $from, $to) 
+    {
+	    
+		$dateStart = strtotime($start);
+		
+		$dateFrom = strtotime($from, $dateStart);
+		$dateTo = strtotime($to, $dateStart);
+		
+		$dateRange = array('and', '> ' . date("Y-m-d", $dateFrom) . ' 00:00:00', '< ' . date("Y-m-d", $dateTo) . ' 23:59:59');
+	    
+	    return $dateRange;
+	    
+    }
+    
+    /**
+     * @return array
+     */	
 	public function getOrdersByCompletedStatus($status) 
 	{
 
 		$dateRange = $this->getSettings()->cartAbandonmentDateRange;
-
-		if ($dateRange == 'day') {
-			$dateCreated = array('and', '>= ' . date('Y-m-d', strtotime('now')), '<= ' . date('Y-m-d', strtotime('now')));
-		}
-		elseif ($dateRange = 'week') {
-			$dateCreated = array('and', '>= ' . date('Y-m-d', strtotime('last Monday')), '<= ' . date('Y-m-d', strtotime('next Sunday')));
-		}
-		elseif ($dateRange = 'month') {
-			$dateCreated = array('and', '>= ' . date('Y-m-d', strtotime('first day of ' . date('F Y'))), '<= ' . date('Y-m-d', strtotime('last day of ' . date('F Y'))));
-		}
-		elseif ($dateRange = 'year') {
-			$dateCreated = array('and', '>= ' . date('Y-m-d H:i:s', strtotime('first day of ' . date('Y'))), '<= ' . date('Y-m-d H:i:s', strtotime('last day of ' . date( 'Y'))));
+		
+		switch($dateRange) {
+		    case 'day':
+		        $dateCreated = $this->getDateRange('today', 'today', 'today');
+		        break;
+		    case 'week':
+		        $dateCreated = $this->getDateRange('today', 'Monday this week', 'Sunday this week');
+		        break;
+		    case 'month':
+		        $dateCreated = $this->getDateRange('this month', 'first day of this month', 'last day of this month');
+		        break;
+		    case 'year':
+		        $dateCreated = $this->getDateRange('today', 'first day of January', 'last day of December');
+		        break;
 		}
 	
 		$criteria = craft()->elements->getCriteria('Commerce_Order');

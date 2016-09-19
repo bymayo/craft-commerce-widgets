@@ -25,9 +25,9 @@
 			<span class="heading">{{ settings.cartAbandonmentDateRange|title }}</span>
 			<span class="sub-heading">
 				{% if settings.cartAbandonmentDateRange == 'day' %}
-					{{ now|date('j F') }}
+					{{ now|date('j F Y') }}
 				{% elseif settings.cartAbandonmentDateRange == 'week' %}
-					{{ now|date('j F') }}
+					{{ now|date('j F Y') }}
 				{% elseif settings.cartAbandonmentDateRange == 'month' %}
 					{{ now|date('F') }}				
 				{% elseif settings.cartAbandonmentDateRange == 'year' %}
