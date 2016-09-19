@@ -69,3 +69,31 @@
 	width: 400px;
 	height: 400px;
 }
+
+.commercewidgets .position {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    text-align: center;
+    line-height: 1.85;
+    border: 1px solid #e3e5e8;
+    font-weight: 600;
+}
+
+.commercewidgets .top-positions .position {
+    border: none;
+    color: #FFF;
+}
+
+.commercewidgets .top-position-1 .position {
+	background-color: #c5b358;
+}
+
+.commercewidgets .top-position-2 .position {
+	background-color: #c0c0c0;
+}
+
+.commercewidgets .top-position-3 .position {
+	background-color: #cd7f32;
+}

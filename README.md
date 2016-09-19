@@ -23,15 +23,18 @@ You must have Craft Commerce installed to use this plugin. Download it from http
 - Recent Products
 - Total Revenue & Orders (Per Day, Week, Month etc)
 - Cart Abandonment
+- Top Customers
 
 #### Coming Soon 
 
+- Most Viewed Products
 - Popular Products
-- Popular Payment Method
-- Popular Customers
+- Popular Payment Methods
 - Active Sales
 - Active Promotions
 - Products Out of Stock / Low Stock
+- Unsuccessful Searches
+- # Orders to Process
 
 ## Roadmap
 

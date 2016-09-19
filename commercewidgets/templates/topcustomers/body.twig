@@ -1,0 +1,58 @@
+{#
+/**
+ * Commerce Widgets
+ *
+ * @author    Jason Mayo
+ * @twitter   @madebymayo
+ * @package   Commerce Widgets
+ *
+ */
+#}
+
+{% set commerce = craft.commerce.cart %}
+{% set topPositions = 2 %}
+
+<div class="commercewidgets topcustomers">
+
+	{% if customers|length %}
+	    <table class="data fullwidth">
+	        <thead>
+	            <tr>
+	            	<td></td>
+	                <th>{{ "Email Address"|t }}</th>
+					<th>{{ "Total"|t }}</th>
+					<th>{{ "Orders"|t }}</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+				{% for customer in customers %}
+					<tr{% if loop.index <= topPositions %} class="top-positions top-position-{{ loop.index }}"{% endif %}>
+						<td>
+							{% if loop.index <= topPositions %}
+								<span class="position">
+							{% endif %}
+							<span class="position">
+								{{ loop.index }}
+							</span>
+							{% if loop.index <= topPositions %}
+	
+							{% endif %}
+						</td>
+						<td>
+							{% if customer.email|length %}
+								{{ customer.email }}
+							{% else %}
+								Guest
+							{% endif %}
+						</td>
+						<td>{{ customer.totalRevenue|currency(commerce.currency) }}</td>
+						<td>{{ customer.totalOrders }}</td>						
+					</tr>
+				{% endfor %}
+	        </tbody>
+	    </table>
+    {% else %}
+    	<p>{{ "No Orders."|t }}</p>
+    {% endif %}
+    
+</div>
