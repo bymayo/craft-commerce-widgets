@@ -52,7 +52,7 @@ class CommerceWidgets_TotalRevenueOrdersWidget extends BaseWidget
 	        	'yesterday' => $this->getTotals(strtotime('-1 day'), strtotime('-1 day')),
 	        	'week' => $this->getTotals(strtotime('last Monday'), strtotime('next Sunday')),
 	        	'month' => $this->getTotals(strtotime('first day of ' . date('F Y')), strtotime('last day of ' . date('F Y'))),
-	        	'year' => $this->getTotals(strtotime('first day of ' . date('Y')), strtotime('last day of ' . date( 'Y'))),
+	        	'year' => $this->getTotals(strtotime('first day of January this year'), strtotime('last day of December this year')),
         	)
         );
         
