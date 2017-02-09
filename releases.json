@@ -1,5 +1,13 @@
 [
     {
+        "version": "1.0.4",
+        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "date": "2017-02-09T17:03:00+00:00",
+        "notes": [
+            "[Fixed] Incorrect year on Total Revenue widget (Thanks terryupton!)"
+        ]
+    },
+    {
         "version": "1.0.3",
         "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
         "date": "2016-09-19T17:03:00+00:00",
