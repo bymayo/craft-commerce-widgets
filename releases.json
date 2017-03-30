@@ -1,4 +1,14 @@
 [
+	{
+        "version": "1.0.4",
+        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "date": "2017-02-09T17:03:00+00:00",
+        "notes": [
+            "[Fixed] Incorrect limit on Cart Abadonment widget (Thanks terryupton! [Again!])",
+            "[Improved] Removed left over debugging in JS",
+            "[Improved] Changed colour of Cart Abanadoment widget chart"
+        ]
+    },
     {
         "version": "1.0.4",
         "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",

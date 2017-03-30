@@ -23,8 +23,6 @@ $(function() {
 				enabled: false
 			}
 		}
-		
-		console.log(chartDataArray);
 
 		var data = {
 		    labels: false,
@@ -33,11 +31,11 @@ $(function() {
 		            data: (chartData == '0,0') ? [0,1] : chartDataArray,
 		            backgroundColor: [
 		                "#6CBC15",
-		                "#EBEBEB"
+		                "#EA9305"
 		            ],
 		            hoverBackgroundColor: [
 		                "#6CBC15",
-		                "#EBEBEB"
+		                "#EA9305"
 		            ]
 		        }
 			]

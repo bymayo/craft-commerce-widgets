@@ -116,6 +116,7 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
 		$criteria = craft()->elements->getCriteria('Commerce_Order');
 		$criteria->isCompleted = $status;
 		$criteria->dateCreated = $dateCreated;
+		$criteria->limit = null;
 		$criteria->find();
 		
 		return count($criteria);
