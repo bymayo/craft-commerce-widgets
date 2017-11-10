@@ -35,6 +35,12 @@ You must have Craft Commerce installed to use this plugin. Download it from http
 - Products Out of Stock / Low Stock
 - Unsuccessful Searches
 - # Orders to Process
+- Event Reminders (E.g. Black Fridge, Christmas etc)
+- Mailing List Subscribes
+- Products added to basket the most
+- Popular Visits from Social Sites (E.g. 20 - Facebook, 12 - Twitter)
+- Stale Products (E.g. Ones that need reviewing if not updated in X amount of time)
+- Reminders (E.g. Check Shipping details, Setup X setting)
 
 ## Roadmap
 
