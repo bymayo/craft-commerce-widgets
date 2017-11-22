@@ -1,7 +1,7 @@
 [
 	{
         "version": "1.0.5",
-        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2017-02-09T17:03:00+00:00",
         "notes": [
             "[Fixed] Incorrect limit on Cart Abadonment widget (Thanks terryupton! [Again!])",
@@ -11,7 +11,7 @@
     },
     {
         "version": "1.0.4",
-        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2017-02-09T17:03:00+00:00",
         "notes": [
             "[Fixed] Incorrect year on Total Revenue widget (Thanks terryupton!)"
@@ -19,7 +19,7 @@
     },
     {
         "version": "1.0.3",
-        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2016-09-19T17:03:00+00:00",
         "notes": [
             "[Added] Top Customers widget"
@@ -27,7 +27,7 @@
     },
     {
         "version": "1.0.2",
-        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2016-09-19T11:57:00+00:00",
         "notes": [
             "[Improved] Cart Abanadonment widget graph now has a 'No Results' state"
@@ -35,7 +35,7 @@
     },
     {
         "version": "1.0.1",
-        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2016-09-19T11:42:00+00:00",
         "notes": [
             "[Fixed] Fixed Cart Abandonment widget numbers",
@@ -44,7 +44,7 @@
     },
     {
         "version": "1.0.0",
-        "downloadUrl": "https://github.com/madebyshape/commerce-widgets/archive/master.zip",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2016-09-02T19:42:00+00:00",
         "notes": [
             "[Added] Initial release"

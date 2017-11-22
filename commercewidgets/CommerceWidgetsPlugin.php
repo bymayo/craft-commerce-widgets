@@ -29,12 +29,12 @@ class CommerceWidgetsPlugin extends BasePlugin
 
     public function getDocumentationUrl()
     {
-        return 'https://github.com/madebyshape/commerce-widgets/blob/master/README.md';
+        return 'https://github.com/bymayo/commerce-widgets/blob/master/README.md';
     }
 
     public function getReleaseFeedUrl()
     {
-        return 'https://raw.githubusercontent.com/madebyshape/commerce-widgets/master/releases.json';
+        return 'https://raw.githubusercontent.com/bymayo/commerce-widgets/master/releases.json';
     }
 
     public function getVersion()
