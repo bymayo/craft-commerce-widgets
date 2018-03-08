@@ -53,6 +53,7 @@ class CommerceWidgets_TotalRevenueOrdersWidget extends BaseWidget
 	        	'week' => $this->getTotals(strtotime('last Monday'), strtotime('next Sunday')),
 	        	'month' => $this->getTotals(strtotime('first day of ' . date('F Y')), strtotime('last day of ' . date('F Y'))),
 	        	'year' => $this->getTotals(strtotime('first day of January this year'), strtotime('last day of December this year')),
+	        	'all' => $this->getTotals(strtotime('5 Nov 2015'), strtotime('now'))
         	)
         );
         
