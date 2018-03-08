@@ -29,22 +29,22 @@ class CommerceWidgetsPlugin extends BasePlugin
 
     public function getDocumentationUrl()
     {
-        return 'https://github.com/bymayo/commerce-widgets/blob/master/README.md';
+        return 'https://github.com/bymayo/commerce-widgets/blob/craft-2/README.md';
     }
 
     public function getReleaseFeedUrl()
     {
-        return 'https://raw.githubusercontent.com/bymayo/commerce-widgets/master/releases.json';
+        return 'https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-2/releases.json';
     }
 
     public function getVersion()
     {
-        return '1.0.5';
+        return '1.0.6';
     }
 
     public function getSchemaVersion()
     {
-        return '1.0.5';
+        return '1.0.6';
     }
 
     public function getDeveloper()

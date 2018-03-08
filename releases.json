@@ -1,5 +1,14 @@
 [
 	{
+        "version": "1.0.6",
+        "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/craft-2.zip",
+        "date": "2018-03-08T17:03:00+00:00",
+        "notes": [
+            "[Added] Added 'All' to TotalRevenueOrdersWidget",
+            "[Improved] Moved Craft 2 version to seperate branch (Craft 3 version coming soon...)"
+        ]
+    },
+	{
         "version": "1.0.5",
         "downloadUrl": "https://github.com/bymayo/commerce-widgets/archive/master.zip",
         "date": "2017-02-09T17:03:00+00:00",
