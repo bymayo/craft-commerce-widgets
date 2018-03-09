@@ -11,6 +11,7 @@ Commerce Widgets is a Craft CMS plugin that gives you helpful dashboard widgets 
 ## Requirements
 
 - Craft CMS 3.x
+- Craft Commerce 2.x
 
 ## Credits
 
