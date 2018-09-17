@@ -2,7 +2,7 @@
 /**
  * Commerce Widgets plugin for Craft CMS 3.x
  *
- * Helpful widgets to use with Craft Commerce
+ * Description
  *
  * @link      http://bymayo.co.uk
  * @copyright Copyright (c) 2018 ByMayo
@@ -11,12 +11,14 @@
 namespace bymayo\commercewidgets;
 
 use bymayo\commercewidgets\services\CommerceWidgetsService as CommerceWidgetsServiceService;
-use bymayo\commercewidgets\widgets\CommerceWidgetsWidget as CommerceWidgetsWidgetWidget;
+use bymayo\commercewidgets\variables\CommerceWidgetsVariable;
+use bymayo\commercewidgets\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
+use craft\web\twig\variables\CraftVariable;
 use craft\services\Dashboard;
 use craft\events\RegisterComponentTypesEvent;
 
@@ -64,7 +66,40 @@ class CommerceWidgets extends Plugin
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = CommerceWidgetsWidgetWidget::class;
+
+                // $finder = new Finder();
+
+                // $namespace = 'bymayo\commercewidgets\Widgets';
+
+                // $files = $finder
+                //     ->name('*Widget.php')
+                //     ->files()
+                //     ->ignoreDotFiles(true)
+                //     ->notName('Abstract*.php')
+                //     ->in(__DIR__ . '/Widgets/');
+
+                // foreach ($files as $file) {
+                //     $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                //     $className = $namespace . '\\' . $className;
+                //     $event->types[] = $className;
+                // }
+
+                // $event->types[] = $namespace . '\\' . 'RecentProducts';
+
+                $event->types[] = Widgets\RecentProducts::class;
+                $event->types[] = Widgets\CartAbandonment::class;
+                $event->types[] = Widgets\TotalRevenueOrders::class;
+
+            }
+        );
+
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                // $variable = $event->sender;
+                // $variable->set('commerceWidgets', CommerceWidgetsRecentProductsWidget::class);
             }
         );
 
@@ -90,4 +125,24 @@ class CommerceWidgets extends Plugin
     // Protected Methods
     // =========================================================================
 
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function settingsHtml(): string
+    {
+        return Craft::$app->view->renderTemplate(
+            'commerce-widgets/settings',
+            [
+                'settings' => $this->getSettings()
+            ]
+        );
+    }
 }

@@ -1,6 +1,6 @@
 {
     "name": "bymayo/commerce-widgets",
-    "description": "Helpful widgets to use with Craft Commerce",
+    "description": "Description",
     "type": "craft-plugin",
     "version": "2.0.0",
     "keywords": [
@@ -11,8 +11,8 @@
         "commerce widgets"
     ],
     "support": {
-        "docs": "https://github.com/bymayo/commerce-widgets/blob/master/README.md",
-        "issues": "https://github.com/bymayo/commerce-widgets/issues"
+        "docs": "https://github.com/ByMayo/commerce-widgets/blob/master/README.md",
+        "issues": "https://github.com/ByMayo/commerce-widgets/issues"
     },
     "license": "MIT",
     "authors": [
@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.0.0"
+        "craftcms/cms": "^3.0.0-RC1"
     },
     "autoload": {
         "psr-4": {
@@ -32,9 +32,9 @@
     "extra": {
         "name": "Commerce Widgets",
         "handle": "commerce-widgets",
-        "hasCpSettings": false,
+        "hasCpSettings": true,
         "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/bymayo/commerce-widgets/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/ByMayo/commerce-widgets/master/CHANGELOG.md",
         "components": {
             "commerceWidgetsService": "bymayo\\commercewidgets\\services\\CommerceWidgetsService"
         },

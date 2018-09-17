@@ -1,18 +1,43 @@
-<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-2/screenshots/icon.png" width="50">
+# Commerce Widgets plugin for Craft CMS 3.x
 
-**Looking for Craft 2 Support?** [Commerce Widgets for Craft 2](https://github.com/bymayo/craft-commerce-widgets/tree/craft-2)
+Description
 
-# Commerce Widgets
-
-**Craft 3 version in the works...**
-
-Commerce Widgets is a Craft CMS plugin that gives you helpful dashboard widgets for your Craft Commerce store.
+![Screenshot](resources/img/plugin-logo.png)
 
 ## Requirements
 
-- Craft CMS 3.x
-- Craft Commerce 2.x
+This plugin requires Craft CMS 3.0.0-beta.23 or later.
 
-## Credits
+## Installation
 
-- Shop by Iconfair from Noun Project (https://thenounproject.com/iconfair)
+To install the plugin, follow these instructions.
+
+1. Open your terminal and go to your Craft project:
+
+        cd /path/to/project
+
+2. Then tell Composer to load the plugin:
+
+        composer require ByMayo/commerce-widgets
+
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Commerce Widgets.
+
+## Commerce Widgets Overview
+
+-Insert text here-
+
+## Configuring Commerce Widgets
+
+-Insert text here-
+
+## Using Commerce Widgets
+
+-Insert text here-
+
+## Commerce Widgets Roadmap
+
+Some things to do, and ideas for potential features:
+
+* Release it
+
+Brought to you by [ByMayo](http://bymayo.co.uk)
