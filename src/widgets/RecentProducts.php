@@ -30,7 +30,7 @@ class RecentProducts extends Widget
 
     public static function displayName(): string
     {
-        return Craft::t('commerce-widgets', 'Recent Products');
+        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Recent Products');
     }
 
     public static function iconPath()
@@ -45,6 +45,11 @@ class RecentProducts extends Widget
 
     // Public Methods
     // =========================================================================
+
+    public function getTitle(): string
+    {
+      return 'Recent Products';
+    }
 
     public function rules()
     {

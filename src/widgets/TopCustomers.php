@@ -17,7 +17,7 @@ use Craft;
 use craft\base\Widget;
 use craft\helpers\StringHelper;
 
-class TotalRevenueOrders extends Widget
+class TopCustomers extends Widget
 {
 
     // Public Properties
@@ -30,7 +30,7 @@ class TotalRevenueOrders extends Widget
 
     public static function displayName(): string
     {
-      return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Total Revenue & Orders');
+        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Top Customers');
     }
 
     public static function iconPath()
@@ -48,7 +48,7 @@ class TotalRevenueOrders extends Widget
 
     public function getTitle(): string
     {
-      return 'Total Revenue & Orders';
+      return 'Top Customers';
     }
 
     public function rules()

@@ -30,7 +30,7 @@ class CartAbandonment extends Widget
 
     public static function displayName(): string
     {
-        return Craft::t('commerce-widgets', 'Cart Abandonment');
+        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Cart Abandonment');
     }
 
     public static function iconPath()
@@ -45,6 +45,11 @@ class CartAbandonment extends Widget
 
     // Public Methods
     // =========================================================================
+
+    public function getTitle(): string
+    {
+      return 'Cart Abandonment';
+    }
 
     public function rules()
     {
