@@ -16,6 +16,7 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 use Craft;
 use craft\base\Widget;
 use craft\helpers\StringHelper;
+use craft\db\Query;
 
 class TopCustomers extends Widget
 {
@@ -23,7 +24,9 @@ class TopCustomers extends Widget
     // Public Properties
     // =========================================================================
 
-    public $limit = 10;
+    public $includeGuests;
+    public $groupBy;
+    public $orderBy;
 
     // Static Methods
     // =========================================================================
@@ -43,6 +46,50 @@ class TopCustomers extends Widget
         return null;
     }
 
+    // Custom Public Methods
+    // =========================================================================
+
+    public function customers()
+    {
+
+      try {
+
+         $query = (
+            new Query()
+            )
+            ->select(
+               [
+                  'count(*) as totalOrders',
+                  'SUM(orders.totalPrice) as totalRevenue',
+                  'orders.email',
+                  'orders.customerId'
+               ]
+            )
+            ->from(['orders' => 'commerce_orders'])
+            ->where(['orders.isCompleted' => 1])
+            ->orderBy($this->orderBy . ' desc')
+            ->groupBy(['orders.email'])
+            ->limit(5);
+
+         if($this->includeGuests == 'no')
+         {
+            $query
+               ->join('INNER JOIN', 'commerce_customers customers', 'orders.customerId = customers.id')
+               ->where(['not', ['customers.userId' => null]]);
+         }
+
+         $command = $query->createCommand();
+         $result = $command->queryAll();
+
+      }
+      catch (Exception $e) {
+         $result = [];
+     }
+
+      return $result;
+
+   }
+
     // Public Methods
     // =========================================================================
 
@@ -58,8 +105,9 @@ class TopCustomers extends Widget
         $rules = array_merge(
             $rules,
             [
-                ['limit', 'integer'],
-                ['limit', 'default', 'value' => 10],
+                [['includeGuests', 'orderBy'], 'string'],
+                ['includeGuests', 'default', 'value' => 'yes'],
+                ['orderBy', 'default', 'value' => 'totalRevenue']
             ]
         );
 
@@ -71,7 +119,9 @@ class TopCustomers extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
             [
-                'widget' => $this
+                'widget' => $this,
+                'includeGuests' => $this->includeGuests,
+                'orderBy' => $this->orderBy
             ]
         );
     }
@@ -83,7 +133,7 @@ class TopCustomers extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
-                'limit' => $this->limit
+                'customers' => $this->customers()
             ]
         );
     }

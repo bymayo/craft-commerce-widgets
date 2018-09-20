@@ -99,8 +99,8 @@ class CommerceWidgets extends Plugin
             CraftVariable::EVENT_INIT,
             function (Event $event) {
                 /** @var CraftVariable $variable */
-                // $variable = $event->sender;
-                // $variable->set('commerceWidgets', CommerceWidgetsRecentProductsWidget::class);
+                $variable = $event->sender;
+                $variable->set('commercewidgets', CommerceWidgetsVariable::class);
             }
         );
 

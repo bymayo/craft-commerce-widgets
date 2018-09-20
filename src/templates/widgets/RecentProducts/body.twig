@@ -1,3 +1,6 @@
+{% set commerce = craft.commerce.carts.cart  %}
+{% set cpTrigger = craft.config.cpTrigger %}
+
 <div class="commerce-widgets">
 
    <table class="data fullwidth collapsible">
@@ -9,41 +12,29 @@
          </tr>
       </thead>
       <tbody>
-         <tr>
-            <td>
-               <div class="element hasstatus">
-                  <span class="status live"></span>
-                  <div class="label">
-                     <span class="title">
-                        <a href="http://craft-3-plugins.local/admin/commerce/products/clothing/2-ant-001">A New Toga</a>
-                     </span>
+         {% for product in craft.products().limit(limit).all() %}
+            <tr>
+               <td>
+                  <div class="element hasstatus">
+                     <span class="status {{ product.status }}"></span>
+                     <div class="label">
+                        <span class="title">
+                           <a href="{{ product.cpEditUrl }}">
+                              {{ product.title }}
+                           </a>
+                        </span>
+                     </div>
                   </div>
-               </div>
-            </td>
-            <td>
-               <span class="sku">MED0701</span>
-            </td>
-            <td>&pound;12.00</td>
-         </tr>
-         <tr>
-            <td>
-               <div class="element hasstatus">
-                  <span class="status disabled"></span>
-                  <div class="label">
-                     <span class="title">
-                        <a href="http://craft-3-plugins.local/admin/commerce/products/clothing/2-ant-001">A New Toga</a>
-                     </span>
-                  </div>
-               </div>
-            </td>
-            <td>
-               <span class="sku">MED0701</span>
-            </td>
-            <td>&pound;12.00</td>
-         </tr>
+               </td>
+               <td>
+                  <span class="sku">{{ product.defaultSku }}</span>
+               </td>
+               <td>{{ product.defaultPrice|currency(commerce.currency) }}</td>
+            </tr>
+         {% endfor %}
       </tbody>
    </table>
 
-   <a href="#" class="btn">View All Products</a>
+   <a href="/{{ cpTrigger }}/commerce/products" class="btn">View All Products</a>
 
 </div>

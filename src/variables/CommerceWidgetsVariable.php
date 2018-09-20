@@ -13,6 +13,7 @@ namespace bymayo\commercewidgets\variables;
 use bymayo\commercewidgets\CommerceWidgets;
 
 use Craft;
+use craft\db\Query;
 
 /**
  * @author    ByMayo
@@ -24,16 +25,22 @@ class CommerceWidgetsVariable
     // Public Methods
     // =========================================================================
 
-    /**
-     * @param null $optional
-     * @return string
-     */
-    public function exampleVariable($optional = null)
+    public function userIdByCustomerId($customerId)
     {
-        $result = "And away we go to the Twig template...";
-        if ($optional) {
-            $result = "I'm feeling optional today...";
-        }
-        return $result;
+
+      $query = (
+            new Query()
+         )
+         ->select(
+            [
+               'userId'
+            ]
+         )
+         ->from(['commerce_customers'])
+         ->where(['id' => $customerId])
+         ->all();
+
+      return $query[0];
+
     }
 }

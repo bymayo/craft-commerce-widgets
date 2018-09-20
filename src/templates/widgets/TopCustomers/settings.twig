@@ -2,9 +2,31 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-{{ forms.textField({
-    label: 'Limit',
-    id: 'limit',
-    name: 'limit',
-    value: widget['limit']})
+{{
+   forms.selectField(
+      {
+         label: 'Order By',
+         name: 'orderBy',
+         value: widget['orderBy'],
+         options: [
+            { label: 'Order Total', value: 'totalOrders' },
+            { label: 'Revenue Total', value: 'totalRevenue' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
+         label: 'Include Guest Customers',
+         id: 'includeGuests',
+         name: 'includeGuests',
+         value: widget['includeGuests'],
+         options: [
+            { label: 'Yes', value: 'yes' },
+            { label: 'No', value: 'no' }
+         ]
+      }
+   )
 }}

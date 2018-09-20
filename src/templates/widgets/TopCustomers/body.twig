@@ -1,3 +1,9 @@
+{% extends 'layout' %}
+
+{% block widget %}
+
+{% set rankClasses = ['-first', '-second', '-third'] %}
+
 <div class="commerce-widgets">
 
    <table class="data fullwidth collapsible">
@@ -5,53 +11,32 @@
          <tr>
             <th></th>
             <th>Email Address</th>
-            <th>Total Spent</th>
+            <th>Total Revenue</th>
             <th>Total Orders</th>
          </tr>
       </thead>
       <tbody>
-         <tr>
-            <td><span class="rank -first">1</span></td>
-            <td>
-               <a href="#">
-                  jaymayo@gmail.com
-               </a>
-               <span class="extra-label -registered">Registered</span>
-            </td>
-            <td>£300.00</td>
-            <td>10</td>
-         </tr>
-         <tr>
-            <td><span class="rank -second">2</span></td>
-            <td>
-               <a href="#">
-                  jaymayo@gmail.com
-               </a>
-            </td>
-            <td>£300.00</td>
-            <td>10</td>
-         </tr>
-         <tr>
-            <td><span class="rank -third">3</span></td>
-            <td>
-               <a href="#">
-                  jaymayo@gmail.com
-               </a>
-            </td>
-            <td>£300.00</td>
-            <td>10</td>
-         </tr>
-         <tr>
-            <td><span class="rank">4</span></td>
-            <td>
-               <a href="#">
-                  jaymayo@gmail.com
-               </a>
-            </td>
-            <td>£300.00</td>
-            <td>10</td>
-         </tr>
+         {% for customer in customers %}
+            {% set userId = craft.commercewidgets.userIdByCustomerId(customer.customerId).userId %}
+            <tr>
+               <td><span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">{{ loop.index}}</span></td>
+               <td>
+                  {% if userId|length %}
+                     <a href="/{{ cpTrigger }}/users/{{ userId }}">
+                        {{ customer.email }}
+                     </a>
+                  {% else %}
+                     {{ customer.email }}
+                  {% endif %}
+               </td>
+               <td>{{ customer.totalRevenue|currency(commerce.currency) }}</td>
+               <td>{{ customer.totalOrders }}</td>
+            </tr>
+         {% else %}
+         {% endfor %}
       </tbody>
    </table>
 
 </div>
+
+{% endblock %}

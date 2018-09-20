@@ -2,9 +2,13 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-{{ forms.textField({
-    label: 'Limit',
-    id: 'limit',
-    name: 'limit',
-    value: widget['limit']})
+{{
+   forms.textField(
+      {
+         label: 'Limit',
+         id: 'limit',
+         name: 'limit',
+         value: widget['limit']
+      }
+   )
 }}

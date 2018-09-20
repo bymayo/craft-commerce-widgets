@@ -23,7 +23,7 @@ class RecentProducts extends Widget
     // Public Properties
     // =========================================================================
 
-    public $limit = 10;
+    public $limit;
 
     // Static Methods
     // =========================================================================
@@ -59,7 +59,7 @@ class RecentProducts extends Widget
             $rules,
             [
                 ['limit', 'integer'],
-                ['limit', 'default', 'value' => 10],
+                ['limit', 'default', 'value' => 5],
             ]
         );
 
