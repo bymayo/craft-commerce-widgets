@@ -1,10 +1,8 @@
-{% extends 'layout' %}
+{% extends 'commerce-widgets/layout' %}
 
 {% block widget %}
 
-{% set rankClasses = ['-first', '-second', '-third'] %}
-
-<div class="commerce-widgets">
+   {% set rankClasses = ['-first', '-second', '-third'] %}
 
    <table class="data fullwidth collapsible">
       <thead>
@@ -36,7 +34,5 @@
          {% endfor %}
       </tbody>
    </table>
-
-</div>
 
 {% endblock %}

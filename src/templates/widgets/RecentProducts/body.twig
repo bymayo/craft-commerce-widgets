@@ -1,7 +1,6 @@
-{% set commerce = craft.commerce.carts.cart  %}
-{% set cpTrigger = craft.config.cpTrigger %}
+{% extends 'commerce-widgets/layout' %}
 
-<div class="commerce-widgets">
+{% block widget %}
 
    <table class="data fullwidth collapsible">
       <thead>
@@ -37,4 +36,4 @@
 
    <a href="/{{ cpTrigger }}/commerce/products" class="btn">View All Products</a>
 
-</div>
+{% endblock %}

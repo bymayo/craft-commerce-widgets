@@ -6,9 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "paths": {
+    "assets": "src/assetbundles/commercewidgets/",
+    "dist": "src/assetbundles/commercewidgets/dist/"
+  },
+  "files": {
+    "scss": "CommerceWidgets.scss",
+    "css": "CommerceWidgets.css"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chart.js": "^2.7.2"
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-clean-css": "^3.10.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4"
   }
 }

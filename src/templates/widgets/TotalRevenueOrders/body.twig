@@ -1,4 +1,6 @@
-<div class="commerce-widgets">
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
 
    <table class="data fullwidth collapsible">
       <thead>
@@ -12,28 +14,28 @@
          <tr>
             <td>
                Today
-               <span class="light small">19th Sept 2018</span>
+               <span class="light small">21st Sept 2018</span>
             </td>
             <td>
-               &pound;0.00
+               &pound;60.00
                <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
             </td>
             <td>
-               5
+               1
                <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
             </td>
          </tr>
          <tr>
             <td>
                Week
-               <span class="light small">19th Sept 2018 - 19th Sept 2018</span>
+               <span class="light small">17th Sept 2018 - 23rd Sept 2018</span>
             </td>
             <td>
-               &pound;0.00
+               &pound;120.00
                <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
             </td>
             <td>
-               5
+               2
                <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
             </td>
          </tr>
@@ -43,12 +45,12 @@
                <span class="light small">September</span>
             </td>
             <td>
-               &pound;0.00
+               &pound;120.00
                <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
             </td>
             <td>
-               5
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
+               4
+               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
             </td>
          </tr>
          <tr>
@@ -57,12 +59,12 @@
                <span class="light small">2018</span>
             </td>
             <td>
-               &pound;0.00
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
+               &pound;200.00
+               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
             </td>
             <td>
-               5
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
+               6
+               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
             </td>
          </tr>
       </tbody>
@@ -70,4 +72,4 @@
 
    <a href="#" class="btn">View All Orders</a>
 
-</div>
+{% endblock %}

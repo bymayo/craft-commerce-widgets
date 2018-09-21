@@ -1,15 +1,18 @@
-{# {{ limit }} #}
+{% extends 'commerce-widgets/layout' %}
 
-<div class="commerce-widgets">
+{% block widget %}
+
    <canvas id="myChart" width="800" height="250"></canvas>
+
    <div class="statistic-container">
       <div class="statistic -cart-abandoned">
-         <strong>100</strong>
+         <strong>11</strong>
          <small>Abandoned Carts</small>
       </div>
       <div class="statistic -cart-completed">
-         <strong>100</strong>
+         <strong>34</strong>
          <small>Completed Carts</small>
       </div>
    </div>
-</div>
+
+{% endblock %}
