@@ -18,22 +18,22 @@ use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 
-class TopCustomers extends Widget
+class Goal extends Widget
 {
 
     // Public Properties
     // =========================================================================
 
-    public $includeGuests;
-    public $groupBy;
-    public $orderBy;
+    public $type;
+    public $targetValue;
+    public $targetDuration;
 
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Top Customers');
+      return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Goal');
     }
 
     public static function iconPath()
@@ -49,7 +49,7 @@ class TopCustomers extends Widget
     // Custom Public Methods
     // =========================================================================
 
-    public function getCustomers()
+    public function getTotals()
     {
 
       try {
@@ -60,33 +60,27 @@ class TopCustomers extends Widget
             ->select(
                [
                   'count(*) as totalOrders',
-                  'SUM(orders.totalPrice) as totalRevenue',
-                  'orders.email',
-                  'orders.customerId'
+                  'COALESCE(SUM(orders.totalPrice),0) as totalRevenue'
                ]
             )
             ->from(['orders' => 'commerce_orders'])
-            ->where(['orders.isCompleted' => 1])
-            ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email'])
-            ->limit(5);
-
-         if($this->includeGuests == 'no')
-         {
-            $query
-               ->join('INNER JOIN', 'commerce_customers customers', 'orders.customerId = customers.id')
-               ->where(['not', ['customers.userId' => null]]);
-         }
+            ->where(
+               [
+                  'isCompleted' => 1,
+                  'month(dateOrdered)' => 'month(current_date())',
+                  'year(dateOrdered)' => 'year(current_date())'
+               ]
+            );
 
          $command = $query->createCommand();
          $result = $command->queryAll();
 
       }
       catch (Exception $e) {
-         $result = [];
-     }
+         $result = null;
+      }
 
-      return $result;
+      return ($this->type === 'orders') ? $result[0]['totalOrders'] : $result[0]['totalRevenue'];
 
    }
 
@@ -95,7 +89,7 @@ class TopCustomers extends Widget
 
     public function getTitle(): string
     {
-      return 'Top Customers';
+      return 'Goal - ' . StringHelper::titleize($this->type);
     }
 
     public function rules()
@@ -104,10 +98,13 @@ class TopCustomers extends Widget
 
         $rules = array_merge(
             $rules,
+            $rules,
             [
-                [['includeGuests', 'orderBy'], 'string'],
-                ['includeGuests', 'default', 'value' => 'yes'],
-                ['orderBy', 'default', 'value' => 'totalRevenue']
+                [['type', 'targetDuration'], 'string'],
+                ['targetValue', 'integer'],
+                ['type', 'default', 'value' => 'orders'],
+                ['targetValue', 'default', 'value' => 15],
+                ['targetDuration', 'default', 'value' => 'monthly']
             ]
         );
 
@@ -119,9 +116,7 @@ class TopCustomers extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
             [
-                'widget' => $this,
-                'includeGuests' => $this->includeGuests,
-                'orderBy' => $this->orderBy
+                'widget' => $this
             ]
         );
     }
@@ -133,7 +128,10 @@ class TopCustomers extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
-                'customers' => $this->getCustomers()
+                'type' => $this->type,
+                'targetValue' => $this->targetValue,
+                'targetDuration' => $this->targetDuration,
+                'total' => $this->getTotals()
             ]
         );
     }

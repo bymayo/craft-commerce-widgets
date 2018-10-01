@@ -90,6 +90,7 @@ class CommerceWidgets extends Plugin
                 $event->types[] = Widgets\CartAbandonment::class;
                 $event->types[] = Widgets\TotalRevenueOrders::class;
                 $event->types[] = Widgets\TopCustomers::class;
+                $event->types[] = Widgets\Goal::class;
 
             }
         );

@@ -1,0 +1,45 @@
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{{
+   forms.selectField(
+      {
+         label: 'Type',
+         name: 'type',
+         value: widget['type'],
+         options: [
+            { label: 'Orders', value: 'orders' },
+            { label: 'Revenue', value: 'revenue' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.textField(
+      {
+         label: 'Target Value',
+         id: 'targetValue',
+         instructions: 'E.g. If chosen Orders type, a Target of 100 would mean 100 orders',
+         name: 'targetValue',
+         value: widget['targetValue']
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
+         label: 'Target Duration',
+         id: 'targetDuration',
+         name: 'targetDuration',
+         value: widget['targetDuration'],
+         options: [
+            { label: 'Weekly', value: 'weekly' },
+            { label: 'Monthly', value: 'monthly' },
+            { label: 'Yearly', value: 'yearly' }
+         ]
+      }
+   )
+}}
