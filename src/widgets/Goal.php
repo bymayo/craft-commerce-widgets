@@ -60,27 +60,54 @@ class Goal extends Widget
             ->select(
                [
                   'count(*) as totalOrders',
-                  'COALESCE(SUM(orders.totalPrice),0) as totalRevenue'
+                  'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
                ]
             )
             ->from(['orders' => 'commerce_orders'])
             ->where(
                [
-                  'isCompleted' => 1,
-                  'month(dateOrdered)' => 'month(current_date())',
-                  'year(dateOrdered)' => 'year(current_date())'
+                  'orders.isCompleted' => 1,
                ]
             );
 
-         $command = $query->createCommand();
-         $result = $command->queryAll();
+         if($this->targetDuration == 'weekly')
+         {
+            $query
+               ->where(
+                  [
+                     'WEEK(orders.datePaid)' => date('W'),
+                     'YEAR(orders.datePaid)' => date('Y')
+                  ]
+               );
+         }
+         elseif ($this->targetDuration == 'monthly')
+         {
+            $query
+               ->where(
+                  [
+                     'MONTH(orders.datePaid)' => date('n'),
+                     'YEAR(orders.datePaid)' => date('Y')
+                  ]
+               );
+         }
+         else
+         {
+            $query
+               ->where(
+                  [
+                     'YEAR(orders.datePaid)' => date('Y')
+                  ]
+               );
+         }
+
+         $result = $query->one();
 
       }
       catch (Exception $e) {
          $result = null;
       }
 
-      return ($this->type === 'orders') ? $result[0]['totalOrders'] : $result[0]['totalRevenue'];
+      return ($this->type === 'orders') ? $result['totalOrders'] : $result['totalRevenue'];
 
    }
 
@@ -89,7 +116,7 @@ class Goal extends Widget
 
     public function getTitle(): string
     {
-      return 'Goal - ' . StringHelper::titleize($this->type);
+      return StringHelper::titleize($this->type) . ' Goal';
     }
 
     public function rules()

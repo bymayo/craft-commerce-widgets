@@ -2,17 +2,85 @@
 
 {% block widget %}
 
-   <canvas id="myChart" width="800" height="250"></canvas>
+   <canvas id="commerce-widgets-cart-abandonment-chart" width="800" height="250"></canvas>
+
+   {{ dump(abandonedCartTotal) }}
 
    <div class="statistic-container">
       <div class="statistic -cart-abandoned">
          <strong>11</strong>
-         <small>Abandoned Carts</small>
+         <p>Abandoned Carts</p>
+         <small>{{ abandonedCartPrice.total|currency(commerce.currency) }}</small>
       </div>
       <div class="statistic -cart-completed">
-         <strong>34</strong>
-         <small>Completed Carts</small>
+         <strong>10</strong>
+         <p>Completed Carts</p>
+         <small>{{ completedCartPrice.total|currency(commerce.currency) }}</small>
       </div>
    </div>
+
+   {% js %}
+      $(
+         function() {
+
+            var ctx = document.getElementById('commerce-widgets-cart-abandonment-chart').getContext("2d");
+
+            const colours = {
+              abandoned: {
+                stroke: '#e67a0b',
+                background: 'rgba(230,122,11,0.4)'
+              },
+              completed: {
+                stroke: '#27AE5F',
+                background: 'rgba(39,174,95,0.1)'
+              }
+            };
+
+            const abandoned = [0, 10, 5, 1, 0, 4];
+            const completed = [10, 44, 33, 24, 25, 28];
+            const xAxisData = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+            const myChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: xAxisData,
+                datasets: [ {
+                  label: "Cart Abandoned",
+                  pointBackgroundColor: colours.abandoned.stroke,
+                  borderColor: colours.abandoned.stroke,
+                  pointHighlightStroke: colours.abandoned.stroke,
+                  borderCapStyle: 'butt',
+                  data: abandoned,
+                  fill: false,
+                  backgroundColor: colours.abandoned.background
+                }, {
+                  label: "Cart Completed",
+                  fill: false,
+                  backgroundColor: colours.completed.background,
+                  pointBackgroundColor: colours.completed.stroke,
+                  borderColor: colours.completed.stroke,
+                  pointHighlightStroke: colours.completed.stroke,
+                  data: completed,
+                }]
+              },
+              options: {
+                legend: {
+                  display: false
+               },
+                responsive: true,
+                scales: {
+                  yAxes: [{
+                    stacked: true,
+                  }]
+                },
+                animation: {
+                  duration: 750,
+                },
+              }
+            });
+
+         }
+      );
+   {% endjs %}
 
 {% endblock %}

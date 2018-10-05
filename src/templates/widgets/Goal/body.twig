@@ -8,11 +8,11 @@
    </div>
 
    <div class="progress-bar{% if total >= targetValue %} -full{% endif %}">
-      <div class="progress-bar-fill" style="width: {{ (total/targetValue) / 100 }}%"></div>
+      <div class="progress-bar-fill" style="width: {{ (total / targetValue) * 100 }}%"></div>
    </div>
 
    <div class="goal-duration">
-      {{ targetDuration|title }} Goal
+      {{ targetDuration|title }}
    </div>
 
 {% endblock %}

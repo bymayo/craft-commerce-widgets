@@ -15,14 +15,6 @@
   display: block;
   font-size: 12px; }
 
-.commerce-widgets .statistic-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between; }
-
 .commerce-widgets .statistic {
   display: inline-block;
   border: 1px solid #e7e7e8;
@@ -31,17 +23,27 @@
   border-radius: 3px;
   text-align: center;
   border-bottom: 4px solid; }
-
-.commerce-widgets .statistic.-cart-abandoned {
-  border-bottom-color: #e67a0b; }
-
-.commerce-widgets .statistic.-cart-completed {
-  border-bottom-color: #27AE5F; }
-
-.commerce-widgets .statistic strong {
-  font-size: 32px;
-  display: block;
-  margin-bottom: 10px; }
+  .commerce-widgets .statistic strong {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 10px; }
+  .commerce-widgets .statistic p {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px; }
+  .commerce-widgets .statistic small {
+    color: #8f98a3; }
+  .commerce-widgets .statistic-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
+  .commerce-widgets .statistic.-cart-abandoned {
+    border-bottom-color: #e67a0b; }
+  .commerce-widgets .statistic.-cart-completed {
+    border-bottom-color: #27AE5F; }
 
 .commerce-widgets .compare-arrow {
   margin-left: 3px;
@@ -117,12 +119,12 @@
   border: 1px solid #e7e7e8; }
 
 .commerce-widgets .goal-values {
-  margin: 25px 0 10px; }
+  margin: 35px 0 10px; }
   .commerce-widgets .goal-values strong {
-    font-size: 35px; }
+    font-size: 30px; }
   .commerce-widgets .goal-values small {
     margin-left: 3px;
-    font-size: 20px;
+    font-size: 18px;
     color: #8f98a3; }
 
 .commerce-widgets .goal-duration {
@@ -136,13 +138,14 @@
   height: 10px;
   border-radius: 20px;
   background-color: #eee;
-  position: relative; }
+  position: relative;
+  overflow: hidden; }
   .commerce-widgets .progress-bar.-full .progress-bar-fill {
     background-color: #27AE5F; }
   .commerce-widgets .progress-bar-fill {
     position: absolute;
     background-color: #e67a0b;
-    width: 33%;
+    max-width: 100%;
     height: 100%;
     top: 0;
     left: 0;

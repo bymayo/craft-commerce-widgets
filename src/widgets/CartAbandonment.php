@@ -16,6 +16,7 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 use Craft;
 use craft\base\Widget;
 use craft\helpers\StringHelper;
+use craft\db\Query;
 
 class CartAbandonment extends Widget
 {
@@ -43,37 +44,93 @@ class CartAbandonment extends Widget
         return null;
     }
 
+    // Custom Public Methods
+    // =========================================================================
+
+    public function getTotalCarts($isCompleted)
+    {
+
+
+      // SELECT
+      //     DATE_FORMAT(orders.dateCreated,'%Y-%m') AS date,
+      //     IFNULL(COUNT(orders.id), 0) AS count
+      // FROM commerce_orders orders
+      // WHERE orders.dateCreated BETWEEN '2018-9-01 00:00:00' AND CURRENT_DATE
+      // AND isCompleted = 1
+      // GROUP BY date
+      // ORDER BY date
+
+      try {
+
+         $query = (
+            new Query()
+            )
+            ->select(
+               [
+                  'DATE_FORMAT(orders.dateCreated, "%Y-%m") AS date',
+                  'COALESCE(COUNT(orders.id), 0) AS count'
+               ]
+            )
+            ->from(['orders' => 'commerce_orders'])
+            ->where(
+               [
+                  ['orders.isCompleted' => '1'],
+                  ['between', 'orders.dateCreated', '2018-08-01', 'CURRENT_DATE']
+               ]
+            )
+            ->groupBy('date')
+            ->orderBy('date');
+
+         $command = $query->createCommand();
+         $result = $command->queryAll();
+
+         return $result;
+
+      }
+      catch (Exception $e) {
+         $result = null;
+      }
+
+   }
+
+   public function getCartTotalRevenue($isCompleted)
+   {
+
+      try {
+
+         $query = (
+            new Query()
+            )
+            ->select(
+               [
+                  'sum(orders.totalPrice) as total'
+               ]
+            )
+            ->from(['orders' => 'commerce_orders'])
+            ->where(
+               [
+                  'orders.isCompleted' => $isCompleted,
+                  'MONTH(orders.dateCreated)' => date('n')
+               ]
+            );
+
+         $result = $query->one();
+
+         return $result;
+
+      }
+      catch (Exception $e) {
+         $result = null;
+      }
+
+   }
+
     // Public Methods
     // =========================================================================
 
     public function getTitle(): string
     {
-      return 'Cart Abandonment';
-    }
-
-    public function rules()
-    {
-        $rules = parent::rules();
-
-        $rules = array_merge(
-            $rules,
-            [
-                ['limit', 'integer'],
-                ['limit', 'default', 'value' => 10],
-            ]
-        );
-
-        return $rules;
-    }
-
-    public function getSettingsHtml()
-    {
-        return Craft::$app->getView()->renderTemplate(
-            'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
-            [
-                'widget' => $this
-            ]
-        );
+      return 'Cart Abandonment - ' . date('F Y');
     }
 
     public function getBodyHtml()
@@ -83,7 +140,10 @@ class CartAbandonment extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
-                'limit' => $this->limit
+               'abandonedCartTotal' => $this->getTotalCarts(0),
+               'completedCartTotal' => $this->getTotalCarts(0),
+               'abandonedCartPrice' => $this->getCartTotalRevenue(0),
+               'completedCartPrice' => $this->getCartTotalRevenue(1)
             ]
         );
     }
