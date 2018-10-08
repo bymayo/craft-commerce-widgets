@@ -75,7 +75,7 @@ class TopCustomers extends Widget
          {
             $query
                ->join('INNER JOIN', 'commerce_customers customers', 'orders.customerId = customers.id')
-               ->where(['not', ['customers.userId' => null]]);
+               ->andWhere(['not', ['customers.userId' => null]]);
          }
 
          $command = $query->createCommand();
