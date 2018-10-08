@@ -85,7 +85,7 @@ class CartAbandonment extends Widget
             ->from(['orders' => 'commerce_orders'])
             ->where(
                [
-                  'between', 'orders.dateCreated', date('Y-m-d', strtotime('-5 months')), date('Y-m-d')
+                  'between', 'orders.dateCreated', date('Y-m-d', strtotime('-5 months')), date('Y-m-d', strtotime('+1 day'))
                ]
             )
             ->andWhere(

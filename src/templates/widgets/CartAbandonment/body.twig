@@ -12,7 +12,7 @@
       </div>
       <div class="statistic -cart-abandoned">
          <strong>{{ abandonedCartData.count }}</strong>
-         <p>Completed Cart{{ abandonedCartData.count > 1 ? 's' }}</p>
+         <p>Abandoned Cart{{ abandonedCartData.count > 1 ? 's' }}</p>
          <small>{{ abandonedCartData.totalPrice|currency(commerce.currency) }}</small>
       </div>
    </div>
