@@ -19,178 +19,181 @@
 
    $font-family-monospace: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 
+//
+// Styles
+//
 
-.commerce-widgets {
+   .commerce-widgets {
 
-   * {
-      box-sizing: border-box;
-   }
+      // Base
 
-   table {
-      margin-bottom: 10px;
-   }
+      * {
+         box-sizing: border-box;
+      }
 
-   canvas {
-      width: 100% !important;
-      max-width: 800px;
-      height: auto !important;
-      margin-bottom: 30px;
-   }
+      table {
+         margin-bottom: 10px;
+      }
 
-   .small {
-      display: block;
-      font-size: $base-font-size - 4;
-   }
+      // Admin Classes Overwritten
 
-   // Statistic
-
-   .statistic {
-      display: inline-block;
-      border: 1px solid $border-grey;
-      width: calc(50% - 10px);
-      padding: 30px;
-      border-radius: 3px;
-      text-align: center;
-      border-bottom: 4px solid;
-      strong {
-         font-size: $base-font-size * 2;
+      .small {
          display: block;
-         margin-bottom: 10px;
+         font-size: $base-font-size - 4;
       }
-      p {
-         font-size: $base-font-size + 2;
-         font-weight: 500;
-         margin-bottom: 10px;
+
+      // Charts
+
+      .chart {
+         width: 100%;
+         max-width: 800px;
+         height: auto;
+         margin-bottom: 30px;
       }
-      small {
-         color: $body;
-      }
-      &-container {
-         display: flex;
-         justify-content: space-between;
-      }
-      &.-cart-abandoned {
-         border-bottom-color: $orange;
-      }
-      &.-cart-completed {
-         border-bottom-color: $green;
-      }
-   }
 
-   .compare-arrow {
-      margin-left: 3px;
-      cursor: help;
-      color: $body;
-   }
+      // Statistic
 
-   .compare-arrow.-more {
-      color: $green;
-   }
-
-   .compare-arrow.-less {
-      color: $red;
-   }
-
-   .sku {
-      font-family: $font-family-monospace;
-      color: $body;
-      font-size: $base-font-size - 5;
-      border: 1px solid $border-grey;
-      padding: 4px 5px;
-      border-radius: 3px;
-      background-color: rgba(0,0,0,0.02);
-   }
-
-   .rank {
-      border-radius: 100%;
-      display: inline-block;
-      height: 28px;
-      width: 28px;
-      text-align: center;
-      line-height: 28px;
-      margin-right: 5px;
-      font-weight: 600;
-      font-size: $base-font-size - 3;
-      line-height: 28px - 2;
-      border: 1px solid $border-grey;
-   }
-
-   .rank.-first {
-      color: $white;
-      background: $gold;
-      background: linear-gradient(to bottom, $gold 0%, darken($gold, 5%) 100%);
-      border: 1px solid darken($gold, 10%);
-      box-shadow: inset 0 1px 0 rgba($white, 0.3);
-   }
-
-   .rank.-second {
-      color: $white;
-      background: $silver;
-      background: linear-gradient(to bottom, $silver 0%, darken($silver, 5%) 100%);
-      border: 1px solid darken($silver, 10%);
-      box-shadow: inset 0 1px 0 rgba($white, 0.3);
-   }
-
-   .rank.-third {
-      color: $white;
-      background: $bronze;
-      background: linear-gradient(to bottom, $bronze 0%, darken($bronze, 5%) 100%);
-      border: 1px solid darken($bronze, 10%);
-      box-shadow: inset 0 1px 0 rgba($white, 0.3);
-   }
-
-   .extra-label {
-      display: inline-block;
-      padding: 1px 6px;
-      border-radius: 3px;
-      margin-left: 5px;
-      text-transform: uppercase;
-      color: $body;
-      font-size: $base-font-size - 6;
-      border: 1px solid $border-grey;
-   }
-
-   .goal {
-      &-values {
-         margin: 35px 0 10px;
+      .statistic {
+         display: inline-block;
+         border: 1px solid $border-grey;
+         width: calc(50% - 10px);
+         padding: 30px;
+         border-radius: 3px;
+         text-align: center;
+         border-bottom: 4px solid;
          strong {
-            font-size: 30px;
+            font-size: $base-font-size * 2;
+            display: block;
+            margin-bottom: 10px;
+         }
+         p {
+            font-size: $base-font-size + 2;
+            font-weight: 500;
+            margin-bottom: 10px;
          }
          small {
-            margin-left: 3px;
-            font-size: 18px;
             color: $body;
          }
-      }
-      &-duration {
-         font-size: $base-font-size - 3;
-         color: $body;
-         margin-top: 10px;
-      }
-   }
-
-   .progress-bar {
-      display: inline-block;
-      width: 100%;
-      height: 10px;
-      border-radius: 20px;
-      background-color: $light-grey;
-      position: relative;
-      overflow: hidden;
-      &.-full {
-         .progress-bar-fill {
-            background-color: $green;
+         &-container {
+            display: flex;
+            justify-content: space-between;
+         }
+         &.-cart-abandoned {
+            border-bottom-color: $orange;
+         }
+         &.-cart-completed {
+            border-bottom-color: $green;
          }
       }
-      &-fill {
-         position: absolute;
-         background-color: $orange;
-         max-width: 100%;
-         height: 100%;
-         top: 0;
-         left: 0;
-         border-radius: 20px;
-      }
-   }
 
-}
+      // Compare Arrow
+
+      .compare-arrow {
+         margin-left: 3px;
+         cursor: help;
+         color: $body;
+         &.-more {
+            color: $green;
+         }
+         &.-less {
+            color: $red;
+         }
+      }
+
+      // SKU Tag
+
+      .sku {
+         font-family: $font-family-monospace;
+         color: $body;
+         font-size: $base-font-size - 5;
+         border: 1px solid $border-grey;
+         padding: 4px 5px;
+         border-radius: 3px;
+         background-color: rgba(0,0,0,0.02);
+      }
+
+      // Rank
+
+      .rank {
+         border-radius: 100%;
+         display: inline-block;
+         height: 28px;
+         width: 28px;
+         text-align: center;
+         line-height: 28px;
+         margin-right: 5px;
+         font-weight: 600;
+         font-size: $base-font-size - 3;
+         line-height: 28px - 2;
+         border: 1px solid $border-grey;
+         &.-first {
+            color: $white;
+            background: $gold;
+            background: linear-gradient(to bottom, $gold 0%, darken($gold, 5%) 100%);
+            border: 1px solid darken($gold, 7%);
+            box-shadow: inset 0 1px 0 rgba($white, 0.2);
+         }
+         &.-second {
+            color: $white;
+            background: $silver;
+            background: linear-gradient(to bottom, $silver 0%, darken($silver, 5%) 100%);
+            border: 1px solid darken($silver, 7%);
+            box-shadow: inset 0 1px 0 rgba($white, 0.2);
+         }
+         &.-third {
+            color: $white;
+            background: $bronze;
+            background: linear-gradient(to bottom, $bronze 0%, darken($bronze, 5%) 100%);
+            border: 1px solid darken($bronze, 7%);
+            box-shadow: inset 0 1px 0 rgba($white, 0.2);
+         }
+      }
+
+      // Goal
+
+      .goal {
+         &-values {
+            margin: 35px 0 10px;
+            strong {
+               font-size: 30px;
+            }
+            small {
+               margin-left: 3px;
+               font-size: 18px;
+               color: $body;
+            }
+         }
+         &-duration {
+            font-size: $base-font-size - 3;
+            color: $body;
+            margin-top: 10px;
+         }
+      }
+
+      // Progress Bar
+
+      .progress-bar {
+         display: inline-block;
+         width: 100%;
+         height: 10px;
+         border-radius: 20px;
+         background-color: $light-grey;
+         position: relative;
+         overflow: hidden;
+         &.-full {
+            .progress-bar-fill {
+               background-color: $green;
+            }
+         }
+         &-fill {
+            position: absolute;
+            background-color: $orange;
+            max-width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 20px;
+         }
+      }
+
+   }
