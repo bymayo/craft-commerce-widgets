@@ -26,13 +26,11 @@ Most of the widgets come with settings. Make sure you check the settings on each
 
 ## Widgets Included
 
-- *Cart Abandonment*
-Keep track of how many carts have completed / been abandoned.
-
-- Goals (Monthly, Weekly & Yearly)
-- Top Customers
-- Total Revenue & Orders
-- Recent Products
+- **Cart Abandonment** - Keep track of how many carts have been abandoned, and how much revenue you missed. Compare this also to how many carts completed
+- **Goals** - Set (Multiple) weekly, monthly or yearly revenue / order targets, and see how well your doing.
+- **Top Customers** - See who's your top customers, based on # revenue or # orders.
+- **Total Revenue & Orders** - Overview of day, week, month, year and all time revenue and order totals. 
+- **Recent Products** - See what products were recently added to your store.
 
 ## Roadmap
 
@@ -41,3 +39,5 @@ Keep track of how many carts have completed / been abandoned.
 - Recent Subscriptions (Oct 2018)
 - Top Subscribers (Oct 2018)
 - +15 more.
+- Export
+- Commerce Lite version (Free)
