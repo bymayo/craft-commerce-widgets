@@ -24,8 +24,6 @@ class CartAbandonment extends Widget
     // Public Properties
     // =========================================================================
 
-    public $limit = 10;
-
     // Static Methods
     // =========================================================================
 
@@ -47,18 +45,31 @@ class CartAbandonment extends Widget
     // Custom Public Methods
     // =========================================================================
 
+    public function getMonthDateRange()
+    {
+
+         $currentMonth  = strtotime('next month');
+         $monthArray = array();
+
+         $totalMonths = 6;
+
+         for ($i = $totalMonths; $i >= 1; $i--) {
+            array_push(
+               $monthArray,
+               date('M', strtotime("-$i month", $currentMonth)
+            )
+         );
+
+      }
+
+      return $monthArray;
+
+   }
+
     public function getTotalCarts($isCompleted)
     {
 
-
-      // SELECT
-      //     DATE_FORMAT(orders.dateCreated,'%Y-%m') AS date,
-      //     IFNULL(COUNT(orders.id), 0) AS count
-      // FROM commerce_orders orders
-      // WHERE orders.dateCreated BETWEEN '2018-9-01 00:00:00' AND CURRENT_DATE
-      // AND isCompleted = 1
-      // GROUP BY date
-      // ORDER BY date
+      $data = array();
 
       try {
 
@@ -67,24 +78,38 @@ class CartAbandonment extends Widget
             )
             ->select(
                [
-                  'DATE_FORMAT(orders.dateCreated, "%Y-%m") AS date',
+                  'DATE_FORMAT(orders.dateCreated, "%b") AS month',
                   'COALESCE(COUNT(orders.id), 0) AS count'
                ]
             )
             ->from(['orders' => 'commerce_orders'])
             ->where(
                [
-                  ['orders.isCompleted' => '1'],
-                  ['between', 'orders.dateCreated', '2018-08-01', 'CURRENT_DATE']
+                  'between', 'orders.dateCreated', date('Y-m-d', strtotime('-5 months')), date('Y-m-d')
                ]
             )
-            ->groupBy('date')
-            ->orderBy('date');
+            ->andWhere(
+               [
+                  'orders.isCompleted' => $isCompleted
+               ]
+            )
+            ->groupBy('month')
+            ->orderBy('month');
 
          $command = $query->createCommand();
          $result = $command->queryAll();
 
-         return $result;
+         foreach ($this->getMonthDateRange() as $month) {
+            $key = array_search($month, array_column($result, 'month'));
+            if ($key !== '') {
+               array_push($data, ($result[$key]['month'] == $month ? $result[$key]['count'] : 0 ));
+            }
+            else {
+               array_push($data, 0);
+            }
+         }
+
+         return $data;
 
       }
       catch (Exception $e) {
@@ -103,7 +128,8 @@ class CartAbandonment extends Widget
             )
             ->select(
                [
-                  'sum(orders.totalPrice) as total'
+                  'sum(orders.totalPrice) as totalPrice',
+                  'count(orders.id) as count'
                ]
             )
             ->from(['orders' => 'commerce_orders'])
@@ -140,10 +166,11 @@ class CartAbandonment extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
-               'abandonedCartTotal' => $this->getTotalCarts(0),
-               'completedCartTotal' => $this->getTotalCarts(0),
-               'abandonedCartPrice' => $this->getCartTotalRevenue(0),
-               'completedCartPrice' => $this->getCartTotalRevenue(1)
+               'dateRangeChart' => $this->getMonthDateRange(),
+               'abandonedCartChart' => $this->getTotalCarts(0),
+               'completedCartChart' => $this->getTotalCarts(1),
+               'abandonedCartData' => $this->getCartTotalRevenue(0),
+               'completedCartData' => $this->getCartTotalRevenue(1)
             ]
         );
     }

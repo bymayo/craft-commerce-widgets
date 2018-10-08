@@ -2,20 +2,18 @@
 
 {% block widget %}
 
-   <canvas id="commerce-widgets-cart-abandonment-chart" width="800" height="250"></canvas>
-
-   {{ dump(abandonedCartTotal) }}
+   <canvas id="commerce-widgets-cart-abandonment-chart" width="800" height="250" class="chart"></canvas>
 
    <div class="statistic-container">
-      <div class="statistic -cart-abandoned">
-         <strong>11</strong>
-         <p>Abandoned Carts</p>
-         <small>{{ abandonedCartPrice.total|currency(commerce.currency) }}</small>
-      </div>
       <div class="statistic -cart-completed">
-         <strong>10</strong>
-         <p>Completed Carts</p>
-         <small>{{ completedCartPrice.total|currency(commerce.currency) }}</small>
+         <strong>{{ completedCartData.count }}</strong>
+         <p>Completed Cart{{ completedCartData.count > 1 ? 's' }}</p>
+         <small>{{ completedCartData.totalPrice|currency(commerce.currency) }}</small>
+      </div>
+      <div class="statistic -cart-abandoned">
+         <strong>{{ abandonedCartData.count }}</strong>
+         <p>Completed Cart{{ abandonedCartData.count > 1 ? 's' }}</p>
+         <small>{{ abandonedCartData.totalPrice|currency(commerce.currency) }}</small>
       </div>
    </div>
 
@@ -36,9 +34,9 @@
               }
             };
 
-            const abandoned = [0, 10, 5, 1, 0, 4];
-            const completed = [10, 44, 33, 24, 25, 28];
-            const xAxisData = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const abandoned = {{ abandonedCartChart|json_encode|raw }};
+            const completed = {{ completedCartChart|json_encode|raw }};
+            const xAxisData = {{ dateRangeChart|json_encode|raw }};
 
             const myChart = new Chart(ctx, {
               type: 'line',
@@ -70,11 +68,15 @@
                 responsive: true,
                 scales: {
                   yAxes: [{
-                    stacked: true,
+                    stacked: false,
+                    ticks: {
+                       min: 0,
+                       stepSize: 1
+                    }
                   }]
                 },
                 animation: {
-                  duration: 750,
+                  duration: 500,
                 },
               }
             });
