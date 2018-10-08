@@ -26,7 +26,7 @@ Most of the widgets come with settings. Make sure you check the settings on each
 
 ## Widgets Included
 
-- Cart Abandonment
+1. Cart Abandonment
 - Goals (Monthly, Weekly & Yearly)
 - Top Customers
 - Total Revenue & Orders
@@ -38,4 +38,4 @@ Most of the widgets come with settings. Make sure you check the settings on each
 - Popular Subscriptions (Oct 2018)
 - Recent Subscriptions (Oct 2018)
 - Top Subscribers (Oct 2018)
-- + 10 more.
+- +15 more.
