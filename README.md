@@ -38,6 +38,6 @@ Most of the widgets come with settings. Make sure you check the settings on each
 - Popular Subscriptions (Oct 2018)
 - Recent Subscriptions (Oct 2018)
 - Top Subscribers (Oct 2018)
-- +15 more.
-- Export
+- +15 more planned widgets
+- Export options per widget
 - Commerce Lite version (Free)
