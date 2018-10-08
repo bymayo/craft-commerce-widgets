@@ -26,7 +26,9 @@ Most of the widgets come with settings. Make sure you check the settings on each
 
 ## Widgets Included
 
-1. Cart Abandonment
+- Cart Abandonment
+Keep track of how many carts have completed / been abandoned.
+
 - Goals (Monthly, Weekly & Yearly)
 - Top Customers
 - Total Revenue & Orders
