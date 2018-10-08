@@ -1,6 +1,6 @@
 {
     "name": "bymayo/commerce-widgets",
-    "description": "Description",
+    "description": "Insightful dashboard widgets for your Craft Commerce 2 store.",
     "type": "craft-plugin",
     "version": "2.0.0",
     "keywords": [
@@ -11,8 +11,8 @@
         "commerce widgets"
     ],
     "support": {
-        "docs": "https://github.com/ByMayo/commerce-widgets/blob/master/README.md",
-        "issues": "https://github.com/ByMayo/commerce-widgets/issues"
+        "docs": "https://github.com/bymayo/commerce-widgets/blob/master/README.md",
+        "issues": "https://github.com/bymayo/commerce-widgets/issues"
     },
     "license": "MIT",
     "authors": [
@@ -34,7 +34,7 @@
         "handle": "commerce-widgets",
         "hasCpSettings": true,
         "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/ByMayo/commerce-widgets/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/bymayo/commerce-widgets/master/CHANGELOG.md",
         "components": {
             "commerceWidgetsService": "bymayo\\commercewidgets\\services\\CommerceWidgetsService"
         },
