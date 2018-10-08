@@ -11,62 +11,28 @@
          </tr>
       </thead>
       <tbody>
-         <tr>
-            <td>
-               Today
-               <span class="light small">21st Sept 2018</span>
-            </td>
-            <td>
-               &pound;60.00
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
-            </td>
-            <td>
-               1
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
-            </td>
-         </tr>
-         <tr>
-            <td>
-               Week
-               <span class="light small">17th Sept 2018 - 23rd Sept 2018</span>
-            </td>
-            <td>
-               &pound;120.00
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
-            </td>
-            <td>
-               2
-               <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span>
-            </td>
-         </tr>
-         <tr>
-            <td>
-               Month
-               <span class="light small">September</span>
-            </td>
-            <td>
-               &pound;120.00
-               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
-            </td>
-            <td>
-               4
-               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
-            </td>
-         </tr>
-         <tr>
-            <td>
-               Year
-               <span class="light small">2018</span>
-            </td>
-            <td>
-               &pound;200.00
-               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
-            </td>
-            <td>
-               6
-               <span class="compare-arrow -more" title="+£4.00 compared to last month">&#9650;</span>
-            </td>
-         </tr>
+         {% for row in revenueOrders %}
+            <tr>
+               <td>
+                  {{ timeFrames[loop.index0]['label'] }}
+                  <span class="light small">
+                     {{ timeFrames[loop.index0]['date'] }}
+                  </span>
+               </td>
+               <td>
+                  {{ row.totalRevenue|currency(commerce.currency) }}
+                  {% if not loop.last %}
+                     {# <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span> #}
+                  {% endif %}
+               </td>
+               <td>
+                  {{ row.totalOrders }}
+                  {% if not loop.last %}
+                     {# <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span> #}
+                  {% endif %}
+               </td>
+            </tr>
+         {% endfor %}
       </tbody>
    </table>
 
