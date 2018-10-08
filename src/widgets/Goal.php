@@ -70,34 +70,33 @@ class Goal extends Widget
                ]
             );
 
-         if($this->targetDuration == 'weekly')
-         {
-            $query
-               ->where(
-                  [
-                     'WEEK(orders.datePaid)' => date('W'),
-                     'YEAR(orders.datePaid)' => date('Y')
-                  ]
-               );
-         }
-         elseif ($this->targetDuration == 'monthly')
-         {
-            $query
-               ->where(
-                  [
-                     'MONTH(orders.datePaid)' => date('n'),
-                     'YEAR(orders.datePaid)' => date('Y')
-                  ]
-               );
-         }
-         else
-         {
-            $query
-               ->where(
-                  [
-                     'YEAR(orders.datePaid)' => date('Y')
-                  ]
-               );
+         switch ($this->targetDuration) {
+            case "weekly":
+               $query
+                  ->where(
+                     [
+                        'WEEK(orders.datePaid)' => date('W'),
+                        'YEAR(orders.datePaid)' => date('Y')
+                     ]
+                  );
+               break;
+            case "monthly":
+               $query
+                  ->where(
+                     [
+                        'MONTH(orders.datePaid)' => date('n'),
+                        'YEAR(orders.datePaid)' => date('Y')
+                     ]
+                  );
+               break;
+            case "yearly":
+               $query
+                  ->where(
+                     [
+                        'YEAR(orders.datePaid)' => date('Y')
+                     ]
+                  );
+               break;
          }
 
          $result = $query->one();
