@@ -59,7 +59,7 @@ class Goal extends Widget
             )
             ->select(
                [
-                  'count(*) as totalOrders',
+                  'COALESCE(count(*), 0) as totalOrders',
                   'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
                ]
             )

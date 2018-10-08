@@ -101,7 +101,7 @@ class CartAbandonment extends Widget
 
          foreach ($this->getMonthDateRange() as $month) {
             $key = array_search($month, array_column($result, 'month'));
-            if ($key !== '') {
+            if ($key !== '' and $key !== false) {
                array_push($data, ($result[$key]['month'] == $month ? $result[$key]['count'] : 0 ));
             }
             else {
@@ -128,8 +128,8 @@ class CartAbandonment extends Widget
             )
             ->select(
                [
-                  'sum(orders.totalPrice) as totalPrice',
-                  'count(orders.id) as count'
+                  'COALESCE(sum(orders.totalPrice), 0) as totalPrice',
+                  'COALESCE(count(orders.id), 0) as count'
                ]
             )
             ->from(['orders' => 'commerce_orders'])
