@@ -1,43 +1,41 @@
-# Commerce Widgets plugin for Craft CMS 3.x
+**Looking for Craft 2 Support?** [Commerce Widgets for Craft 2](https://github.com/bymayo/craft-commerce-widgets/tree/craft-2)
 
-Description
+<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/icon.png" width="50">
 
-![Screenshot](resources/img/plugin-logo.png)
+# Commerce Widgets for Craft 3.x
+
+Commerce Widgets is a Craft CMS plugin that gives you helpful dashboard widgets for your Craft Commerce 2 store.
+
+<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/screenshot.jpg" width="50">
+
+## Install
+
+- Install with Composer via `composer require bymayo/commerce-widgets` from your project directory
+- Install the plugin in the Craft Control Panel under `Settings > Plugins`
+
+You can also install the plugin via the Plugin Store in the Craft Admin CP by searching for `Commerce Widgets`.
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+- Craft CMS 3.x
+- Craft Commerce 2.x
 
-## Installation
+## Configuration
 
-To install the plugin, follow these instructions.
+Most of the widgets come with settings. Make sure you check the settings on each widget to customise them for your shop.
 
-1. Open your terminal and go to your Craft project:
+## Widgets Included
 
-        cd /path/to/project
+- Cart Abandonment
+- Goals (Monthly, Weekly & Yearly)
+- Top Customers
+- Total Revenue & Orders
+- Recent Products
 
-2. Then tell Composer to load the plugin:
+## Roadmap
 
-        composer require ByMayo/commerce-widgets
-
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Commerce Widgets.
-
-## Commerce Widgets Overview
-
--Insert text here-
-
-## Configuring Commerce Widgets
-
--Insert text here-
-
-## Using Commerce Widgets
-
--Insert text here-
-
-## Commerce Widgets Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
-
-Brought to you by [ByMayo](http://bymayo.co.uk)
+- Popular Products (Oct 2018)
+- Popular Subscriptions (Oct 2018)
+- Recent Subscriptions (Oct 2018)
+- Top Subscribers (Oct 2018)
+- + 10 more.
