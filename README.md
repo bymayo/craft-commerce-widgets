@@ -28,7 +28,7 @@ You can also install the plugin via the Plugin Store in the Craft Admin CP by se
 
 Most of the widgets come with settings. Make sure you check the settings on each widget to customise them for your shop.
 
-## Widgets Included (Currently)
+## Widgets Included (So far)
 
 - **Cart Abandonment** - Keep track of how many carts have been abandoned, and how much revenue you missed. Compare this also to how many carts completed
 - **Goals** - Set (Multiple) weekly, monthly or yearly revenue / order targets, and see how well your doing.
