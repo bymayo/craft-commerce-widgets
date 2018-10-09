@@ -35,10 +35,10 @@ Most of the widgets come with settings. Make sure you check the settings on each
 
 ## Roadmap
 
-- Popular Products (Oct 2018)
-- Popular Subscriptions (Oct 2018)
-- Recent Subscriptions (Oct 2018)
-- Top Subscribers (Oct 2018)
-- +15 more planned widgets
+- +15 more widgets (Aiming to add at least 1 or 2 a month)
+- Google Analytics eCommerce Widgets
+- Work with all currencies and locales
 - Export options per widget
 - Commerce Lite version (Free)
+- 'Default' widget dashboard for all users
+
