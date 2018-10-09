@@ -67,30 +67,12 @@ class CommerceWidgets extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
 
-                // $finder = new Finder();
-
-                // $namespace = 'bymayo\commercewidgets\Widgets';
-
-                // $files = $finder
-                //     ->name('*Widget.php')
-                //     ->files()
-                //     ->ignoreDotFiles(true)
-                //     ->notName('Abstract*.php')
-                //     ->in(__DIR__ . '/Widgets/');
-
-                // foreach ($files as $file) {
-                //     $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
-                //     $className = $namespace . '\\' . $className;
-                //     $event->types[] = $className;
-                // }
-
-                // $event->types[] = $namespace . '\\' . 'RecentProducts';
-
                 $event->types[] = Widgets\RecentProducts::class;
                 $event->types[] = Widgets\CartAbandonment::class;
                 $event->types[] = Widgets\TotalRevenueOrders::class;
                 $event->types[] = Widgets\TopCustomers::class;
                 $event->types[] = Widgets\Goal::class;
+                $event->types[] = Widgets\SubscriptionPlans::class;
 
             }
         );
