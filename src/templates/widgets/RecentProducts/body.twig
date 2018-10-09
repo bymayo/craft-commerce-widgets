@@ -11,7 +11,7 @@
          </tr>
       </thead>
       <tbody>
-         {% for product in craft.products().limit(limit).all() %}
+         {% for product in craft.products().limit(limit).status(null).all() %}
             <tr>
                <td>
                   <div class="element hasstatus">
