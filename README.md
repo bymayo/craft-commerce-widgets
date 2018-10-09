@@ -31,6 +31,7 @@ Most of the widgets come with settings. Make sure you check the settings on each
 - **Top Customers** - See who's your top customers, based on # revenue or # orders.
 - **Total Revenue & Orders** - Overview of day, week, month, year and all time revenue and order totals. 
 - **Recent Products** - See what products were recently added to your store.
+- **Subscription Plans** - See all your subscription plans and order these by date, # active subscriptions amongst others.
 
 ## Roadmap
 
