@@ -1,5 +1,24 @@
 # Commerce Widgets Changelog
 
+## 2.0.3 - 2018-10-09
+### Added
+- Subscriptions widget
+
+### Fixed
+- Show all products regardless of status
+
+### Changed
+- Removed redundant code
+- Removed settings from customers widget
+
+## 2.0.2 - 2018-10-08
+### Changed
+- Tidying up and updating the versions
+
+## 2.0.1 - 2018-10-08
+### Fixed
+- Minor bugs for stores that are empty (Initial installs)
+
 ## 2.0.0 - 2018-10-08
 ### Added
 - Initial release
