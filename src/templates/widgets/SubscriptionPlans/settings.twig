@@ -1,0 +1,30 @@
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{{
+   forms.textField(
+      {
+         label: 'Limit',
+         id: 'limit',
+         name: 'limit',
+         value: widget['limit']
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
+         label: 'Order By',
+         name: 'orderBy',
+         value: widget['orderBy'],
+         options: [
+            { label: 'Date Created', value: 'dateCreated desc' },
+            { label: 'Active Subscriptions', value: 'activeSubscriptions desc' },
+            { label: 'Plan Name', value: 'name asc' },
+            { label: 'Status', value: 'enabled desc' }
+         ]
+      }
+   )
+}}

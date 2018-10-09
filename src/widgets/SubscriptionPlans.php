@@ -18,22 +18,21 @@ use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 
-class Goal extends Widget
+class SubscriptionPlans extends Widget
 {
 
     // Public Properties
     // =========================================================================
 
-    public $type;
-    public $targetValue;
-    public $targetDuration;
+    public $limit;
+    public $orderBy;
 
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-      return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Goal');
+        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
     }
 
     public static function iconPath()
@@ -49,7 +48,7 @@ class Goal extends Widget
     // Custom Public Methods
     // =========================================================================
 
-    public function getTotals()
+    public function getSubscriptionPlans()
     {
 
       try {
@@ -59,54 +58,36 @@ class Goal extends Widget
             )
             ->select(
                [
-                  'COALESCE(count(*), 0) as totalOrders',
-                  'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
+                  'plans.*',
+                  'COUNT(subscriptions.planId) as activeSubscriptions'
                ]
             )
-            ->from(['orders' => 'commerce_orders'])
+            ->from(
+               [
+                  'plans' => 'commerce_plans'
+               ]
+            )
+            ->join(
+               'LEFT JOIN', 'commerce_subscriptions subscriptions', 'subscriptions.planId = plans.id'
+            )
             ->where(
                [
-                  'orders.isCompleted' => 1,
+                  'plans.isArchived' => 0
                ]
-            );
+            )
+            ->groupBy('plans.id')
+            ->orderBy($this->orderBy)
+            ->limit($this->limit);
 
-         switch ($this->targetDuration) {
-            case "weekly":
-               $query
-                  ->where(
-                     [
-                        'WEEK(orders.datePaid)' => date('W'),
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "monthly":
-               $query
-                  ->where(
-                     [
-                        'MONTH(orders.datePaid)' => date('n'),
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "yearly":
-               $query
-                  ->where(
-                     [
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-         }
+         $command = $query->createCommand();
+         $result = $command->queryAll();
 
-         $result = $query->one();
+         return $result;
 
       }
       catch (Exception $e) {
-         $result = null;
-      }
-
-      return ($this->type === 'orders') ? $result['totalOrders'] : $result['totalRevenue'];
+         $result = [];
+     }
 
    }
 
@@ -115,7 +96,7 @@ class Goal extends Widget
 
     public function getTitle(): string
     {
-      return StringHelper::titleize($this->type) . ' Goal';
+      return 'Subscription Plans';
     }
 
     public function rules()
@@ -124,13 +105,11 @@ class Goal extends Widget
 
         $rules = array_merge(
             $rules,
-            $rules,
             [
-                [['type', 'targetDuration'], 'string'],
-                ['targetValue', 'integer'],
-                ['type', 'default', 'value' => 'orders'],
-                ['targetValue', 'default', 'value' => 15],
-                ['targetDuration', 'default', 'value' => 'monthly']
+                ['limit', 'integer'],
+                ['limit', 'default', 'value' => 5],
+                ['orderBy', 'string'],
+                ['orderBy', 'default', 'value' => 'dateCreated desc']
             ]
         );
 
@@ -154,10 +133,7 @@ class Goal extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
-                'type' => $this->type,
-                'targetValue' => $this->targetValue,
-                'targetDuration' => $this->targetDuration,
-                'total' => $this->getTotals()
+                'plans' => $this->getSubscriptionPlans()
             ]
         );
     }

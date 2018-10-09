@@ -1,0 +1,35 @@
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
+
+   <table class="data fullwidth collapsible">
+      <thead>
+         <tr>
+            <th>Plan</th>
+            <th>Active Subscriptions</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for plan in plans %}
+            <tr>
+               <td>
+                  <div class="element hasstatus">
+                     <span class="status {{ plan.enabled ? 'live' : 'disabled' }}"></span>
+                     <div class="label">
+                        <span class="title">
+                           <a href="">
+                              {{ plan.name }}
+                           </a>
+                        </span>
+                     </div>
+                  </div>
+               </td>
+               <td>{{ plan.activeSubscriptions }}</td>
+            </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+
+   <a href="/{{ cpTrigger }}/commerce/settings/subscriptions/plans" class="btn">View All Subscription Plans</a>
+
+{% endblock %}
