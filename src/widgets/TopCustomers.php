@@ -81,12 +81,12 @@ class TopCustomers extends Widget
          $command = $query->createCommand();
          $result = $command->queryAll();
 
+         return $result;
+
       }
       catch (Exception $e) {
          $result = [];
      }
-
-      return $result;
 
    }
 
@@ -119,9 +119,7 @@ class TopCustomers extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
             [
-                'widget' => $this,
-                'includeGuests' => $this->includeGuests,
-                'orderBy' => $this->orderBy
+                'widget' => $this
             ]
         );
     }
