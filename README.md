@@ -24,7 +24,7 @@ You can also install the plugin via the Plugin Store in the Craft Admin CP by se
 
 Most of the widgets come with settings. Make sure you check the settings on each widget to customise them for your shop.
 
-## Widgets Included
+## Widgets Included (Currently)
 
 - **Cart Abandonment** - Keep track of how many carts have been abandoned, and how much revenue you missed. Compare this also to how many carts completed
 - **Goals** - Set (Multiple) weekly, monthly or yearly revenue / order targets, and see how well your doing.
@@ -32,6 +32,10 @@ Most of the widgets come with settings. Make sure you check the settings on each
 - **Total Revenue & Orders** - Overview of day, week, month, year and all time revenue and order totals. 
 - **Recent Products** - See what products were recently added to your store.
 - **Subscription Plans** - See all your subscription plans and order these by date, # active subscriptions amongst others.
+
+## Support
+
+If you have any issues (Surely not!) then I'll aim to reply to these as soon as possible. If it's a site-breaking-oh-no-what-has-happened moment, then hit me up on the Craft CMS Slack - @bymayo 
 
 ## Roadmap
 
