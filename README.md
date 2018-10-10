@@ -37,12 +37,12 @@ Most of the widgets come with settings. Make sure you check the settings on each
 		<td><strong>Settings</strong></td>
 	</tr>
 	<tr>
-		<td>**Cart Abanadonment**</td>
+		<td>Cart Abanadonment</td>
       <td>Compare and keep track of how many carts have been abandoned and completed, and how much revenue you missed out on.</td>
       <td>-</td>
 	</tr>
    <tr>
-		<td>**Goal**</td>
+		<td>Goal</td>
       <td>Create revenue and orders targets for your store and see how your progressing each week, month or year.</td>
       <td>
          Target Value<br>
@@ -51,14 +51,14 @@ Most of the widgets come with settings. Make sure you check the settings on each
       </td>
 	</tr>
    <tr>
-		<td>**Recent Products**</td>
+		<td>Recent Products</td>
       <td>See what products were recently added to your store.</td>
       <td>
          Limit
       </td>
 	</tr>
    <tr>
-		<td>**Subscription Plans**</td>
+		<td>Subscription Plans</td>
       <td>An overview of your subscription plans</td>
       <td>
          Limit<br>
@@ -66,7 +66,7 @@ Most of the widgets come with settings. Make sure you check the settings on each
       </td>
 	</tr>
    <tr>
-		<td>**Top Customers**</td>
+		<td>Top Customers</td>
       <td>See who's your top customers, based on # revenue or # orders.</td>
       <td>
          Order By<br>
@@ -75,7 +75,7 @@ Most of the widgets come with settings. Make sure you check the settings on each
       </td>
 	</tr>
    <tr>
-		<td>**Total Revenue & Orders**</td>
+		<td>Total Revenue & Orders</td>
       <td>Better revenue and order overview, by current day, week, month, year and all time.</td>
       <td>-</td>
 	</tr>
