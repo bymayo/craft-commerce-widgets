@@ -1,5 +1,9 @@
 # Commerce Widgets Changelog
 
+## 2.0.4 - 2018-10-10
+### Changed
+- License from MIT to Craft
+
 ## 2.0.3 - 2018-10-09
 ### Added
 - Subscriptions widget
