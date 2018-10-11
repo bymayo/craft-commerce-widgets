@@ -1,5 +1,9 @@
 # Commerce Widgets Changelog
 
+## 2.0.5 - 2018-10-11
+### Fixed
+- Fix for classes not loading on case sensitive environments
+
 ## 2.0.4 - 2018-10-10
 ### Changed
 - License from MIT to Craft

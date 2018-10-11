@@ -67,12 +67,12 @@ class CommerceWidgets extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
 
-                $event->types[] = Widgets\RecentProducts::class;
-                $event->types[] = Widgets\CartAbandonment::class;
-                $event->types[] = Widgets\TotalRevenueOrders::class;
-                $event->types[] = Widgets\TopCustomers::class;
-                $event->types[] = Widgets\Goal::class;
-                $event->types[] = Widgets\SubscriptionPlans::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\RecentProducts::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\CartAbandonment::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\TotalRevenueOrders::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\TopCustomers::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\Goal::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\SubscriptionPlans::class;
 
             }
         );
