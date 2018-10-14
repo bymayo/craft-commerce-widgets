@@ -64,7 +64,7 @@ class SubscriptionPlans extends Widget
             )
             ->from(
                [
-                  'plans' => 'commerce_plans'
+                  'plans' => '{{%commerce_plans}}'
                ]
             )
             ->join(

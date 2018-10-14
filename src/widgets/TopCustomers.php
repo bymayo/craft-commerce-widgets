@@ -65,7 +65,7 @@ class TopCustomers extends Widget
                   'orders.customerId'
                ]
             )
-            ->from(['orders' => 'commerce_orders'])
+            ->from(['orders' => '{{%commerce_orders}}'])
             ->where(['orders.isCompleted' => 1])
             ->orderBy($this->orderBy . ' desc')
             ->groupBy(['orders.email'])

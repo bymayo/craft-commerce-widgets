@@ -82,7 +82,7 @@ class CartAbandonment extends Widget
                   'COALESCE(COUNT(orders.id), 0) AS count'
                ]
             )
-            ->from(['orders' => 'commerce_orders'])
+            ->from(['orders' => '{{%commerce_orders}}'])
             ->where(
                [
                   'between', 'orders.dateCreated', date('Y-m-d', strtotime('-5 months')), date('Y-m-d', strtotime('+1 day'))
@@ -132,7 +132,7 @@ class CartAbandonment extends Widget
                   'COALESCE(count(orders.id), 0) as count'
                ]
             )
-            ->from(['orders' => 'commerce_orders'])
+            ->from(['orders' => '{{%commerce_orders}}'])
             ->where(
                [
                   'orders.isCompleted' => $isCompleted,

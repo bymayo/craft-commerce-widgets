@@ -63,7 +63,7 @@ class Goal extends Widget
                   'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
                ]
             )
-            ->from(['orders' => 'commerce_orders'])
+            ->from(['orders' => '{{%commerce_orders}}'])
             ->where(
                [
                   'orders.isCompleted' => 1,

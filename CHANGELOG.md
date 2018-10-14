@@ -1,5 +1,9 @@
 # Commerce Widgets Changelog
 
+## 2.0.6 - 2018-10-14
+### Fixed
+- Fix prefixed tables [#9](https://github.com/bymayo/craft-commerce-widgets/issues/9)
+
 ## 2.0.5 - 2018-10-11
 ### Fixed
 - Fix for classes not loading on case sensitive environments

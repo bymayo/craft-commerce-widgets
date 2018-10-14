@@ -91,7 +91,7 @@ class TotalRevenueOrders extends Widget
                   'COALESCE(count(orders.id), 0) as totalOrders'
                ]
             )
-            ->from(['orders' => 'commerce_orders'])
+            ->from(['orders' => '{{%commerce_orders}}'])
             ->where(
                [
                   'orders.isCompleted' => 1
