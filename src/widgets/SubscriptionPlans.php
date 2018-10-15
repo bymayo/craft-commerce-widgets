@@ -68,7 +68,7 @@ class SubscriptionPlans extends Widget
                ]
             )
             ->join(
-               'LEFT JOIN', 'commerce_subscriptions subscriptions', 'subscriptions.planId = plans.id'
+               'LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', 'subscriptions.planId = plans.id'
             )
             ->where(
                [

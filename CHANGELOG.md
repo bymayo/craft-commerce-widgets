@@ -1,5 +1,9 @@
 # Commerce Widgets Changelog
 
+## 2.0.7 - 2018-10-15
+### Fixed
+- Fix prefixed tables on join queries [#9](https://github.com/bymayo/craft-commerce-widgets/issues/9)
+
 ## 2.0.6 - 2018-10-14
 ### Fixed
 - Fix prefixed tables [#9](https://github.com/bymayo/craft-commerce-widgets/issues/9)

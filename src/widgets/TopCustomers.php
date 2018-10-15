@@ -74,7 +74,7 @@ class TopCustomers extends Widget
          if($this->includeGuests == 'no')
          {
             $query
-               ->join('INNER JOIN', 'commerce_customers customers', 'orders.customerId = customers.id')
+               ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
                ->andWhere(['not', ['customers.userId' => null]]);
          }
 
