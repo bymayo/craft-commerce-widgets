@@ -1,5 +1,10 @@
 # Commerce Widgets Changelog
 
+## 2.0.8 - 2018-10-15
+### Changed
+- Charts are now flexible to larger browsers
+- Altered the stepSize on the Cart Abandonment widget for stores that have large amounts of carts.
+
 ## 2.0.7 - 2018-10-15
 ### Fixed
 - Fix prefixed tables on join queries [#9](https://github.com/bymayo/craft-commerce-widgets/issues/9)

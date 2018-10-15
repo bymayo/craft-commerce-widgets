@@ -44,11 +44,14 @@
 
       // Charts
 
-      .chart {
+      .chart-container {
+         position: relative;
          width: 100%;
-         max-width: 800px;
-         height: auto;
+         height: 250px;
          margin-bottom: 30px;
+      }
+
+      .chart {
       }
 
       // Statistic

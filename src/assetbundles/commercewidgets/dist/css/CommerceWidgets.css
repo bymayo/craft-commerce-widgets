@@ -9,10 +9,10 @@
   display: block;
   font-size: 12px; }
 
-.commerce-widgets .chart {
+.commerce-widgets .chart-container {
+  position: relative;
   width: 100%;
-  max-width: 800px;
-  height: auto;
+  height: 250px;
   margin-bottom: 30px; }
 
 .commerce-widgets .statistic {

@@ -2,7 +2,11 @@
 
 {% block widget %}
 
-   <canvas id="commerce-widgets-cart-abandonment-chart" width="800" height="250" class="chart"></canvas>
+   {% set dataCountTotal = abandonedCartData.count + completedCartData.count %}
+   
+   <div class="chart-container">
+      <canvas id="commerce-widgets-cart-abandonment-chart" class="chart"></canvas>
+   </div>
 
    <div class="statistic-container">
       <div class="statistic -cart-completed">
@@ -66,12 +70,13 @@
                   display: false
                },
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                   yAxes: [{
                     stacked: false,
                     ticks: {
                        min: 0,
-                       stepSize: 1
+                       stepSize: {{ dataCountTotal < 5 ? 1 : round(dataCountTotal) / 5 }}
                     }
                   }]
                 },
