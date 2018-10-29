@@ -50,8 +50,8 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
         return craft()->templates->render(
         	'commercewidgets/cartabandonment/body',
         	array(
-	        	'cartCompleted' => $this->getOrdersByCompletedStatus('1'),
-	        	'cartAbandoned' => $this->getOrdersByCompletedStatus('not 1'),
+	        	'cartCompleted' => $this->getOrdersByCompletedStatus('1','completed'),
+	        	'cartAbandoned' => $this->getOrdersByCompletedStatus('not 1','created'),
 	        	'settings' => $this->getSettings()
         	)
         );
@@ -79,10 +79,11 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
     public function getDateRange($start, $from, $to) 
     {
 	    
-		$dateStart = strtotime($start);
+        $dateStart = strtotime($start);
 		
 		$dateFrom = strtotime($from, $dateStart);
-		$dateTo = strtotime($to, $dateStart);
+        $dateTo = strtotime($to, $dateStart);
+      
 		
 		$dateRange = array('and', '> ' . date("Y-m-d", $dateFrom) . ' 00:00:00', '< ' . date("Y-m-d", $dateTo) . ' 23:59:59');
 	    
@@ -93,8 +94,10 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
     /**
      * @return array
      */	
-	public function getOrdersByCompletedStatus($status) 
-	{
+	public function getOrdersByCompletedStatus($status, $method = 'created') 
+	{   
+
+       
 
 		$dateRange = $this->getSettings()->cartAbandonmentDateRange;
 		
@@ -111,17 +114,24 @@ class CommerceWidgets_CartAbandonmentWidget extends BaseWidget
 		    case 'year':
 		        $dateCreated = $this->getDateRange('today', 'first day of January', 'last day of December');
 		        break;
-		}
-	
+        }
+        
+
 		$criteria = craft()->elements->getCriteria('Commerce_Order');
-		$criteria->isCompleted = $status;
-		$criteria->dateCreated = $dateCreated;
+        $criteria->isCompleted = $status;
+        if($method == 'completed'){
+            $criteria->dateOrdered = $dateCreated;
+        } else {
+            $criteria->dateCreated = $dateCreated;
+        }
 		$criteria->limit = null;
-		$criteria->find();
-		
+        $criteria->find();
+
+        
 		return count($criteria);
 	
-	}
+    }
+    
      
     /**
      * @return array
