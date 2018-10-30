@@ -1,0 +1,28 @@
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{{
+   forms.selectField(
+      {
+         label: 'Order By',
+         name: 'orderBy',
+         value: widget['orderBy'],
+         options: [
+            { label: 'Ordered Total', value: 'totalOrdered' },
+            { label: 'Revenue Total', value: 'totalRevenue' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.textField(
+      {
+         label: 'Limit',
+         id: 'limit',
+         name: 'limit',
+         value: widget['limit']
+      }
+   )
+}}

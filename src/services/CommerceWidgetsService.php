@@ -24,17 +24,4 @@ class CommerceWidgetsService extends Component
 {
     // Public Methods
     // =========================================================================
-
-    /*
-     * @return mixed
-     */
-    public function exampleService()
-    {
-        $result = 'something';
-        // Check our Plugin's settings for `someAttribute`
-        if (CommerceWidgets::$plugin->getSettings()->someAttribute) {
-        }
-
-        return $result;
-    }
 }

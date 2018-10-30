@@ -97,7 +97,7 @@ class CartAbandonment extends Widget
             ->orderBy('month');
 
          $command = $query->createCommand();
-         $result = $command->queryAll();
+         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
 
          foreach ($this->getMonthDateRange() as $month) {
             $key = array_search($month, array_column($result, 'month'));
@@ -140,7 +140,7 @@ class CartAbandonment extends Widget
                ]
             );
 
-         $result = $query->one();
+         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
 
          return $result;
 
@@ -166,6 +166,7 @@ class CartAbandonment extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
+               'widgetId' => $this->id,
                'dateRangeChart' => $this->getMonthDateRange(),
                'abandonedCartChart' => $this->getTotalCarts(0),
                'completedCartChart' => $this->getTotalCarts(1),

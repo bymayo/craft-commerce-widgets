@@ -3,19 +3,19 @@
 {% block widget %}
 
    {% set dataCountTotal = abandonedCartData.count + completedCartData.count %}
-   
+
    <div class="chart-container">
       <canvas id="commerce-widgets-cart-abandonment-chart" class="chart"></canvas>
    </div>
 
    <div class="statistic-container">
       <div class="statistic -cart-completed">
-         <strong>{{ completedCartData.count }}</strong>
+         <strong>{{ completedCartData.count|number_format() }}</strong>
          <p>Completed Cart{{ completedCartData.count > 1 ? 's' }}</p>
          <small>{{ completedCartData.totalPrice|currency(commerce.currency) }}</small>
       </div>
       <div class="statistic -cart-abandoned">
-         <strong>{{ abandonedCartData.count }}</strong>
+         <strong>{{ abandonedCartData.count|number_format() }}</strong>
          <p>Abandoned Cart{{ abandonedCartData.count > 1 ? 's' }}</p>
          <small>{{ abandonedCartData.totalPrice|currency(commerce.currency) }}</small>
       </div>

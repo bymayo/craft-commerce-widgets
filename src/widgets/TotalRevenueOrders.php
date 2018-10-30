@@ -131,7 +131,7 @@ class TotalRevenueOrders extends Widget
                break;
          }
 
-         $result = $query->one();
+         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
 
          return $result;
 
@@ -170,6 +170,7 @@ class TotalRevenueOrders extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
+                'widgetId' => $this->id,
                 'revenueOrders' => $this->getRevenueOrders(),
                 'timeFrames' => $this->getTimeFrames()
             ]

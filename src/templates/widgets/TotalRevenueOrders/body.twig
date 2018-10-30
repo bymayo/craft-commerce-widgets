@@ -26,7 +26,7 @@
                   {% endif %}
                </td>
                <td>
-                  {{ row.totalOrders }}
+                  {{ row.totalOrders|number_format() }}
                   {% if not loop.last %}
                      {# <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span> #}
                   {% endif %}
@@ -36,6 +36,6 @@
       </tbody>
    </table>
 
-   <a href="#" class="btn">View All Orders</a>
+   <a href="/{{ cpTrigger }}/commerce/orders" class="btn">View All Orders</a>
 
 {% endblock %}

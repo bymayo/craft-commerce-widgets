@@ -7,8 +7,7 @@
    <table class="data fullwidth collapsible">
       <thead>
          <tr>
-            <th></th>
-            <th>Email Address</th>
+            <th colspan="2">Email Address</th>
             <th>Total Revenue</th>
             <th>Total Orders</th>
          </tr>
@@ -17,7 +16,9 @@
          {% for customer in customers %}
             {% set userId = craft.commercewidgets.userIdByCustomerId(customer.customerId).userId %}
             <tr>
-               <td><span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">{{ loop.index}}</span></td>
+               <td class="rank-column">
+                  <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">{{ loop.index}}</span>
+               </td>
                <td>
                   {% if userId|length %}
                      <a href="/{{ cpTrigger }}/users/{{ userId }}">
@@ -28,7 +29,7 @@
                   {% endif %}
                </td>
                <td>{{ customer.totalRevenue|currency(commerce.currency) }}</td>
-               <td>{{ customer.totalOrders }}</td>
+               <td>{{ customer.totalOrders|number_format() }}</td>
             </tr>
          {% else %}
             <tr>

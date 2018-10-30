@@ -24,7 +24,7 @@
                      </div>
                   </div>
                </td>
-               <td>{{ plan.activeSubscriptions }}</td>
+               <td>{{ plan.activeSubscriptions|number_format() }}</td>
             </tr>
          {% endfor %}
       </tbody>

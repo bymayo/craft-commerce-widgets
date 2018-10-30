@@ -51,9 +51,17 @@ Most of the widgets come with settings. Make sure you check the settings on each
       </td>
 	</tr>
    <tr>
-		<td>Recent Products</td>
+		<td>RecentProducts</td>
       <td>See what products were recently added to your store.</td>
       <td>
+         Limit
+      </td>
+	</tr>
+	<tr>
+		<td>Top Products</td>
+      <td>See what products have been ordered the most based on # revenue or # orders.</td>
+      <td>
+			Order By<br>
          Limit
       </td>
 	</tr>

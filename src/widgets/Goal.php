@@ -99,7 +99,7 @@ class Goal extends Widget
                break;
          }
 
-         $result = $query->one();
+         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
 
       }
       catch (Exception $e) {
@@ -154,6 +154,7 @@ class Goal extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
+                'widgetId' => $this->id,
                 'type' => $this->type,
                 'targetValue' => $this->targetValue,
                 'targetDuration' => $this->targetDuration,

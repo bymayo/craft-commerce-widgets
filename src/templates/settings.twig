@@ -17,16 +17,10 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-<ul>
-   <li>Selectable widgets</li>
-   <li>GA Account Connect</li>
-   <li>One dashboard</li>
-</ul>
-
 {{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
+    label: 'Cache Duration',
+    instructions: 'Set how often widgets should update values in seconds.',
+    id: 'cacheDuration',
+    name: 'cacheDuration',
+    value: settings['cacheDuration']})
 }}

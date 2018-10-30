@@ -25,8 +25,9 @@ class TopCustomers extends Widget
     // =========================================================================
 
     public $includeGuests;
-    public $groupBy;
+    public $groupBy; // Remove
     public $orderBy;
+    public $limit; // Add
 
     // Static Methods
     // =========================================================================
@@ -79,7 +80,7 @@ class TopCustomers extends Widget
          }
 
          $command = $query->createCommand();
-         $result = $command->queryAll();
+         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
 
          return $result;
 
@@ -131,6 +132,7 @@ class TopCustomers extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
+                'widgetId' => $this->id,
                 'customers' => $this->getCustomers()
             ]
         );

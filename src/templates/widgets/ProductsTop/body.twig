@@ -1,0 +1,53 @@
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
+
+   <table class="data fullwidth collapsible">
+      <thead>
+         <tr>
+            <th colspan="2">Product</th>
+            <th>SKU</th>
+            <th>Total Revenue</th>
+            <th>Total Ordered</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for product in products %}
+            {% set element = craft.products.id(product.id).status(null).one() %}
+            <tr{% if loop.first %} class="rank-background -first"{% endif %}>
+               <td class="rank-column">
+                  {% if loop.first %}
+                     <span class="rank -first">
+                        <i class="fas fa-crown"></i>
+                     </span>
+                  {% endif %}
+               </td>
+               <td>
+                  <div class="element hasstatus">
+                     <span class="status {{ element.status }}"></span>
+                     <div class="label">
+                        <span class="title">
+                           <a href="{{ element.cpEditUrl }}">
+                              {{ element.title }}
+                           </a>
+                        </span>
+                     </div>
+                  </div>
+               </td>
+               <td><span class="sku">{{ product.sku }}</span></td>
+               <td>{{ product.totalRevenue|currency(commerce.currency) }}</td>
+               <td>{{ product.totalOrdered|number_format() }}</td>
+            </tr>
+         {% else %}
+            <tr>
+               <td colspan="4">
+                  No products found.
+               </td>
+            </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+
+   <a href="/{{ cpTrigger }}/commerce/products" class="btn">View All Products</a>
+
+{% endblock %}

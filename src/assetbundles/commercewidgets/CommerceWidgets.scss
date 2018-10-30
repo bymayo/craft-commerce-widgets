@@ -14,6 +14,7 @@
 
    $border-grey: #e7e7e8;
    $light-grey: #eee;
+   $lighter-grey: lighten(#000, 99%);
 
    $body: #8f98a3;
 
@@ -33,6 +34,12 @@
 
       table {
          margin-bottom: 10px;
+      }
+
+      td,
+      th {
+         padding-left: 6px;
+         padding-right: 6px;
       }
 
       // Admin Classes Overwritten
@@ -112,7 +119,7 @@
          border: 1px solid $border-grey;
          padding: 4px 5px;
          border-radius: 3px;
-         background-color: rgba(0,0,0,0.02);
+         background-color: $lighter-grey;
       }
 
       // Rank
@@ -149,6 +156,17 @@
             background: linear-gradient(to bottom, $bronze 0%, darken($bronze, 5%) 100%);
             border: 1px solid darken($bronze, 7%);
             box-shadow: inset 0 1px 0 rgba($white, 0.2);
+         }
+      }
+
+      .rank-column {
+         max-width: 28px;
+         padding-right: 0;
+      }
+
+      .rank-background {
+         &.-first {
+            background-color: rgba($gold, 0.08);
          }
       }
 

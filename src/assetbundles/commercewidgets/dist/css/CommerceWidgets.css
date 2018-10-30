@@ -5,6 +5,11 @@
 .commerce-widgets table {
   margin-bottom: 10px; }
 
+.commerce-widgets td,
+.commerce-widgets th {
+  padding-left: 6px;
+  padding-right: 6px; }
+
 .commerce-widgets .small {
   display: block;
   font-size: 12px; }
@@ -61,7 +66,7 @@
   border: 1px solid #e7e7e8;
   padding: 4px 5px;
   border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.02); }
+  background-color: #fcfcfc; }
 
 .commerce-widgets .rank {
   border-radius: 100%;
@@ -102,6 +107,13 @@
     border: 1px solid #b06d2b;
     -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+
+.commerce-widgets .rank-column {
+  max-width: 28px;
+  padding-right: 0; }
+
+.commerce-widgets .rank-background.-first {
+  background-color: rgba(255, 196, 12, 0.08); }
 
 .commerce-widgets .goal-values {
   margin: 35px 0 10px; }

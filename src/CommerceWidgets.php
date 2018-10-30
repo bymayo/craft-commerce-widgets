@@ -49,7 +49,7 @@ class CommerceWidgets extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '2.0.0';
+    public $schemaVersion = '2.0.1';
 
     // Public Methods
     // =========================================================================
@@ -67,7 +67,8 @@ class CommerceWidgets extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
 
-               $event->types[] = \bymayo\commercewidgets\widgets\RecentProducts::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\ProductsRecent::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\ProductsTop::class;
                $event->types[] = \bymayo\commercewidgets\widgets\CartAbandonment::class;
                $event->types[] = \bymayo\commercewidgets\widgets\TotalRevenueOrders::class;
                $event->types[] = \bymayo\commercewidgets\widgets\TopCustomers::class;

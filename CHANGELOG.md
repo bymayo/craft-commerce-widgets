@@ -1,5 +1,18 @@
 # Commerce Widgets Changelog
 
+## 2.0.9 - 2018-10-30
+### Added
+- *New Widget* Top Products Widget - See your top products ordered by Revenue or # Ordered
+- Cache to queries to speed up the CMS
+- `cacheDuration` setting in plugin settings.
+- Added FontAwesome to some widget templates
+
+### Changed
+- Changed the class of the `RecentProducts` to `ProductsRecent` to keep widgets organised going forward.
+
+### Fixed
+- Number formatting across all widgets now formats when the value is more than 2 numbers
+
 ## 2.0.8 - 2018-10-15
 ### Changed
 - Charts are now flexible to larger browsers

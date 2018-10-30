@@ -18,7 +18,7 @@ use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 
-class SubscriptionPlans extends Widget
+class ProductsTop extends Widget
 {
 
     // Public Properties
@@ -32,7 +32,7 @@ class SubscriptionPlans extends Widget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
+        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Top Products');
     }
 
     public static function iconPath()
@@ -48,46 +48,34 @@ class SubscriptionPlans extends Widget
     // Custom Public Methods
     // =========================================================================
 
-    public function getSubscriptionPlans()
+    public function getProducts()
     {
 
-      try {
+      $query = (
+         new Query()
+         )
+         ->select(
+            [
+               'variants.productId as id',
+               'variants.sku as sku',
+               'SUM(items.total) as totalRevenue',
+               'count(*) as totalOrdered',
+            ]
+         )
+         ->from(['items' => '{{%commerce_lineitems}}'])
+         ->join(
+            'LEFT JOIN', '{{%commerce_purchasables}} purchasables', 'purchasables.id = items.purchasableId'
+         )
+         ->join(
+            'LEFT JOIN', '{{%commerce_variants}} variants', 'variants.id = purchasables.id'
+         )
+         ->groupBy('items.purchasableId')
+         ->orderBy($this->orderBy . ' desc')
+         ->limit($this->limit);
 
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'plans.*',
-                  'COUNT(subscriptions.planId) as activeSubscriptions'
-               ]
-            )
-            ->from(
-               [
-                  'plans' => '{{%commerce_plans}}'
-               ]
-            )
-            ->join(
-               'LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', 'subscriptions.planId = plans.id'
-            )
-            ->where(
-               [
-                  'plans.isArchived' => 0
-               ]
-            )
-            ->groupBy('plans.id')
-            ->orderBy($this->orderBy)
-            ->limit($this->limit);
+      $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->all();
 
-         $command = $query->createCommand();
-         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
-
-         return $result;
-
-      }
-      catch (Exception $e) {
-         $result = [];
-     }
+      return $result;
 
    }
 
@@ -96,7 +84,7 @@ class SubscriptionPlans extends Widget
 
     public function getTitle(): string
     {
-      return 'Subscription Plans';
+      return 'Top Products';
     }
 
     public function rules()
@@ -106,10 +94,10 @@ class SubscriptionPlans extends Widget
         $rules = array_merge(
             $rules,
             [
+                ['orderBy', 'string'],
                 ['limit', 'integer'],
                 ['limit', 'default', 'value' => 5],
-                ['orderBy', 'string'],
-                ['orderBy', 'default', 'value' => 'dateCreated desc']
+                ['orderBy', 'default', 'value' => 'totalRevenue']
             ]
         );
 
@@ -133,8 +121,8 @@ class SubscriptionPlans extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
-                'widgetId' => $this->id,
-                'plans' => $this->getSubscriptionPlans()
+               'widgetId' => $this->id,
+               'products' => $this->getProducts()
             ]
         );
     }

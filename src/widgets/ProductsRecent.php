@@ -17,7 +17,7 @@ use Craft;
 use craft\base\Widget;
 use craft\helpers\StringHelper;
 
-class RecentProducts extends Widget
+class ProductsRecent extends Widget
 {
 
     // Public Properties
@@ -83,6 +83,7 @@ class RecentProducts extends Widget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
+                'widgetId' => $this->id,
                 'limit' => $this->limit
             ]
         );
