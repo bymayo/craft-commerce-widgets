@@ -30,6 +30,12 @@
                </td>
                <td>{{ product.defaultPrice|currency(commerce.currency) }}</td>
             </tr>
+         {% else %}
+            <tr>
+               <td colspan="3">
+                  No products found.
+               </td>
+            </tr>
          {% endfor %}
       </tbody>
    </table>

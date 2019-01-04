@@ -93,8 +93,8 @@ class CartAbandonment extends Widget
                   'orders.isCompleted' => $isCompleted
                ]
             )
-            ->groupBy('month')
-            ->orderBy('month');
+            ->groupBy(['orders.dateCreated'])
+            ->orderBy('orders.dateCreated');
 
          $command = $query->createCommand();
          $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();

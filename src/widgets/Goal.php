@@ -75,7 +75,7 @@ class Goal extends Widget
                $query
                   ->where(
                      [
-                        'WEEK(orders.datePaid)' => date('W'),
+                        'WEEK(orders.datePaid, 1)' => date('W'),
                         'YEAR(orders.datePaid)' => date('Y')
                      ]
                   );

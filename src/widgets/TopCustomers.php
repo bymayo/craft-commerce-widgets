@@ -69,7 +69,7 @@ class TopCustomers extends Widget
             ->from(['orders' => '{{%commerce_orders}}'])
             ->where(['orders.isCompleted' => 1])
             ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email'])
+            ->groupBy(['orders.email', 'orders.customerId'])
             ->limit(5);
 
          if($this->includeGuests == 'no')

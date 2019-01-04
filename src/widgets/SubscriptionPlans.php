@@ -75,7 +75,7 @@ class SubscriptionPlans extends Widget
                   'plans.isArchived' => 0
                ]
             )
-            ->groupBy('plans.id')
+            ->groupBy(['plans.id'])
             ->orderBy($this->orderBy)
             ->limit($this->limit);
 

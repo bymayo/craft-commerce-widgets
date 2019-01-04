@@ -69,7 +69,7 @@ class ProductsTop extends Widget
          ->join(
             'LEFT JOIN', '{{%commerce_variants}} variants', 'variants.id = purchasables.id'
          )
-         ->groupBy('items.purchasableId')
+         ->groupBy(['items.purchasableId'])
          ->orderBy($this->orderBy . ' desc')
          ->limit($this->limit);
 

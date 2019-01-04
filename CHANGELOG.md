@@ -1,5 +1,14 @@
 # Commerce Widgets Changelog
 
+## 2.0.10 - 2019-01-04
+### Fixed
+- `groupBy` issue with MySQL 5.7 on some widgets
+- Week was showing incorrectly in the Goal widget 
+- Installing the plugin now populates the cache setting by default
+
+### Changed
+- When no elements exist on a widget they now show a message
+
 ## 2.0.9 - 2018-10-30
 ### Added
 - *New Widget* Top Products Widget - See your top products ordered by Revenue or # Ordered

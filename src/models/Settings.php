@@ -28,7 +28,7 @@ class Settings extends Model
     /**
      * @var string
      */
-    public $cacheDuration;
+    public $cacheDuration = 3600;
 
     // Public Methods
     // =========================================================================
@@ -39,8 +39,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['cacheDuration', 'integer'],
-            ['cacheDuration', 'default', 'value' => 3600]
+            ['cacheDuration', 'integer']
         ];
     }
 }

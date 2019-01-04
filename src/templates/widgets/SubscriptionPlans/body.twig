@@ -26,6 +26,12 @@
                </td>
                <td>{{ plan.activeSubscriptions|number_format() }}</td>
             </tr>
+         {% else %}
+            <tr>
+               <td colspan="2">
+                  No subscriptions found.
+               </td>
+            </tr>
          {% endfor %}
       </tbody>
    </table>
