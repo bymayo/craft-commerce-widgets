@@ -17,6 +17,7 @@ use Craft;
 use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
+use craft\commerce\Plugin as CommercePlugin;
 
 class ProductsTop extends Widget
 {
@@ -26,6 +27,7 @@ class ProductsTop extends Widget
 
     public $limit;
     public $orderBy;
+    public $orderStatusId;
 
     // Static Methods
     // =========================================================================
@@ -69,9 +71,18 @@ class ProductsTop extends Widget
          ->join(
             'LEFT JOIN', '{{%commerce_variants}} variants', 'variants.id = purchasables.id'
          )
+         ->join(
+            'LEFT JOIN', '{{%commerce_orders}} orders', 'orders.id = items.orderId'
+         )
          ->groupBy(['items.purchasableId'])
          ->orderBy($this->orderBy . ' desc')
          ->limit($this->limit);
+
+      if($this->orderStatusId != null)
+      {
+         $query
+            ->where(['orders.orderStatusId' => $this->orderStatusId]);
+      }
 
       $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->all();
 
@@ -95,9 +106,10 @@ class ProductsTop extends Widget
             $rules,
             [
                 ['orderBy', 'string'],
-                ['limit', 'integer'],
+                [['limit', 'orderStatusId'], 'integer'],
                 ['limit', 'default', 'value' => 5],
-                ['orderBy', 'default', 'value' => 'totalRevenue']
+                ['orderBy', 'default', 'value' => 'totalRevenue'],
+                ['orderStatusId', 'default', 'value' => null]
             ]
         );
 
@@ -106,12 +118,21 @@ class ProductsTop extends Widget
 
     public function getSettingsHtml()
     {
-        return Craft::$app->getView()->renderTemplate(
-            'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
-            [
-                'widget' => $this
-            ]
-        );
+
+      // Credit - craft/vendor/craftcms/commerce/src/widgets/Orders.php
+      $id = StringHelper::basename(get_class($this)) . '-' . StringHelper::randomString();
+      $namespaceId = Craft::$app->getView()->namespaceInputId($id);
+
+      Craft::$app->getView()->registerJs("new CommerceWidgets.OrderStatuses('" . $namespaceId . "');");
+
+      return Craft::$app->getView()->renderTemplate(
+         'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
+         [
+            'id' => $id,
+            'widget' => $this,
+            'orderStatuses' => CommercePlugin::getInstance()->getOrderStatuses()->getAllOrderStatuses()
+         ]
+      );
     }
 
     public function getBodyHtml()

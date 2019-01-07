@@ -2,27 +2,59 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-{{
-   forms.selectField(
-      {
-         label: 'Order By',
-         name: 'orderBy',
-         value: widget['orderBy'],
-         options: [
-            { label: 'Ordered Total', value: 'totalOrdered' },
-            { label: 'Revenue Total', value: 'totalRevenue' }
-         ]
-      }
-   )
-}}
+<div id="{{ id }}">
 
-{{
-   forms.textField(
-      {
-         label: 'Limit',
-         id: 'limit',
-         name: 'limit',
-         value: widget['limit']
-      }
-   )
-}}
+   <div class="field">
+       <div class="heading">
+           <label>Order Status</label>
+       </div>
+       <div class="input ltr">
+           <input type="hidden" class="status-input" name="orderStatusId" value="{{ widget['orderStatusId'] }}">
+           <a class="btn menubtn">
+              <span class="status"></span> {{ "All"|t('commerce') }}
+           </a>
+           <div class="menu">
+               <ul class="padded">
+                   <li>
+                      <a>
+                         <span class="commerceStatusLabel">
+                           <span class="status"></span> {{ "All"|t('commerce') }}
+                        </span>
+                     </a>
+                   </li>
+                   {% for status in orderStatuses %}
+                       <li>
+                           <a data-id="{{ status.id }}">{{ status.labelHtml|raw }}</a>
+                       </li>
+                   {% endfor %}
+               </ul>
+           </div>
+       </div>
+   </div>
+
+   {{
+      forms.selectField(
+         {
+            label: 'Order By',
+            name: 'orderBy',
+            value: widget['orderBy'],
+            options: [
+               { label: 'Ordered Total', value: 'totalOrdered' },
+               { label: 'Revenue Total', value: 'totalRevenue' }
+            ]
+         }
+      )
+   }}
+
+   {{
+      forms.textField(
+         {
+            label: 'Limit',
+            id: 'limit',
+            name: 'limit',
+            value: widget['limit']
+         }
+      )
+   }}
+
+</div>

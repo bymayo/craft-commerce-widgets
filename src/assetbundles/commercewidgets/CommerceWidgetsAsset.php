@@ -37,7 +37,7 @@ class CommerceWidgetsAsset extends AssetBundle
 
         $this->js = [
            'js/plugins/Chart.min.js',
-            'js/CommerceWidgets.js',
+           'js/CommerceWidgets.js',
         ];
 
         $this->css = [

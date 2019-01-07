@@ -1,9 +1,13 @@
 # Commerce Widgets Changelog
 
+## 2.0.11 - 2019-01-07
+### Added
+- Added `Order Status` setting to the Top Products Widget.
+
 ## 2.0.10 - 2019-01-04
 ### Fixed
 - `groupBy` issue with MySQL 5.7 on some widgets
-- Week was showing incorrectly in the Goal widget 
+- Week was showing incorrectly in the Goal widget
 - Installing the plugin now populates the cache setting by default
 
 ### Changed

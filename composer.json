@@ -2,7 +2,7 @@
     "name": "bymayo/commerce-widgets",
     "description": "Insightful dashboard widgets for your Craft Commerce 2 store.",
     "type": "craft-plugin",
-    "version": "2.0.10",
+    "version": "2.0.11",
     "keywords": [
         "craft",
         "cms",
