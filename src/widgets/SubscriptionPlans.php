@@ -59,7 +59,7 @@ class SubscriptionPlans extends Widget
             ->select(
                [
                   'plans.*',
-                  'COUNT(subscriptions.planId) as activeSubscriptions'
+                  'COUNT([[subscriptions.planId]]) as activeSubscriptions'
                ]
             )
             ->from(
@@ -68,7 +68,7 @@ class SubscriptionPlans extends Widget
                ]
             )
             ->join(
-               'LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', 'subscriptions.planId = plans.id'
+               'LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', '[[subscriptions.planId]] = plans.id'
             )
             ->where(
                [
