@@ -1,6 +1,8 @@
-<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-2/screenshots/icon.png" width="50">
+**Looking for Craft 3 Support?** [Commerce Widgets for Craft 3](https://github.com/bymayo/craft-commerce-widgets/tree/master)
 
-# Commerce Widgets
+<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/icon.png" width="50">
+
+# Commerce Widgets for Craft 2.x
 
 Commerce Widgets is a Craft CMS plugin that gives you helpful dashboard widgets for your Craft Commerce store.
 
