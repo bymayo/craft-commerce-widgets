@@ -1,5 +1,3 @@
-⚡️**Looking for Craft CMS 2 Support?** [Commerce Widgets for Craft CMS 2](https://github.com/bymayo/craft-commerce-widgets/tree/craft-2)
-
 <img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/icon.png" width="50">
 
 # Commerce Widgets for Craft CMS 3.x
