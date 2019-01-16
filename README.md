@@ -1,5 +1,5 @@
 > ⚠️ Deprecated - This Craft CMS 2.x plugin is no longer supported. Consider upgrading to the Craft CMS 3.x version.
--
+---
 ⚡️**Looking for Craft CMS 3 Support?** [Commerce Widgets for Craft CMS 3](https://github.com/bymayo/craft-commerce-widgets/tree/master)
 
 <img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/icon.png" width="50">
