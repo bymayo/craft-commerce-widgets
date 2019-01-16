@@ -21,6 +21,7 @@ You can also install the plugin via the Plugin Store in the Craft Admin CP by se
 
 - Craft CMS 3.x
 - Craft Commerce 2.x
+- MySQL (PostgreSQL support is limited)
 
 ## Configuration
 
