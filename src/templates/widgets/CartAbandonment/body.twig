@@ -76,7 +76,7 @@
                     stacked: false,
                     ticks: {
                        min: 0,
-                       stepSize: {{ dataCountTotal < 5 ? 1 : round(dataCountTotal) / 5 }}
+                       stepSize: {{ dataCountTotal < 5 ? 1 : (dataCountTotal|round) / 5 }}
                     }
                   }]
                 },
