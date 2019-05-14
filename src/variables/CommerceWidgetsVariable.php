@@ -36,7 +36,7 @@ class CommerceWidgetsVariable
                'userId'
             ]
          )
-         ->from(['commerce_customers'])
+         ->from(['{{%commerce_customers}}'])
          ->where(['id' => $customerId])
          ->all();
 
