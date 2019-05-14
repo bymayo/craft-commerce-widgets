@@ -11,12 +11,12 @@
    <div class="statistic-container">
       <div class="statistic -cart-completed">
          <strong>{{ completedCartData.count|number_format() }}</strong>
-         <p>Completed Cart{{ completedCartData.count > 1 ? 's' }}</p>
+         <p>Completed Cart{{ completedCartData.count == 0 or completedCartData.count > 1 ? 's' }}</p>
          <small>{{ completedCartData.totalPrice|currency(commerce.currency) }}</small>
       </div>
       <div class="statistic -cart-abandoned">
          <strong>{{ abandonedCartData.count|number_format() }}</strong>
-         <p>Abandoned Cart{{ abandonedCartData.count > 1 ? 's' }}</p>
+         <p>Abandoned Cart{{ abandonedCartData.count == 0 or abandonedCartData.count > 1 ? 's' }}</p>
          <small>{{ abandonedCartData.totalPrice|currency(commerce.currency) }}</small>
       </div>
    </div>
@@ -76,7 +76,7 @@
                     stacked: false,
                     ticks: {
                        min: 0,
-                       stepSize: {{ dataCountTotal < 5 ? 1 : (dataCountTotal|round) / 5 }}
+                       stepSize: {{ dataCountTotal < 5 ? 5 : (dataCountTotal|round) / 10 }}
                     }
                   }]
                 },

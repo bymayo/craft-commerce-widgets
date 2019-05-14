@@ -1,5 +1,12 @@
 # Commerce Widgets Changelog
 
+## 2.0.13 - 2019-05-14
+### Fixed
+- Plural spelling on `CartAbandonment` widget
+
+### Changed
+- Step size to work better with large quantity of orders on `CartAbandonment` widget
+
 ## 2.0.12 - 2019-05-14
 ### Fixed
 - Total data now outputs week and month correctly on `TotalRevenueOrders` widget
