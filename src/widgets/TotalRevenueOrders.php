@@ -109,16 +109,14 @@ class TotalRevenueOrders extends Widget
             case "Week":
                $query->andWhere(
                   [
-                     'WEEK(orders.dateCreated)' => date('W'),
-                     'YEAR(orders.dateCreated)' => date('Y')
+                     'between', 'orders.dateCreated', date('Y-m-d', strtotime('monday this week')), date('Y-m-d', strtotime('sunday this week'))
                   ]
                );
                break;
             case "Month":
                $query->andWhere(
                   [
-                     'MONTH(orders.dateCreated)' => date('M'),
-                     'YEAR(orders.dateCreated)' => date('Y')
+                     'between', 'orders.dateCreated', date('Y-m-d', strtotime('first day of this month')), date('Y-m-d', strtotime('last day of this month'))
                   ]
                );
                break;
