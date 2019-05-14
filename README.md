@@ -90,7 +90,7 @@ Most of the widgets come with settings. Make sure you check the settings on each
 
 ## Support
 
-If you have any issues (Surely not!) then I'll aim to reply to these as soon as possible. If it's a site-breaking-oh-no-what-has-happened moment, then hit me up on the Craft CMS Slack - `@bymayo`
+If you have any issues (Surely not!) then I'll aim to reply to these as soon as possible. If it's a site-breaking-oh-no-what-has-happened moment, then hit me up on the Craft CMS Discord - `@bymayo`
 
 ## Roadmap
 
