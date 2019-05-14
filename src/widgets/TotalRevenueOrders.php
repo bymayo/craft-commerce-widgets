@@ -63,7 +63,7 @@ class TotalRevenueOrders extends Widget
          ),
          array(
             'label' => 'Month',
-            'date' => date('M')
+            'date' => date('M Y')
          ),
          array(
             'label' => 'Year',

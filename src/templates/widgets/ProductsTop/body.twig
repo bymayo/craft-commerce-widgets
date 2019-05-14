@@ -6,7 +6,6 @@
       <thead>
          <tr>
             <th colspan="2">Product</th>
-            <th>SKU</th>
             <th>Total Revenue</th>
             <th>Total Orders</th>
          </tr>
@@ -34,7 +33,6 @@
                      </div>
                   </div>
                </td>
-               <td><span class="sku">{{ product.sku }}</span></td>
                <td>{{ product.totalRevenue|currency(commerce.currency) }}</td>
                <td>{{ product.totalOrdered|number_format() }}</td>
             </tr>

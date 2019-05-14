@@ -1,5 +1,16 @@
 # Commerce Widgets Changelog
 
+## 2.0.14 - 2019-05-14
+### Fixed
+- Issue with MySQL 5.7 on `CartAbandonment` widget
+
+### Added
+- Added year to the 'Month' date on the `TotalRevenueOrders` widget
+
+## Changed
+- Removed the SKU from the `ProductTop` table for smaller resolutions
+
+
 ## 2.0.13 - 2019-05-14
 ### Fixed
 - Plural spelling on `CartAbandonment` widget
