@@ -94,9 +94,9 @@ If you have any issues (Surely not!) then I'll aim to reply to these as soon as 
 
 ## Roadmap
 
-- +15 more widgets (Aiming to add at least 1 or 2 a month)
+- +15 more widgets planned (*shhh, secret*)
 - Google Analytics eCommerce Widgets
 - Work with all currencies and locales
 - Export options per widget
 - Commerce Lite version (Free)
-- 'Default' widget dashboard for all users
+- Default widget dashboard for all users
