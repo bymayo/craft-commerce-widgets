@@ -1,5 +1,19 @@
 # Commerce Widgets Changelog
 
+## 2.0.12 - 2019-05-14
+### Fixed
+- Total data now outputs week and month correctly on `TotalRevenueOrders` widget
+- Issue with  Verbb Gift Voucher on `ProductsTop` ([#20](https://github.com/bymayo/craft-commerce-widgets/issues/20))
+- Graph now outputs the correct values on `CartAbandonment` widget
+- Removed deprecated `round()` function ([#22](https://github.com/bymayo/craft-commerce-widgets/pull/22))
+- `userIdByCustomerId` not prefixed on customers table ([#23](https://github.com/bymayo/craft-commerce-widgets/pull/23))
+
+### Changed
+- Column title on `ProductsTop` widget now Orders not Ordered ([#17](https://github.com/bymayo/craft-commerce-widgets/pull/17))
+
+### Added
+- Subscription Plan URL added to the plans on `SubscriptionPlans` widget
+
 ## 2.0.11 - 2019-01-07
 ### Added
 - Added `Order Status` setting to the Top Products Widget.
