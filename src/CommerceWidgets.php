@@ -1,12 +1,4 @@
 <?php
-/**
- * Commerce Widgets plugin for Craft CMS 3.x
- *
- * Description
- *
- * @link      http://bymayo.co.uk
- * @copyright Copyright (c) 2018 ByMayo
- */
 
 namespace bymayo\commercewidgets;
 
@@ -24,39 +16,21 @@ use craft\events\RegisterComponentTypesEvent;
 
 use yii\base\Event;
 
-/**
- * Class CommerceWidgets
- *
- * @author    ByMayo
- * @package   CommerceWidgets
- * @since     2.0.0
- *
- * @property  CommerceWidgetsServiceService $commerceWidgetsService
- */
 class CommerceWidgets extends Plugin
 {
     // Static Properties
     // =========================================================================
 
-    /**
-     * @var CommerceWidgets
-     */
     public static $plugin;
 
     // Public Properties
     // =========================================================================
 
-    /**
-     * @var string
-     */
     public $schemaVersion = '2.0.1';
 
     // Public Methods
     // =========================================================================
 
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
         parent::init();
@@ -110,17 +84,11 @@ class CommerceWidgets extends Plugin
     // Protected Methods
     // =========================================================================
 
-    /**
-     * @inheritdoc
-     */
     protected function createSettingsModel()
     {
         return new Settings();
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function settingsHtml(): string
     {
         return Craft::$app->view->renderTemplate(

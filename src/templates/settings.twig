@@ -1,21 +1,21 @@
-{# @var craft \craft\web\twig\variables\CraftVariable #}
-{#
-/**
- * Commerce Widgets plugin for Craft CMS 3.x
- *
- * Commerce Widgets Settings.twig
- *
- * @author    ByMayo
- * @copyright Copyright (c) 2018 ByMayo
- * @link      http://bymayo.co.uk
- * @package   CommerceWidgets
- * @since     2.0.0
- */
-#}
-
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{% set months = [
+   { label: 'January', value: 'january' },
+   { label: 'February', value: 'february' },
+   { label: 'March', value: 'march' },
+   { label: 'April', value: 'april' },
+   { label: 'May', value: 'may' },
+   { label: 'June', value: 'june' },
+   { label: 'July', value: 'july' },
+   { label: 'August', value: 'august' },
+   { label: 'September', value: 'september' },
+   { label: 'October', value: 'october' },
+   { label: 'November', value: 'november' },
+   { label: 'December', value: 'december' },
+] %}
 
 {{ forms.textField({
     label: 'Cache Duration',
@@ -23,4 +23,12 @@
     id: 'cacheDuration',
     name: 'cacheDuration',
     value: settings['cacheDuration']})
+}}
+
+{{ forms.selectField({
+    label: 'Year Start',
+    instructions: 'The start of the financial year.',
+    options: months,
+    name: 'yearStart',
+    value: settings['yearStart']})
 }}

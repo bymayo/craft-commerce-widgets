@@ -1,12 +1,4 @@
 <?php
-/**
- * Commerce Widgets for Craft CMS 3.x
- *
- * @author    ByMayo
- * @link      https://bymayo.co.uk
- * @copyright Copyright (c) 2018 ByMayo
- *
- */
 
 namespace bymayo\commercewidgets\widgets;
 

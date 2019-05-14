@@ -6,14 +6,9 @@ use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 
-/**
- * m181029_192313_ChangeNameOfRecentProducts migration.
- */
 class m181029_192313_ChangeNameOfRecentProducts extends Migration
 {
-    /**
-     * @inheritdoc
-     */
+
     public function safeUp()
     {
 
@@ -25,9 +20,6 @@ class m181029_192313_ChangeNameOfRecentProducts extends Migration
 
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown()
     {
         echo "m181029_192313_ChangeNameOfRecentProducts cannot be reverted.\n";
