@@ -81,7 +81,8 @@ class ProductsTop extends Widget
       if($this->orderStatusId != null)
       {
          $query
-            ->where(['orders.orderStatusId' => $this->orderStatusId]);
+         ->andWhere(['orders.orderStatusId' => $this->orderStatusId])
+         ->andWhere(['not', ['variants.productId' => null]]);
       }
 
       $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->all();
