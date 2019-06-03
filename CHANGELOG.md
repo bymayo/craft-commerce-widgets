@@ -1,5 +1,9 @@
 # Commerce Widgets Changelog
 
+## 2.0.15 - 2019-06-03
+### Fixed
+- Fixed step count issue by removing step value on `CartAbandonment` widget
+
 ## 2.0.14 - 2019-05-14
 ### Fixed
 - Issue with MySQL 5.7 on `CartAbandonment` widget
