@@ -1,5 +1,13 @@
 # Commerce Widgets Changelog
 
+## 2.0.16 - 2019-07-10
+### Fixed
+- Completed carts value on `CartAbandonment` widget not grouped by month and year, not just month
+- The 'Today' value now matches the current day, not the first day of the week on `TotalRevenueOrders` widget
+
+### Changed
+- Product titles now trim if they are above 40 characters
+
 ## 2.0.15 - 2019-06-03
 ### Fixed
 - Fixed step count issue by removing step value on `CartAbandonment` widget

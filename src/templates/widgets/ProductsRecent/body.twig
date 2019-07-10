@@ -19,7 +19,7 @@
                      <div class="label">
                         <span class="title">
                            <a href="{{ product.cpEditUrl }}">
-                              {{ product.title }}
+                              {{ product.title|length > 40 ? product.title|slice(0, 40) ~ '...' : product.title }}
                            </a>
                         </span>
                      </div>

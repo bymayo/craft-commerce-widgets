@@ -47,7 +47,7 @@ class TotalRevenueOrders extends Widget
       return array(
          array(
             'label' => 'Today',
-            'date' => date('d M Y', strtotime('monday this week'))
+            'date' => date('d M Y')
          ),
          array(
             'label' => 'Week',

@@ -128,7 +128,7 @@ class CartAbandonment extends Widget
             ->where(
                [
                   'orders.isCompleted' => $isCompleted,
-                  'MONTH(orders.dateCreated)' => date('n')
+                  'DATE_FORMAT(orders.dateCreated, "%c-%Y")' => date('n-Y')
                ]
             );
 
