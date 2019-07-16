@@ -52,23 +52,23 @@ class TopCustomers extends Widget
             )
             ->select(
                [
-                  'count(*) as totalOrders',
-                  'SUM(orders.totalPrice) as totalRevenue',
-                  'orders.email',
-                  'orders.customerId'
+                  'count(*) as [[totalOrders]]',
+                  'SUM([[orders.totalPrice]]) as [[totalRevenue]]',
+                  '[[orders.email]]',
+                  '[[orders.customerId]]'
                ]
             )
             ->from(['orders' => '{{%commerce_orders}}'])
-            ->where(['orders.isCompleted' => 1])
+            ->where(['[[orders.isCompleted]]' => 1])
             ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email', 'orders.customerId'])
+            ->groupBy(['[[orders.email]]', '[[orders.customerId]]'])
             ->limit(5);
 
          if($this->includeGuests == 'no')
          {
             $query
-               ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
-               ->andWhere(['not', ['customers.userId' => null]]);
+               ->join('INNER JOIN', '{{%commerce_customers}} customers', '[[orders.customerId]] = customers.id')
+               ->andWhere(['not', ['[[customers.userId]]' => null]]);
          }
 
          $command = $query->createCommand();
