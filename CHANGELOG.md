@@ -2,8 +2,8 @@
 
 ## 2.0.17 - 2019-08-09
 
-{warning} This plugin now requires Craft CMS 3.2.x or higher due to the way it now deals with trashed orders. It's also recommended to now use a `commerce-widgets.php` config file for the plugin settings since this version doesn't include the ability to modify settings via the CP.
-{tip} Due to a change on the Cart Abandonment widget, it's recommended to increase the `purgeInactiveCartsDuration` setting in `commerce.php` file in you config folder.
+> {warning} This plugin now requires Craft CMS 3.2.x or higher due to the way it now deals with trashed orders. It's also recommended to now use a `commerce-widgets.php` config file for the plugin settings since this version doesn't include the ability to modify settings via the CP.
+> {tip} Due to a change on the Cart Abandonment widget, it's recommended to increase the `purgeInactiveCartsDuration` setting in `commerce.php` file in you config folder.
 
 ### Changed
 - Removed settings from CP and made it only available via a `commerce-widgets.php` config file.
