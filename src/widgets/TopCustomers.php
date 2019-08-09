@@ -19,7 +19,7 @@ class TopCustomers extends Widget
     public $includeGuests;
     public $orderBy;
     public $groupBy; // Remove
-    public $limit = 5;
+    public $limit;
 
     // Static Methods
     // =========================================================================
@@ -106,8 +106,10 @@ class TopCustomers extends Widget
             $rules,
             [
                 [['includeGuests', 'orderBy'], 'string'],
+                [['limit'], 'integer'],
                 ['includeGuests', 'default', 'value' => 'yes'],
-                ['orderBy', 'default', 'value' => 'totalRevenue']
+                ['orderBy', 'default', 'value' => 'totalRevenue'],
+                ['limit', 'default', 'value' => 5]
             ]
         );
 

@@ -1,5 +1,10 @@
 # Commerce Widgets Changelog
 
+## 2.0.18 - 2019-08-09
+
+### Fixed
+- Added a default limit on `TopCustomers` widget to fix issue where it pulls all customers in if the widget already existed on the dashboard
+
 ## 2.0.17 - 2019-08-09
 
 {warning} This plugin now requires Craft CMS 3.2.x or higher due to the way it now deals with trashed orders. It's also recommended to now use a `commerce-widgets.php` config file for the plugin settings since this version doesn't include the ability to modify settings via the CP.
