@@ -15,7 +15,7 @@ class ProductsRecent extends Widget
     // Public Properties
     // =========================================================================
 
-    public $limit;
+    public $limit = 5;
 
     // Static Methods
     // =========================================================================

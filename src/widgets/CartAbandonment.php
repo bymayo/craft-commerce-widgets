@@ -75,16 +75,14 @@ class CartAbandonment extends Widget
                ]
             )
             ->from(['orders' => '{{%commerce_orders}}'])
+            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
             ->where(
                [
                   'between', 'orders.dateCreated', date('Y-m-d', strtotime('-5 months')), date('Y-m-d', strtotime('+1 day'))
                ]
             )
-            ->andWhere(
-               [
-                  'orders.isCompleted' => $isCompleted
-               ]
-            )
+            ->andWhere(['orders.isCompleted' => $isCompleted])
+            ->andWhere(['elements.dateDeleted' => null])
             ->groupBy('month')
             ->orderBy('month');
 
@@ -125,12 +123,14 @@ class CartAbandonment extends Widget
                ]
             )
             ->from(['orders' => '{{%commerce_orders}}'])
+            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
             ->where(
                [
                   'orders.isCompleted' => $isCompleted,
-                  'DATE_FORMAT(orders.dateCreated, "%c-%Y")' => date('n-Y')
+                  'DATE_FORMAT(orders.dateCreated, "%c-%Y")' => date('n-Y'),
                ]
-            );
+            )
+            ->andWhere(['elements.dateDeleted' => null]);
 
          $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
 

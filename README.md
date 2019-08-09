@@ -19,15 +19,42 @@ You can also install the plugin via the Plugin Store in the Craft Admin CP by se
 
 ## Requirements
 
-- Craft CMS 3.x
+- Craft CMS 3.2.x
 - Craft Commerce 2.x
 - MySQL (PostgreSQL support is limited)
 
 ## Configuration
 
-Most of the widgets come with settings. Make sure you check the settings on each widget to customise them for your shop.
+The plugin comes with a `config.php` file that defines some default settings that apply to mostly all widgets.
 
-## Widgets Included
+If you want to set your own config options, create a `commerce-widgets.php` file in your Craft config directory. The contents of this file will get merged with the plugin defaults, so you only need to specify values for the settings you want to override.
+
+### Cache Duration 
+`cacheDuration` allows you to set how long the widget data is cached in seconds. This is great for stores with large amounts of orders/customers, to only cache stats every X amount of hours rather than everytime the dashboard loads. Default: `3600` (60 minutes)
+
+### Year Start 
+`yearStart` allows you to set when the financial/tax year starts. Default: `april`
+
+### Exclude Email Addresses
+`excludeEmailAddresses` allows you to exclude certain email addresses/customers across all widgets. This is particularly useful if you use a specific user to debug orders, or if orders are created via the CP. Default: `null`
+
+### Config File Example
+
+```
+<?php
+return array(
+    '*' => array(
+        'cacheDuration' => 3600,
+        'yearStart' => 'april',
+        'excludeEmailAddresses' => array(
+           'admin@website.com',
+           'customer@website.com'
+        )
+    )
+);
+```
+
+## Widgets
 
 <table>
 	<tr>
@@ -61,15 +88,16 @@ Most of the widgets come with settings. Make sure you check the settings on each
       <td>See what products have been ordered the most based on # revenue or # orders.</td>
       <td>
 			Order By<br>
-         Limit
+         Order Status<br>
+         Limit<br>
       </td>
 	</tr>
    <tr>
 		<td>Subscription Plans</td>
       <td>An overview of your subscription plans</td>
       <td>
-         Limit<br>
-         Order By
+         Order By<br>
+         Limit
       </td>
 	</tr>
    <tr>
@@ -77,8 +105,8 @@ Most of the widgets come with settings. Make sure you check the settings on each
       <td>See who's your top customers, based on # revenue or # orders.</td>
       <td>
          Order By<br>
-         Group By<br>
-         Include Guests
+         Include Guests<br>
+         Limit<br>
       </td>
 	</tr>
    <tr>
@@ -87,6 +115,11 @@ Most of the widgets come with settings. Make sure you check the settings on each
       <td>-</td>
 	</tr>
 </table>
+
+## Recommendations 
+
+### Purge Inactive Carts Duration 
+It's recommended to increase the `purgeInactiveCartsDuration` setting (https://docs.craftcms.com/commerce/v2/configuration.html#purgeinactivecartsduration) for Craft Commerce from the default (3 months) to around 6 months (`P6M`). This is because the graph on the `Cart Abandonment` widget spans across 6 months and might show incorrect results if this setting isn't adjusted. 
 
 ## Support
 

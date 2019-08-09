@@ -84,11 +84,9 @@ class TotalRevenueOrders extends Widget
                ]
             )
             ->from(['orders' => '{{%commerce_orders}}'])
-            ->where(
-               [
-                  'orders.isCompleted' => 1
-               ]
-            );
+            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+            ->where(['orders.isCompleted' => 1])
+            ->andWhere(['elements.dateDeleted' => null]);
 
          switch ($timeFrame['label']) {
             case "Today":

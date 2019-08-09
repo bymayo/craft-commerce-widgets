@@ -1,5 +1,22 @@
 # Commerce Widgets Changelog
 
+## 2.0.17 - 2019-08-09
+
+{warning} This plugin now requires Craft CMS 3.2.x or higher due to the way it now deals with trashed orders. It's also recommended to now use a `commerce-widgets.php` config file for the plugin settings since this version doesn't include the ability to modify settings via the CP.
+{tip} Due to a change on the Cart Abandonment widget, it's recommended to increase the `purgeInactiveCartsDuration` setting in `commerce.php` file in you config folder.
+
+### Changed
+- Removed settings from CP and made it only available via a `commerce-widgets.php` config file.
+
+### Added
+- Added `excludeEmailAddresses` config setting to allow excluding of orders/customers via email across all widgets ([#28](https://github.com/bymayo/craft-commerce-widgets/issues/28))
+- Added limit option to `TopCustomers` widget
+
+### Fixed
+- Data totals were being pulled through even when orders were trashed ([#27](https://github.com/bymayo/craft-commerce-widgets/issues/27))
+- Order totals and revenue totals were being pulled through even if the order wasn't complete
+- Customers are now grouped by email address only on the `TopCustomers` widget, fixing an issue where duplicates appeared
+
 ## 2.0.16 - 2019-07-10
 ### Fixed
 - Completed carts value on `CartAbandonment` widget not grouped by month and year, not just month

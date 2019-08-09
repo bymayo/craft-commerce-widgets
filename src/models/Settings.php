@@ -14,6 +14,7 @@ class Settings extends Model
 
     public $cacheDuration = 3600;
     public $yearStart = 'april';
+    public $excludeEmailAddresses = array();
 
     // Public Methods
     // =========================================================================
@@ -22,7 +23,8 @@ class Settings extends Model
     {
         return [
             [['cacheDuration'], 'integer'],
-            [['yearStart'], 'string']
+            [['yearStart'], 'string'],
+            [['excludeEmailAddresses'], 'array']
         ];
     }
 }

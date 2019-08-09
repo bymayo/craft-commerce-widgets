@@ -17,9 +17,9 @@ class ProductsTop extends Widget
     // Public Properties
     // =========================================================================
 
-    public $limit;
-    public $orderBy;
     public $orderStatusId;
+    public $orderBy;
+    public $limit = 5;
 
     // Static Methods
     // =========================================================================
@@ -66,6 +66,11 @@ class ProductsTop extends Widget
          ->join(
             'LEFT JOIN', '{{%commerce_orders}} orders', 'orders.id = items.orderId'
          )
+         ->join(
+            'LEFT JOIN', '{{%elements}} elements', 'elements.id = variants.productId'
+         )
+         ->where(['elements.dateDeleted' => null])
+         ->andWhere(['orders.isCompleted' => 1])
          ->groupBy(['items.purchasableId'])
          ->orderBy($this->orderBy . ' desc')
          ->limit($this->limit);

@@ -1,6 +1,8 @@
 <?php
-return [
-    "cacheDuration" => true,
-    "yearStart" => null,
-    "yearEnd" => null
-];
+return array(
+    '*' => array(
+        'cacheDuration' => 3600,
+        'yearStart' => 'april',
+        'excludeEmailAddresses' => array()
+    )
+);

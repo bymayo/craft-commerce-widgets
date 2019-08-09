@@ -17,9 +17,9 @@ class TopCustomers extends Widget
     // =========================================================================
 
     public $includeGuests;
-    public $groupBy; // Remove
     public $orderBy;
-    public $limit; // Add
+    public $groupBy; // Remove
+    public $limit = 5;
 
     // Static Methods
     // =========================================================================
@@ -59,10 +59,17 @@ class TopCustomers extends Widget
                ]
             )
             ->from(['orders' => '{{%commerce_orders}}'])
+            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
             ->where(['orders.isCompleted' => 1])
+            ->andWhere(['elements.dateDeleted' => null])
             ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email', 'orders.customerId'])
-            ->limit(5);
+            ->groupBy(['orders.email'])
+            ->limit($this->limit);
+
+        if(!empty(CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses)) 
+        {
+            $query->andWhere(['not in', 'orders.email', CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses]);
+        }
 
          if($this->includeGuests == 'no')
          {
