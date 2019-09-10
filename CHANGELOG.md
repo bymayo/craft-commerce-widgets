@@ -1,5 +1,10 @@
 # Commerce Widgets Changelog
 
+## 2.0.19 - 2019-09-10
+
+### Changed
+- Minor visual adjustment to make `TopCustomers` and `ProductTop` widgets the same styling
+
 ## 2.0.18 - 2019-08-09
 
 ### Fixed

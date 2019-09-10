@@ -15,9 +15,15 @@
       <tbody>
          {% for customer in customers %}
             {% set userId = craft.commercewidgets.userIdByCustomerId(customer.customerId).userId %}
-            <tr>
+            <tr{% if loop.first %} class="rank-background -first"{% endif %}>
                <td class="rank-column">
-                  <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">{{ loop.index}}</span>
+                  <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">
+                     {% if loop.first %}
+                        <i class="fas fa-crown"></i>
+                     {% else %}
+                        {{ loop.index}}
+                     {% endif %}
+                  </span>
                </td>
                <td>
                   {% if userId|length %}

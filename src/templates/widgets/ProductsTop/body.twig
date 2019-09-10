@@ -2,6 +2,8 @@
 
 {% block widget %}
 
+   {% set rankClasses = ['-first', '-second', '-third'] %}
+
    <table class="data fullwidth collapsible">
       <thead>
          <tr>
@@ -15,11 +17,13 @@
             {% set element = craft.products.id(product.id).status(null).one() %}
             <tr{% if loop.first %} class="rank-background -first"{% endif %}>
                <td class="rank-column">
-                  {% if loop.first %}
-                     <span class="rank -first">
+                  <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">
+                     {% if loop.first %}
                         <i class="fas fa-crown"></i>
-                     </span>
-                  {% endif %}
+                     {% else %}
+                        {{ loop.index}}
+                     {% endif %}
+                  </span>
                </td>
                <td>
                   <div class="element hasstatus">
