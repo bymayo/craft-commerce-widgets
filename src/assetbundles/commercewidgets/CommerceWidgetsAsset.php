@@ -1,6 +1,6 @@
 <?php
 
-namespace bymayo\commercewidgets\assetbundles\CommerceWidgets;
+namespace bymayo\commercewidgets\assetbundles\commercewidgets;
 
 use Craft;
 use craft\web\AssetBundle;

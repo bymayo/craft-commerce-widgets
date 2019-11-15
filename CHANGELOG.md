@@ -1,5 +1,10 @@
 # Commerce Widgets Changelog
 
+## 2.0.20 - 2019-11-15
+
+### Fixed
+- Namespace on asset bundle which is now case sensitive (Thanks to @matt-adigital)
+
 ## 2.0.19 - 2019-09-10
 
 ### Changed
