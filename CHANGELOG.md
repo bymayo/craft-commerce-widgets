@@ -1,5 +1,11 @@
 # Commerce Widgets Changelog
 
+
+## 2.0.21 - 2019-05-07
+
+### Fixed
+- GROUP_BY error in 5.7 on TopCustomers widget
+
 ## 2.0.20 - 2019-11-15
 
 ### Fixed
