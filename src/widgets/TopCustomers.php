@@ -63,7 +63,7 @@ class TopCustomers extends Widget
             ->where(['orders.isCompleted' => 1])
             ->andWhere(['elements.dateDeleted' => null])
             ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email'])
+            ->groupBy(['orders.email', 'orders.customerId'])
             ->limit($this->limit);
 
         if(!empty(CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses)) 
