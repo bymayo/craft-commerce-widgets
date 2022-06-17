@@ -1,5 +1,9 @@
 # Commerce Widgets Changelog
 
+## 3.0.0 - 2022-06-17
+### Changed
+- Now requires PHP ^8.0.0.
+- Now requires Craft CMS ^4.0.0
 
 ## 2.0.21 - 2019-05-07
 

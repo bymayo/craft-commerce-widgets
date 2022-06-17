@@ -1,6 +1,6 @@
-<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/icon.png" width="50">
+<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-4/resources/icon.png" width="60">
 
-# Commerce Widgets for Craft CMS 3.x
+# Commerce Widgets for Craft CMS 4
 
 Commerce Widgets is a Craft CMS plugin that gives you insightful dashboard widgets for your Craft Commerce store.
 
@@ -8,7 +8,7 @@ They help you see a better overview of your stores performance, by viewing aband
 
 All these help you to optimise your store and in turn (hopefully) increase your revenue and orders.
 
-<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/master/resources/screenshot.jpg" width="850">
+<img src="https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-4/resources/screenshot.jpg" width="850">
 
 ## Install
 
@@ -19,8 +19,8 @@ You can also install the plugin via the Plugin Store in the Craft Admin CP by se
 
 ## Requirements
 
-- Craft CMS 3.2.x
-- Craft Commerce 2.x
+- Craft CMS 4.x
+- Craft Commerce 4.x
 - MySQL (PostgreSQL support is limited)
 
 ## Configuration
@@ -119,7 +119,7 @@ return array(
 ## Recommendations 
 
 ### Purge Inactive Carts Duration 
-It's recommended to increase the `purgeInactiveCartsDuration` setting (https://docs.craftcms.com/commerce/v2/configuration.html#purgeinactivecartsduration) for Craft Commerce from the default (3 months) to around 6 months (`P6M`). This is because the graph on the `Cart Abandonment` widget spans across 6 months and might show incorrect results if this setting isn't adjusted. 
+It's recommended to increase the `purgeInactiveCartsDuration` setting (https://craftcms.com/docs/commerce/4.x/configuration.html#purgeinactivecartsduration) for Craft Commerce from the default (3 months) to around 6 months (`P6M`). This is because the graph on the `Cart Abandonment` widget spans across 6 months and might show incorrect results if this setting isn't adjusted. 
 
 ## Support
 
