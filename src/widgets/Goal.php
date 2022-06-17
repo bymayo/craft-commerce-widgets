@@ -33,7 +33,7 @@ class Goal extends Widget
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
 
-    public static function maxColspan()
+    public static function maxColspan(): ?int
     {
         return null;
     }
@@ -105,12 +105,12 @@ class Goal extends Widget
     // Public Methods
     // =========================================================================
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
       return StringHelper::titleize($this->type) . ' Goal';
     }
 
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -129,7 +129,7 @@ class Goal extends Widget
         return $rules;
     }
 
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
@@ -139,7 +139,7 @@ class Goal extends Widget
         );
     }
 
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 

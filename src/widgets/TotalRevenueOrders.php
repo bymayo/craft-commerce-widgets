@@ -33,7 +33,7 @@ class TotalRevenueOrders extends Widget
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
 
-    public static function maxColspan()
+    public static function maxColspan(): ?int
     {
         return null;
     }
@@ -146,12 +146,12 @@ class TotalRevenueOrders extends Widget
     // Public Methods
     // =========================================================================
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
       return 'Total Revenue & Orders';
     }
 
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 

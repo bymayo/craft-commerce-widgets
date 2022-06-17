@@ -34,7 +34,7 @@ class ProductsTop extends Widget
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
 
-    public static function maxColspan()
+    public static function maxColspan(): ?int
     {
         return null;
     }
@@ -91,12 +91,12 @@ class ProductsTop extends Widget
     // Public Methods
     // =========================================================================
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
       return 'Top Products';
     }
 
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -114,7 +114,7 @@ class ProductsTop extends Widget
         return $rules;
     }
 
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
 
       // Credit - craft/vendor/craftcms/commerce/src/widgets/Orders.php
@@ -133,7 +133,7 @@ class ProductsTop extends Widget
       );
     }
 
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 

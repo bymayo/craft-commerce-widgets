@@ -26,8 +26,8 @@ class CommerceWidgets extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '2.0.1';
-    public $hasCpSettings = false;
+    public string $schemaVersion = '2.0.1';
+    public bool $hasCpSettings = false;
 
     // Public Methods
     // =========================================================================
@@ -85,7 +85,7 @@ class CommerceWidgets extends Plugin
     // Protected Methods
     // =========================================================================
 
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }

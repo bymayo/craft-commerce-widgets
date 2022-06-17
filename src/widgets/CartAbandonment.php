@@ -29,7 +29,7 @@ class CartAbandonment extends Widget
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
 
-    public static function maxColspan()
+    public static function maxColspan(): ?int
     {
         return null;
     }
@@ -146,12 +146,12 @@ class CartAbandonment extends Widget
     // Public Methods
     // =========================================================================
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
       return 'Cart Abandonment - ' . date('F Y');
     }
 
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 

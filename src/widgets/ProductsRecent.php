@@ -30,7 +30,7 @@ class ProductsRecent extends Widget
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
 
-    public static function maxColspan()
+    public static function maxColspan(): ?int
     {
         return null;
     }
@@ -38,12 +38,12 @@ class ProductsRecent extends Widget
     // Public Methods
     // =========================================================================
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
       return 'Recent Products';
     }
 
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 
@@ -58,7 +58,7 @@ class ProductsRecent extends Widget
         return $rules;
     }
 
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
@@ -68,7 +68,7 @@ class ProductsRecent extends Widget
         );
     }
 
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 
