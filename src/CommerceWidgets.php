@@ -26,7 +26,7 @@ class CommerceWidgets extends Plugin
     // Public Properties
     // =========================================================================
 
-    public string $schemaVersion = '2.0.1';
+    public string $schemaVersion = '3.0.0';
     public bool $hasCpSettings = false;
 
     // Public Methods
