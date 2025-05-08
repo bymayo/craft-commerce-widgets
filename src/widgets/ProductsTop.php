@@ -52,8 +52,7 @@ class ProductsTop extends Widget
          )
          ->select(
             [
-               'variants.productId as id',
-               'variants.sku as sku',
+               'variants.id as id',
                'SUM(items.total) as totalRevenue',
                'count(*) as totalOrdered',
             ]
@@ -69,7 +68,7 @@ class ProductsTop extends Widget
             'LEFT JOIN', '{{%commerce_orders}} orders', 'orders.id = items.orderId'
          )
          ->join(
-            'LEFT JOIN', '{{%elements}} elements', 'elements.id = variants.productId'
+            'LEFT JOIN', '{{%elements}} elements', 'elements.id = variants.id'
          )
          ->where(['elements.dateDeleted' => null])
          ->andWhere(['orders.isCompleted' => 1])
@@ -81,7 +80,7 @@ class ProductsTop extends Widget
       {
          $query
          ->andWhere(['orders.orderStatusId' => $this->orderStatusId])
-         ->andWhere(['not', ['variants.productId' => null]]);
+         ->andWhere(['not', ['variants.id' => null]]);
       }
 
       $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->all();

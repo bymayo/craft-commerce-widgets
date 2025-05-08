@@ -14,7 +14,6 @@
       </thead>
       <tbody>
          {% for customer in customers %}
-            {% set userId = craft.commercewidgets.userIdByCustomerId(customer.customerId).userId %}
             <tr{% if loop.first %} class="rank-background -first"{% endif %}>
                <td class="rank-column">
                   <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">
@@ -26,8 +25,8 @@
                   </span>
                </td>
                <td>
-                  {% if userId|length %}
-                     <a href="/{{ cpTrigger }}/users/{{ userId }}">
+                  {% if customer.customerId|length %}
+                     <a href="/{{ cpTrigger }}/users/{{ customer.customerId }}">
                         {{ customer.email }}
                      </a>
                   {% else %}

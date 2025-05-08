@@ -20,7 +20,7 @@ class CommerceWidgetsVariable
          )
          ->select(
             [
-               'userId'
+               'customers.customerId as userId',
             ]
          )
          ->from(['{{%commerce_customers}}'])
