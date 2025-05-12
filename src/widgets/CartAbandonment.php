@@ -21,6 +21,8 @@ class CartAbandonment extends Widget
     public static $displayName = 'Cart Abandonment';
     public $targetDuration = 'monthly';
     public $previousAmount = 4;
+    public $graphStep = 50;
+    public $graphStyle = 'detailed';
 
     // Static Methods
     // =========================================================================
@@ -168,6 +170,8 @@ class CartAbandonment extends Widget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                'widgetId' => $this->id,
+               'graphStep' => $this->graphStep,
+               'graphStyle' => $this->graphStyle,
                'dateRangeChart' => $this->getMonthDateRange(),
                'abandonedCartChart' => $this->getTotalCarts(0),
                'completedCartChart' => $this->getTotalCarts(1),

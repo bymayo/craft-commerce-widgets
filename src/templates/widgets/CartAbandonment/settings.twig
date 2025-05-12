@@ -30,3 +30,29 @@
       }
    )
 }}
+
+{{
+   forms.textField(
+      {
+         label: 'Graph Step',
+         id: 'graphStep',
+         name: 'graphStep',
+         value: widget['graphStep']
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
+         label: 'Graph Style',
+         id: 'graphStyle',
+         name: 'graphStyle',
+         value: widget['graphStyle'],
+         options: [
+            { label: 'Detailed', value: 'detailed' },
+            { label: 'Simple', value: 'simple' }
+         ]
+      }
+   )
+}}

@@ -1,143 +1,172 @@
-<canvas id="chart-line-{{ id }}" class="cw:h-80 cw:w-full"></canvas>
+<div class="cw:w-full cw:h-80">
+    <canvas id="chart-line-{{ id }}" class="cw:w-full cw:h-full"></canvas>
+</div>
+
 
 {% js %}
 
-const style = window.getComputedStyle(document.body);
+    const style = window.getComputedStyle(document.body);
 
-const ctx = document.getElementById('chart-line-{{ id }}').getContext("2d");
+    const cwChartElement = document.getElementById('chart-line-{{ id }}').getContext('2d');
 
-var gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height * 2);
-gradient.addColorStop(0, opacify(convert(style.getPropertyValue('--cw-color-blue-500'), 'rgba'), 0.9));
-gradient.addColorStop(1, opacify(convert(style.getPropertyValue('--cw-color-blue-300'), 'rgba'), 0.2));
+    var gradient = cwChartElement.createLinearGradient(0, 0, 0, cwChartElement.canvas.height * 2);
+    gradient.addColorStop(0, opacify(convert(style.getPropertyValue('--cw-color-blue-500'), 'rgba'), 0.9));
+    gradient.addColorStop(1, opacify(convert(style.getPropertyValue('--cw-color-blue-300'), 'rgba'), 0.2));
 
-const data = {
-    labels: ['February', 'March', 'April', 'May'],
-    datasets: [
-    {
-      label: 'Completed',
-      data: [5, 92, 18, 90],
-      lineTension: 0.3,
-      pointBackgroundColor: style.getPropertyValue('--cw-color-blue-500'),
-      borderColor: style.getPropertyValue('--cw-color-blue-500'),
-      fill: 'start',
-      pointRadius: 3,
-      backgroundColor: gradient
-    },
-    {
-      label: 'Abandoned',
-      data: [0, 40, 12, 150],
-      lineTension: 0.3,
-      borderDash: [4,3],
-      pointBackgroundColor: style.getPropertyValue('--cw-color-blue-300'),
-      borderColor: style.getPropertyValue('--cw-color-blue-300'),
-      backgroundColor: 'transparent'
-    }
-  ]
-}
-
-console.log(style.getPropertyValue('--cw-color-blue-300'));
-
-const config = {
-    type: 'line',
-    data: data,
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    boxWidth: 20,
-                    boxHeight: 6,
-                    useBorderRadius: true,
-                    borderRadius: 1
-                }
-            }
+    const data = {
+        labels: ['February', 'March', 'April', 'May'],
+        datasets: [
+        {
+            label: 'Completed',
+            data: [5, 92, 18, 90],
+            lineTension: 0.3,
+            pointBackgroundColor: style.getPropertyValue('--cw-color-blue-500'),
+            borderColor: style.getPropertyValue('--cw-color-blue-500'),
+            fill: 'start',
+            pointRadius: 3,
+            backgroundColor: gradient
         },
-        scales: {
-            x: {
-                grid: {
-                    display: false
-                }
-            },
-            y: {
-                ticks: {
-                    backdropColor: 'rgba(0, 0, 0, 0)',
-                    stepSize: 50
-                },
-                grid: {
-                    display: true,
-                    color: style.getPropertyValue('--cw-color-gray-200'),
-                }
-            }
+        {
+            label: 'Abandoned',
+            data: [0, 40, 12, 150],
+            lineTension: 0.3,
+            borderDash: [4,3],
+            pointBackgroundColor: style.getPropertyValue('--cw-color-blue-300'),
+            borderColor: style.getPropertyValue('--cw-color-blue-300'),
+            backgroundColor: 'transparent'
         }
+    ]
     }
-}
 
-const chart = new CwChart(ctx, config);
-
-    {# $(
-        function() {
-
-        var ctx = document.getElementById('chart-line-{{ id }}').getContext("2d");
-
-        const colours = {
-            abandoned: {
-            stroke: '#e67a0b',
-            background: 'rgba(230,122,11,0.4)'
-            },
-            completed: {
-            stroke: '#27AE5F',
-            background: 'rgba(39,174,95,0.1)'
-            }
-        };
-
-        const abandoned = {{ abandonedCartChart|json_encode|raw }};
-        const completed = {{ completedCartChart|json_encode|raw }};
-        const xAxisData = {{ dateRangeChart|json_encode|raw }};
-
-        const myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-            labels: xAxisData,
-            datasets: [ {
-                label: "Cart Abandoned",
-                pointBackgroundColor: colours.abandoned.stroke,
-                borderColor: colours.abandoned.stroke,
-                pointHighlightStroke: colours.abandoned.stroke,
-                borderCapStyle: 'butt',
-                data: abandoned,
-                fill: false,
-                backgroundColor: colours.abandoned.background
-            }, {
-                label: "Cart Completed",
-                fill: false,
-                backgroundColor: colours.completed.background,
-                pointBackgroundColor: colours.completed.stroke,
-                borderColor: colours.completed.stroke,
-                pointHighlightStroke: colours.completed.stroke,
-                data: completed,
-            }]
-            },
-            options: {
-            legend: {
-                display: false
-            },
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                stacked: false,
-                ticks: {
-                    min: 0
+            interaction: {
+                mode: 'nearest'
+            },
+            layout: {
+                padding: {
+                    top: 0,
+                    right: -3,
+                    bottom: 0,
+                    left: -6 
                 }
-                }]
             },
-            animation: {
-                duration: 500,
+            plugins: {
+                tooltip: {
+                    padding: 8,
+                    xAlign: 'center',
+                    yAlign: 'top',
+                    cornerRadius: 5
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 20,
+                        boxHeight: 6,
+                        useBorderRadius: true,
+                        borderRadius: 1
+                    }
+                }
             },
+            scales: {
+                x: {
+                    ticks: {
+                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        align: 'inner',
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    ticks: {
+                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        backdropColor: 'rgba(0, 0, 0, 0)',
+                        stepSize: {{ graphStep }},
+                        drawBorder: false
+                    },
+                    grid: {
+                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        color: style.getPropertyValue('--cw-color-gray-200'),
+                    },
+                    border: {
+                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                    }
+                }
             }
-        });
-
         }
-    ); #}
+    }
+
+    const chart = new CwChart(cwChartElement, config);
+
+        {# $(
+            function() {
+
+            var ctx = document.getElementById('chart-line-{{ id }}').getContext("2d");
+
+            const colours = {
+                abandoned: {
+                stroke: '#e67a0b',
+                background: 'rgba(230,122,11,0.4)'
+                },
+                completed: {
+                stroke: '#27AE5F',
+                background: 'rgba(39,174,95,0.1)'
+                }
+            };
+
+            const abandoned = {{ abandonedCartChart|json_encode|raw }};
+            const completed = {{ completedCartChart|json_encode|raw }};
+            const xAxisData = {{ dateRangeChart|json_encode|raw }};
+
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                labels: xAxisData,
+                datasets: [ {
+                    label: "Cart Abandoned",
+                    pointBackgroundColor: colours.abandoned.stroke,
+                    borderColor: colours.abandoned.stroke,
+                    pointHighlightStroke: colours.abandoned.stroke,
+                    borderCapStyle: 'butt',
+                    data: abandoned,
+                    fill: false,
+                    backgroundColor: colours.abandoned.background
+                }, {
+                    label: "Cart Completed",
+                    fill: false,
+                    backgroundColor: colours.completed.background,
+                    pointBackgroundColor: colours.completed.stroke,
+                    borderColor: colours.completed.stroke,
+                    pointHighlightStroke: colours.completed.stroke,
+                    data: completed,
+                }]
+                },
+                options: {
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                    stacked: false,
+                    ticks: {
+                        min: 0
+                    }
+                    }]
+                },
+                animation: {
+                    duration: 500,
+                },
+                }
+            });
+
+            }
+        ); #}
+
 {% endjs %}

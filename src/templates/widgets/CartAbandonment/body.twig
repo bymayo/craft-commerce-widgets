@@ -32,9 +32,11 @@
 
   </div>
 
-  <div class="">
+  <div class="{{ graphStyle == 'simple' ? 'cw:-ml-7 cw:-mr-7.5' }}">
     {% include 'commerce-widgets/_includes/charts/line' with {
       id: 'cart-abandonment',
+      step: graphStep,
+      style: graphStyle,
     } %}
   </div>
 
