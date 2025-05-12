@@ -1,0 +1,32 @@
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{{
+   forms.selectField(
+      {
+         label: 'Target Duration',
+         id: 'targetDuration',
+         name: 'targetDuration',
+         value: widget['targetDuration'],
+         options: [
+            { label: 'Daily', value: 'daily' },
+            { label: 'Weekly', value: 'weekly' },
+            { label: 'Monthly', value: 'monthly' },
+            { label: 'Yearly', value: 'yearly' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.textField(
+      {
+         label: 'Previous Amount',
+         id: 'previousAmount',
+         instructions: 'The amount of the previous period. E.g. 6 would show the previous 5 months.',
+         name: 'previousAmount',
+         value: widget['previousAmount']
+      }
+   )
+}}

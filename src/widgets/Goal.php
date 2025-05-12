@@ -112,6 +112,11 @@ class Goal extends Widget
       return StringHelper::titleize($this->type) . ' Goal';
     }
 
+    public function getSubtitle(): ?string
+    {
+        return 'May 2025';
+    }
+
     public function rules(): array
     {
         $rules = parent::rules();

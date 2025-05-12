@@ -18,12 +18,16 @@ class CartAbandonment extends Widget
     // Public Properties
     // =========================================================================
 
+    public static $displayName = 'Cart Abandonment';
+    public $targetDuration = 'monthly';
+    public $previousAmount = 4;
+
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Cart Abandonment');
+        return CommerceWidgets::getInstance()->name . ' - ' . self::$displayName;
     }
 
     public static function iconPath()
@@ -45,9 +49,7 @@ class CartAbandonment extends Widget
          $currentMonth  = strtotime('next month');
          $monthArray = array();
 
-         $totalMonths = 6;
-
-         for ($i = $totalMonths; $i >= 1; $i--) {
+         for ($i = $this->previousAmount; $i >= 1; $i--) {
             array_push(
                $monthArray,
                date('M', strtotime("-$i month", $currentMonth)
@@ -150,7 +152,12 @@ class CartAbandonment extends Widget
 
     public function getTitle(): ?string
     {
-      return 'Cart Abandonment - ' . date('F Y');
+      return self::$displayName;
+    }
+
+    public function getSubtitle(): ?string
+    {
+        return date('F Y');
     }
 
     public function getBodyHtml(): ?string
@@ -166,6 +173,16 @@ class CartAbandonment extends Widget
                'completedCartChart' => $this->getTotalCarts(1),
                'abandonedCartData' => $this->getCartTotalRevenue(0),
                'completedCartData' => $this->getCartTotalRevenue(1)
+            ]
+        );
+    }
+
+    public function getSettingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate(
+            'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
+            [
+                'widget' => $this
             ]
         );
     }

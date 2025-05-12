@@ -1,0 +1,16 @@
+<div class="cw:text-lg cw:border-1! cw:border-solid cw:border-gray-300 cw:rounded-md cw:p-3 cw:space-y-0.5">
+    <div class="cw:text-sm cw:font-bold">
+        {{ heading }}
+    </div>
+    <div class="">
+        <span class="cw:text-2xl cw:font-semibold">{{ statistic }}</span>
+        {% if changeIndicator %}
+            <span class="cw:text-xs cw:text-[var(--disabled-color)]">
+                ↘ {{ changeIndicator }}
+            </span>
+        {% endif %}
+    </div>
+    <div class="cw:text-xs cw:text-gray-400">
+        {{ statisticSecondary }}
+    </div>
+</div>

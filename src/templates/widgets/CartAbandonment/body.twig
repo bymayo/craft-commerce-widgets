@@ -2,91 +2,40 @@
 
 {% block widget %}
 
-   {% set dataCountTotal = abandonedCartData.count + completedCartData.count %}
+  {% set dataCountTotal = abandonedCartData.count + completedCartData.count %}
 
-   <div class="chart-container">
-      <canvas id="commerce-widgets-cart-abandonment-chart" class="chart"></canvas>
-   </div>
+  <div class="cw:flex cw:gap-2 cw:mb-10">
 
-   <div class="statistic-container">
-      <div class="statistic -cart-completed">
-         <strong>{{ completedCartData.count|number_format() }}</strong>
-         <p>Completed Cart{{ completedCartData.count == 0 or completedCartData.count > 1 ? 's' }}</p>
-         <small>{{ completedCartData.totalPrice|currency(commerce.currency) }}</small>
-      </div>
-      <div class="statistic -cart-abandoned">
-         <strong>{{ abandonedCartData.count|number_format() }}</strong>
-         <p>Abandoned Cart{{ abandonedCartData.count == 0 or abandonedCartData.count > 1 ? 's' }}</p>
-         <small>{{ abandonedCartData.totalPrice|currency(commerce.currency) }}</small>
-      </div>
-   </div>
+    <div class="cw:w-1/2">
 
-   {% js %}
-      $(
-         function() {
+      {% include 'commerce-widgets/_includes/statistic' with { 
+        heading: 'Completed',
+        statistic: completedCartData.count|number_format(),
+        statisticSecondary: completedCartData.totalPrice|currency(commerce.currency),
+        changeIndicator: '3%',
+        changeDirection: 'up'
+      } %}
 
-            var ctx = document.getElementById('commerce-widgets-cart-abandonment-chart').getContext("2d");
+    </div>
 
-            const colours = {
-              abandoned: {
-                stroke: '#e67a0b',
-                background: 'rgba(230,122,11,0.4)'
-              },
-              completed: {
-                stroke: '#27AE5F',
-                background: 'rgba(39,174,95,0.1)'
-              }
-            };
+    <div class="cw:w-1/2">
 
-            const abandoned = {{ abandonedCartChart|json_encode|raw }};
-            const completed = {{ completedCartChart|json_encode|raw }};
-            const xAxisData = {{ dateRangeChart|json_encode|raw }};
+      {% include 'commerce-widgets/_includes/statistic' with { 
+        heading: 'Abandoned',
+        statistic: abandonedCartData.count|number_format(),
+        statisticSecondary: abandonedCartData.totalPrice|currency(commerce.currency),
+        changeIndicator: '5%',
+        changeDirection: 'down',
+      } %}
 
-            const myChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: xAxisData,
-                datasets: [ {
-                  label: "Cart Abandoned",
-                  pointBackgroundColor: colours.abandoned.stroke,
-                  borderColor: colours.abandoned.stroke,
-                  pointHighlightStroke: colours.abandoned.stroke,
-                  borderCapStyle: 'butt',
-                  data: abandoned,
-                  fill: false,
-                  backgroundColor: colours.abandoned.background
-                }, {
-                  label: "Cart Completed",
-                  fill: false,
-                  backgroundColor: colours.completed.background,
-                  pointBackgroundColor: colours.completed.stroke,
-                  borderColor: colours.completed.stroke,
-                  pointHighlightStroke: colours.completed.stroke,
-                  data: completed,
-                }]
-              },
-              options: {
-                legend: {
-                  display: false
-               },
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                  yAxes: [{
-                    stacked: false,
-                    ticks: {
-                       min: 0
-                    }
-                  }]
-                },
-                animation: {
-                  duration: 500,
-                },
-              }
-            });
+    </div>
 
-         }
-      );
-   {% endjs %}
+  </div>
+
+  <div class="">
+    {% include 'commerce-widgets/_includes/charts/line' with {
+      id: 'cart-abandonment',
+    } %}
+  </div>
 
 {% endblock %}
