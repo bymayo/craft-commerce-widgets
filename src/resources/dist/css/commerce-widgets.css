@@ -1,0 +1,22 @@
+/*! tailwindcss v4.1.6 | MIT License | https://tailwindcss.com */
+@layer theme, base, components, utilities;
+@layer theme {
+  :root, :host {
+    --cw-color-red-500: oklch(63.7% 0.237 25.331);
+    --cw-color-green-500: oklch(72.3% 0.219 149.579);
+    --cw-text-lg: 1.125rem;
+    --cw-text-lg--line-height: calc(1.75 / 1.125);
+  }
+}
+@layer utilities {
+  .cw\:text-lg {
+    font-size: var(--cw-text-lg);
+    line-height: var(--tw-leading, var(--cw-text-lg--line-height));
+  }
+  .cw\:text-green-500 {
+    color: var(--cw-color-green-500);
+  }
+  .cw\:text-red-500 {
+    color: var(--cw-color-red-500);
+  }
+}

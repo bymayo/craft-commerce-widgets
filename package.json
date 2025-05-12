@@ -1,30 +1,17 @@
 {
   "name": "commerce-widgets",
-  "version": "1.0.0",
+  "version": "5.0.0",
   "description": "Description",
   "main": "index.js",
   "scripts": {
+    "tailwind": "tailwindcss -i ./src/resources/src/css/commerce-widgets.css -o ./src/resources/dist/css/commerce-widgets.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "paths": {
-    "assets": "src/assetbundles/commercewidgets/",
-    "dist": "src/assetbundles/commercewidgets/dist/"
-  },
-  "files": {
-    "scss": "CommerceWidgets.scss",
-    "css": "CommerceWidgets.css"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^6.0.0",
-    "gulp-clean-css": "^3.10.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-notify": "^3.2.0",
-    "gulp-plumber": "^1.2.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.4"
+    "@tailwindcss/cli": "^4.1.6",
+    "tailwindcss": "^4.1.6"
   },
   "devDependencies": {}
 }

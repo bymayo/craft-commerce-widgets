@@ -13,7 +13,7 @@ class CommerceWidgetsAsset extends AssetBundle
 
     public function init()
     {
-        $this->sourcePath = "@bymayo/commercewidgets/assetbundles/commercewidgets/dist";
+        $this->sourcePath = "@bymayo/commercewidgets/resources/dist";
 
         $this->depends = [
             CpAsset::class,
@@ -21,11 +21,11 @@ class CommerceWidgetsAsset extends AssetBundle
 
         $this->js = [
            'js/plugins/Chart.min.js',
-           'js/CommerceWidgets.js',
+           'js/commerce-widgets.js',
         ];
 
         $this->css = [
-            'css/CommerceWidgets.css',
+            'css/commerce-widgets.css',
         ];
 
         parent::init();
