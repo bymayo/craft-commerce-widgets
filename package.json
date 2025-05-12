@@ -4,14 +4,21 @@
   "description": "Description",
   "main": "index.js",
   "scripts": {
-    "tailwind": "tailwindcss -i ./src/resources/src/css/commerce-widgets.css -o ./src/resources/dist/css/commerce-widgets.css --watch",
+    "build": "vite build",
+    "dev": "vite",
+    "watch": "vite build --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.6",
-    "tailwindcss": "^4.1.6"
+    "@tailwindcss/vite": "^4.1.6",
+    "chart.js": "^4.4.9",
+    "colorizr": "^3.0.8",
+    "tailwindcss": "^4.1.6",
+    "vite-plugin-static-copy": "^3.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "vite-plugin-full-reload": "^1.2.0"
+  }
 }
