@@ -2,12 +2,51 @@
 
 {% block widget %}
 
-   <div class="cw:bg-yellow-50 cw:border! cw:border-yellow-200! cw:border-solid cw:rounded cw:p-4 ">
+   <div class="tableview cw:pt-6">
 
-      <p>This widget has been deprecated due to subscriptions no longer being part of Craft Commerce.</p>
+      <div class="tablepane">
 
-      <p>Please remove this widget from your dashboard.</p>
-   
+         <table class="data fullwidth">
+            <thead>
+               <tr>
+                  <th>Plan</th>
+                  <th>Active Subscriptions</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for plan in plans %}
+                  <tr>
+                     <td>
+                        <div class="element hasstatus cw:flex cw:items-center">
+                           <span class="status {{ plan.enabled ? 'live' : 'disabled' }}"></span>
+                           <a href="/{{ cpTrigger }}/commerce/subscriptions?source=plan%3A{{ plan.id }}" class="cw:font-semibold">
+                              {{ plan.name }}
+                           </a>
+                        </div>
+                     </td>
+                     <td>{{ plan.activeSubscriptions|number_format() }}</td>
+                  </tr>
+               {% else %} 
+                  <tr>
+                     <td colspan="2">
+                        No subscriptions found.
+                     </td>
+                  </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+
+      </div>
+
    </div>
+
+   {% include 'commerce-widgets/_includes/footer' with {
+      buttons: [
+         {
+            text: 'View All Subscription Plans',
+            url: '/' ~ cpTrigger ~ '/commerce/subscription-plans'
+         }
+      ]
+   } only %}
 
 {% endblock %}

@@ -9,7 +9,7 @@
          {% set element = craft.users.id(customer.customerId).one() %}
          {% set cpEditUrl = '/' ~ cpTrigger ~ '/users/' ~ customer.customerId %}
 
-         <div class="{{ not loop.first ? 'cw:border-t! cw:border-gray-100 cw:border-solid' }} {{ loop.first ? 'cw:pb-3' }} {{ loop.last ? 'cw:pt-3' }} {{ not loop.last and not loop.first ? 'cw:py-3' }}">
+         <div class="{{ not loop.first ? 'cw:border-t! cw:border-gray-100 cw:border-solid' }} {{ loop.first and customers|length > 1 ? 'cw:pb-3' }} {{ loop.last and customers|length > 1 ? 'cw:pt-3' }} {{ not loop.last and not loop.first ? 'cw:py-3' }}">
 
             <div class="cw:flex cw:px-6">
 

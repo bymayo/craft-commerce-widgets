@@ -26,7 +26,7 @@ class SubscriptionPlans extends Widget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans') . ' (Deprecated)';
+        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
     }
 
     public static function iconPath()

@@ -20,6 +20,9 @@
                      <td>
                         <div class="element hasstatus cw:flex cw:items-center">
                            <span class="status {{ order.orderStatus.color }}"></span>
+                           {# <span class="cw:mr-2">
+                              {{ order.orderStatus.labelHtml|raw }} 
+                           </span> #}
                            <a href="{{ order.cpEditUrl }}" class="cw:font-semibold">
                               {{ order.shortNumber }}
                            </a>
