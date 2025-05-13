@@ -14,7 +14,7 @@
 
                   <div class="cw:flex cw:items-center cw:w-9/12">
 
-                     <a href="{{ element.cpEditUrl }}" class="cw:w-14 cw:h-14 cw:flex cw:items-center cw:justify-center cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
+                     <a href="{{ element.cpEditUrl }}" class="cw:w-12 cw:h-12 cw:flex cw:items-center cw:justify-center cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
                         {{ element.getThumbHtml(100)|raw }}
                      </a>
 
@@ -41,7 +41,8 @@
                         changeIndicator: '5%',
                         changeDirection: 'down',
                         padding: false,
-                        border: false 
+                        border: false,
+                        style: 'small'
                      } only %}
                   </div> 
 
@@ -65,57 +66,5 @@
          }
       ]
    } only %}
-
-   {% set rankClasses = ['-first', '-second', '-third'] %}
-
-   {# <table class="data fullwidth collapsible">
-      <thead>
-         <tr>
-            <th colspan="2">Product</th>
-            <th>Total Revenue</th>
-            <th>Total Orders</th>
-         </tr>
-      </thead>
-      <tbody>
-         {% for product in products %}
-
-            {% set element = craft.products.id(product.id).status(null).one() %}
-            
-            <tr{% if loop.first %} class="rank-background -first"{% endif %}>
-               <td class="rank-column">
-                  <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">
-                     {% if loop.first %}
-                        <i class="fas fa-crown"></i>
-                     {% else %}
-                        {{ loop.index}}
-                     {% endif %}
-                  </span>
-               </td>
-               <td>
-                  <div class="element hasstatus">
-                     <span class="status {{ element.status }}"></span>
-                     <div class="label">
-                        <span class="title">
-                           <a href="{{ element.cpEditUrl }}">
-                              {{ element.title|length > 40 ? element.title|slice(0, 40) ~ '...' : element.title }}
-                           </a>
-                        </span>
-                     </div>
-                  </div>
-               </td>
-               <td>{{ product.totalRevenue|currency(commerce.currency) }}</td>
-               <td>{{ product.totalOrdered|number_format() }}</td>
-            </tr>
-         {% else %}
-            <tr>
-               <td colspan="5">
-                  No products found.
-               </td>
-            </tr>
-         {% endfor %}
-      </tbody>
-   </table>
-
-   <a href="/{{ cpTrigger }}/commerce/products" class="btn">View All Products</a> #}
 
 {% endblock %}

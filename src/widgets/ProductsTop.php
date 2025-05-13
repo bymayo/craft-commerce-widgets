@@ -22,6 +22,7 @@ class ProductsTop extends Widget
     public $orderStatusId;
     public $orderBy;
     public $limit = 5;
+    public $targetDuration = 'monthly';
 
     // Static Methods
     // =========================================================================
@@ -97,6 +98,11 @@ class ProductsTop extends Widget
     {
       return 'Top Products';
     }
+
+   public function getSubtitle(): ?string
+   {
+      return date('F Y');
+   }
 
     public function rules(): array
     {

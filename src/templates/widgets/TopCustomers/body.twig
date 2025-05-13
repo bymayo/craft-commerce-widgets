@@ -2,48 +2,64 @@
 
 {% block widget %}
 
-   {% set rankClasses = ['-first', '-second', '-third'] %}
+   <div class="cw:-ml-6 cw:-mr-6">
 
-   <table class="data fullwidth collapsible">
-      <thead>
-         <tr>
-            <th colspan="2">Email Address</th>
-            <th>Total Revenue</th>
-            <th>Total Orders</th>
-         </tr>
-      </thead>
-      <tbody>
-         {% for customer in customers %}
-            <tr{% if loop.first %} class="rank-background -first"{% endif %}>
-               <td class="rank-column">
-                  <span class="rank {{ rankClasses[loop.index0] is defined ? rankClasses[loop.index0] }}">
-                     {% if loop.first %}
-                        <i class="fas fa-crown"></i>
-                     {% else %}
-                        {{ loop.index}}
-                     {% endif %}
-                  </span>
-               </td>
-               <td>
-                  {% if customer.customerId|length %}
-                     <a href="/{{ cpTrigger }}/users/{{ customer.customerId }}">
-                        {{ customer.email }}
+      {% for customer in customers %}
+
+         {% set element = craft.users.id(customer.customerId).one() %}
+         {% set cpEditUrl = '/' ~ cpTrigger ~ '/users/' ~ customer.customerId %}
+
+         <div class="{{ not loop.first ? 'cw:border-t! cw:border-gray-100 cw:border-solid' }} {{ loop.first ? 'cw:pb-3' }} {{ loop.last ? 'cw:pt-3' }} {{ not loop.last and not loop.first ? 'cw:py-3' }}">
+
+            <div class="cw:flex cw:px-6">
+
+               <div class="cw:flex cw:items-center cw:w-9/12">
+
+                  <a href="{{ cpEditUrl }}" class="cw:w-10 cw:h-10 cw:[&_svg]:w-10 cw:[&_svg]:h-10 cw:flex cw:items-center cw:justify-center cw:rounded-full cw:overflow-hidden cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
+                     {{ element.getThumbHtml(10)|raw }}
+                  </a>
+
+                  <div class="cw:w-full cw:pr-10 cw:leading-tight">
+                  
+                     <a href="{{ cpEditUrl }}" class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:truncate">
+                        {{ element|length ? element.fullName ?? element.username : 'Customer' }}
                      </a>
-                  {% else %}
-                     {{ customer.email }}
-                  {% endif %}
-               </td>
-               <td>{{ customer.totalRevenue|currency(commerce.currency) }}</td>
-               <td>{{ customer.totalOrders|number_format() }}</td>
-            </tr>
-         {% else %}
-            <tr>
-               <td colspan="4">
-                  No customers found.
-               </td>
-            </tr>
-         {% endfor %}
-      </tbody>
-   </table>
+
+                     <div class="cw:max-w-[90%] cw:truncate">
+                        {{ customer.email }}
+                     </div>
+
+                  </div>
+
+               </div>
+
+               <div class="cw:pl-4">
+                  {% include 'commerce-widgets/_includes/statistic' with { 
+                     statistic: customer.totalOrders|number_format(),
+                     statisticSecondary: customer.totalRevenue|currency(commerce.currency),
+                     changeIndicator: '5%',
+                     changeDirection: 'down',
+                     padding: false,
+                     border: false,
+                     style: 'small'
+                  } only %}
+               </div> 
+
+            </div>
+               
+         </div>
+
+      {% endfor %}
+
+   </div>
+
+   {% include 'commerce-widgets/_includes/footer' with {
+      buttons: [
+         {
+            text: 'Export',
+            url: '/' ~ cpTrigger ~ '/commerce/export'
+         }
+      ]
+   } only %}
 
 {% endblock %}

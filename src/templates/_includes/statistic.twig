@@ -1,5 +1,6 @@
 {% set padding = padding ?? true %}
 {% set border = border ?? true %}
+{% set style = style ?? 'base' %}
 
 <div class="cw:text-lg cw:space-y-0.5 {{ padding ? 'cw:p-3' }} {{ border ? 'cw:border-1! cw:border-solid cw:border-gray-300 cw:rounded-md' }}">
     {% if heading is defined and heading|length %}
@@ -8,7 +9,7 @@
         </div>
     {% endif %}
     <div class="">
-        <span class="cw:text-2xl cw:font-semibold">{{ statistic }}</span>
+        <span class="cw:font-semibold {{ style == 'small' ? 'cw:text-xl' : 'cw:text-2xl' }}">{{ statistic }}</span>
         {% if changeIndicator %}
             <span class="cw:text-xs cw:text-[var(--disabled-color)]">
                 ↘ {{ changeIndicator }}

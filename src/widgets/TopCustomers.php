@@ -22,6 +22,8 @@ class TopCustomers extends Widget
     public $orderBy;
     public $groupBy; // Remove
     public $limit;
+    public $targetDuration = 'monthly';
+    public $excludeAdmins;
 
     // Static Methods
     // =========================================================================
@@ -73,7 +75,7 @@ class TopCustomers extends Widget
             $query->andWhere(['not in', 'orders.email', CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses]);
         }
 
-         if($this->includeGuests == 'no')
+         if($this->includeGuests == false)
          {
             $query
                ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
@@ -100,6 +102,11 @@ class TopCustomers extends Widget
       return 'Top Customers';
     }
 
+    public function getSubtitle(): ?string
+    {
+       return date('F Y');
+    }
+
     public function rules(): array
     {
         $rules = parent::rules();
@@ -107,9 +114,10 @@ class TopCustomers extends Widget
         $rules = array_merge(
             $rules,
             [
-                [['includeGuests', 'orderBy'], 'string'],
+                [['orderBy'], 'string'],
+                [['includeGuests'], 'boolean'],
                 [['limit'], 'integer'],
-                ['includeGuests', 'default', 'value' => 'yes'],
+                ['includeGuests', 'default', 'value' => 1],
                 ['orderBy', 'default', 'value' => 'totalRevenue'],
                 ['limit', 'default', 'value' => 5]
             ]

@@ -57,4 +57,21 @@
       )
    }}
 
+   {{
+      forms.selectField(
+         {
+            label: 'Target Duration',
+            id: 'targetDuration',
+            name: 'targetDuration',
+            value: widget['targetDuration'],
+            options: [
+               { label: 'Daily', value: 'daily' },
+               { label: 'Weekly', value: 'weekly' },
+               { label: 'Monthly', value: 'monthly' },
+               { label: 'Yearly', value: 'yearly' }
+            ]
+         }
+      )
+   }}
+
 </div>
