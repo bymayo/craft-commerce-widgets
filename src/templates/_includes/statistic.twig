@@ -4,7 +4,7 @@
 
 <div class="cw:text-lg cw:space-y-0.5 {{ padding ? 'cw:p-3' }} {{ border ? 'cw:border-1! cw:border-solid cw:border-gray-300 cw:rounded-md' }}">
     {% if heading is defined and heading|length %}
-        <div class="cw:text-sm cw:font-bold">
+        <div class="cw:font-bold {{ style == 'small' ? 'cw:text-xs' : 'cw:text-sm' }}">
             {{ heading }}
         </div>
     {% endif %}

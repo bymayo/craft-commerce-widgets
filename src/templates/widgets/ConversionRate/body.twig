@@ -1,0 +1,99 @@
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
+
+  <div class="cw:grid cw:grid-cols-4">
+    <div class="cw:col-span-1 cw:pr-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+
+      <div class="cw:mb-2">
+        {% include 'commerce-widgets/_includes/statistic' with { 
+            heading: 'Sessions',
+            statistic: '120',
+            statisticSecondary: '100%',
+            changeIndicator: '5%',
+            changeDirection: 'down',
+            padding: false,
+            border: false,
+            style: 'small'
+        } only %}
+      </div>
+
+      {% include 'commerce-widgets/_includes/charts/bar' with {
+        id: 'conversion-sessions'
+      } only %}
+
+    </div>
+    <div class="cw:col-span-1 cw:px-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+
+      <div class="cw:mb-2">
+        {% include 'commerce-widgets/_includes/statistic' with { 
+            heading: 'Added to Cart',
+            statistic: '120',
+            statisticSecondary: '100%',
+            changeIndicator: '5%',
+            changeDirection: 'down',
+            padding: false,
+            border: false,
+            style: 'small'
+        } only %}
+      </div>
+
+      {% include 'commerce-widgets/_includes/charts/bar' with {
+        id: 'conversion-added-to-cart'
+      } only %}
+
+    </div>
+    <div class="cw:col-span-1 cw:px-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+
+      <div class="cw:mb-2">
+        {% include 'commerce-widgets/_includes/statistic' with { 
+            heading: 'Checkout',
+            statistic: '120',
+            statisticSecondary: '100%',
+            changeIndicator: '5%',
+            changeDirection: 'down',
+            padding: false,
+            border: false,
+            style: 'small'
+        } only %}
+      </div>
+
+      {% include 'commerce-widgets/_includes/charts/bar' with {
+        id: 'conversion-checkout'
+      } only %}
+
+    </div>
+    <div class="cw:col-span-1 cw:pl-4">
+
+      <div class="cw:mb-2">
+        {% include 'commerce-widgets/_includes/statistic' with { 
+            heading: 'Completed',
+            statistic: '120',
+            statisticSecondary: '100%',
+            changeIndicator: '5%',
+            changeDirection: 'down',
+            padding: false,
+            border: false,
+            style: 'small'
+        } only %}
+      </div>
+
+      <div class="cw:mt-auto">
+        {% include 'commerce-widgets/_includes/charts/bar' with {
+          id: 'conversion-statistic'
+        } only %}
+      </div>
+
+    </div>
+  </div>
+
+  {% include 'commerce-widgets/_includes/footer' with {
+    buttons: [
+      {
+        text: 'Export',
+        url: '/' ~ cpTrigger ~ '/commerce/orders'
+      }
+    ]
+  } only %}
+
+{% endblock %}
