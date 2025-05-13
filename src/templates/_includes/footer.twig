@@ -1,0 +1,7 @@
+<div class="cw:-ml-6 cw:-mr-6 cw:px-6 cw:pt-5 cw:border-t! cw:border-gray-200! cw:border-solid cw:mt-5">
+    {% for button in buttons %}
+        <a href="{{ button.url }}" class="btn small">
+            {{ button.text }}
+        </a>
+    {% endfor %}
+</div>

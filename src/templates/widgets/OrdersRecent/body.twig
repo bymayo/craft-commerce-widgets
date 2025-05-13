@@ -9,33 +9,31 @@
          <table class="data fullwidth">
             <thead>
                <tr>
-                  <th>Product</th>
-                  <th>SKU</th>
-                  <th>Price</th>
+                  <th>Order</th>
+                  <th>Total Paid</th>
+                  <th>Date Ordered</th>
                </tr>
             </thead>
             <tbody>
-               {% for product in craft.products().limit(limit).status(null).all() %}
+               {% for order in craft.orders().limit(limit).status(null).orderBy('dateUpdated desc').all() %}
                   <tr>
                      <td>
                         <div class="element hasstatus cw:flex cw:items-center">
-                           <span class="status {{ product.status }}"></span>
-                           <a href="{{ product.cpEditUrl }}" class="cw:font-semibold">
-                              {{ product.title|length > 40 ? product.title|slice(0, 40) ~ '...' : product.title }}
+                           <span class="status {{ order.orderStatus.color }}"></span>
+                           <a href="{{ order.cpEditUrl }}" class="cw:font-semibold">
+                              {{ order.shortNumber }}
                            </a>
                         </div>
                      </td>
                      <td>
-                        {% include 'commerce-widgets/_includes/sku' with {
-                           sku: product.defaultSku
-                        } only %}
+                        {{ order.totalPaid|currency(order.currency) }}
                      </td>
-                     <td>{{ product.defaultPrice|currency(commerce.currency) }}</td>
+                     <td>{{ order.dateCreated|datetime('short') }}</td>
                   </tr>
                {% else %}
                   <tr>
                      <td colspan="3">
-                        No products found.
+                        No orders found.
                      </td>
                   </tr>
                {% endfor %}
@@ -49,8 +47,8 @@
    {% include 'commerce-widgets/_includes/footer' with {
       buttons: [
          {
-         text: 'View All Products',
-         url: '/' ~ cpTrigger ~ '/commerce/products'
+         text: 'View All Orders',
+         url: '/' ~ cpTrigger ~ '/commerce/orders'
          }
       ]
    } only %}

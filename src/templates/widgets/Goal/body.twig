@@ -2,17 +2,16 @@
 
 {% block widget %}
 
-   <div class="goal-values">
-      <strong>{{ type == 'orders' ? total|number_format() : total|currency(commerce.currency) }}</strong>
-      <small>/ {{ type == 'orders' ? targetValue|number_format() : targetValue|currency(commerce.currency) }}</small>
-   </div>
+   <div class="cw:-ml-6 cw:-mr-6">
 
-   <div class="progress-bar{% if total >= targetValue %} -full{% endif %}">
-      <div class="progress-bar-fill" style="width: {{ (total / targetValue) * 100 }}%"></div>
-   </div>
-
-   <div class="goal-duration">
-      {{ targetDuration|title }}
+      {% include 'commerce-widgets/_includes/charts/progress' with { 
+         total: total,
+         totalFormatted: type == 'orders' ? total|number_format() : total|currency(commerce.currency),
+         target: targetValue,
+         targetFormatted: type == 'orders' ? targetValue|number_format() : targetValue|currency(commerce.currency),
+         style: 'blue',
+      } only %}
+      
    </div>
 
 {% endblock %}

@@ -1,0 +1,16 @@
+<div class="cw:bg-blue-50 cw:h-9 cw:relative">
+    <div class="cw:absolute cw:w-full cw:h-full cw:flex cw:items-center cw:px-6">
+        <span class="cw:font-semibold cw:font-gray-900 cw:flex cw:items-center">
+            {{ totalFormatted }}
+            {% if total >= target %}
+                <div class="cw:w-4.5 cw:h-4.5 cw:ml-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="cw:fill-blue-500"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>
+                </div>
+            {% endif %}
+        </span>
+        <span class="cw:ml-auto"> 
+            {{ targetFormatted }}
+        </span>
+    </div>
+    <div class="cw:bg-linear-to-r cw:from-blue-100 cw:to-blue-300 cw:h-full cw:border-r-3! cw:border-r-blue-500! cw:border-r-solid"{% if total < target %} style="width: {{ (total / target) * 100 }}%"{% endif %}></div>
+</div>

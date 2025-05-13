@@ -52,7 +52,8 @@ class ProductsTop extends Widget
          )
          ->select(
             [
-               'variants.id as id',
+               'variants.primaryOwnerId as id',
+               'purchasables.sku as sku',
                'SUM(items.total) as totalRevenue',
                'count(*) as totalOrdered',
             ]
@@ -68,7 +69,7 @@ class ProductsTop extends Widget
             'LEFT JOIN', '{{%commerce_orders}} orders', 'orders.id = items.orderId'
          )
          ->join(
-            'LEFT JOIN', '{{%elements}} elements', 'elements.id = variants.id'
+            'LEFT JOIN', '{{%elements}} elements', 'elements.id = variants.primaryOwnerId'
          )
          ->where(['elements.dateDeleted' => null])
          ->andWhere(['orders.isCompleted' => 1])

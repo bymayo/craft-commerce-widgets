@@ -49,6 +49,7 @@ class CommerceWidgets extends Plugin
                $event->types[] = \bymayo\commercewidgets\widgets\TopCustomers::class;
                $event->types[] = \bymayo\commercewidgets\widgets\Goal::class;
                $event->types[] = \bymayo\commercewidgets\widgets\SubscriptionPlans::class;
+               $event->types[] = \bymayo\commercewidgets\widgets\OrdersRecent::class;
 
             }
         );

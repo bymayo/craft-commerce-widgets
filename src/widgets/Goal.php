@@ -109,13 +109,13 @@ class Goal extends Widget
 
     public function getTitle(): ?string
     {
-      return StringHelper::titleize($this->type) . ' Goal';
+      return StringHelper::titleize($this->targetDuration) . ' ' . StringHelper::titleize($this->type) . ' Goal';
     }
 
-    public function getSubtitle(): ?string
-    {
-        return 'May 2025';
-    }
+      public function getSubtitle(): ?string
+      {
+         return '2025';
+      }
 
     public function rules(): array
     {
@@ -148,7 +148,6 @@ class Goal extends Widget
 
     public function getBodyHtml(): ?string
     {
-        Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
@@ -156,7 +155,6 @@ class Goal extends Widget
                 'widgetId' => $this->id,
                 'type' => $this->type,
                 'targetValue' => $this->targetValue,
-                'targetDuration' => $this->targetDuration,
                 'total' => $this->getTotals()
             ]
         );

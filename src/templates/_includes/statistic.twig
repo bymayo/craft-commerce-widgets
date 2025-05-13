@@ -1,7 +1,12 @@
-<div class="cw:text-lg cw:border-1! cw:border-solid cw:border-gray-300 cw:rounded-md cw:p-3 cw:space-y-0.5">
-    <div class="cw:text-sm cw:font-bold">
-        {{ heading }}
-    </div>
+{% set padding = padding ?? true %}
+{% set border = border ?? true %}
+
+<div class="cw:text-lg cw:space-y-0.5 {{ padding ? 'cw:p-3' }} {{ border ? 'cw:border-1! cw:border-solid cw:border-gray-300 cw:rounded-md' }}">
+    {% if heading is defined and heading|length %}
+        <div class="cw:text-sm cw:font-bold">
+            {{ heading }}
+        </div>
+    {% endif %}
     <div class="">
         <span class="cw:text-2xl cw:font-semibold">{{ statistic }}</span>
         {% if changeIndicator %}

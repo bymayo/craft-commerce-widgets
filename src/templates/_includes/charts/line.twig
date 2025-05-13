@@ -75,7 +75,7 @@
             scales: {
                 x: {
                     ticks: {
-                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        display: {{ style == 'detailed' ? 'true' : 'false' }},
                         align: 'inner',
                     },
                     grid: {
@@ -84,17 +84,17 @@
                 },
                 y: {
                     ticks: {
-                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        display: {{ style == 'detailed' ? 'true' : 'false' }},
                         backdropColor: 'rgba(0, 0, 0, 0)',
-                        stepSize: {{ graphStep }},
+                        stepSize: {{ step }},
                         drawBorder: false
                     },
                     grid: {
-                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        display: {{ style == 'detailed' ? 'true' : 'false' }},
                         color: style.getPropertyValue('--cw-color-gray-200'),
                     },
                     border: {
-                        display: {{ graphStyle == 'detailed' ? 'true' : 'false' }},
+                        display: {{ style == 'detailed' ? 'true' : 'false' }},
                     }
                 }
             }

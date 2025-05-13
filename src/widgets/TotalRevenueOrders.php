@@ -63,8 +63,12 @@ class TotalRevenueOrders extends Widget
             'label' => 'Year',
             'date' => date('Y')
          ),
+          array(
+            'label' => 'Fiscal Year',
+            'date' => date('d M Y', strtotime('first day of April last year')) . ' - ' . date('d M Y', strtotime('last day of April this year'))
+         ),
          array(
-            'label' => 'All',
+            'label' => 'All Time',
             'date' => '∞'
          )
       );
@@ -109,6 +113,13 @@ class TotalRevenueOrders extends Widget
                $query->andWhere(
                   [
                      'between', 'orders.dateCreated', date('Y-m-d', strtotime('first day of this month')), date('Y-m-d', strtotime('last day of this month'))
+                  ]
+               );
+               break;
+            case "Fiscal Year":
+               $query->andWhere(
+                  [
+                     'between', 'orders.dateCreated', date('Y-m-d', strtotime('first day of April last year')), date('Y-m-d', strtotime('last day of April this year'))
                   ]
                );
                break;

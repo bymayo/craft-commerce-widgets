@@ -2,40 +2,34 @@
 
 {% block widget %}
 
-   <table class="data fullwidth collapsible">
-      <thead>
-         <tr>
-            <th>Time</th>
-            <th>Revenue</th>
-            <th>Orders</th>
-         </tr>
-      </thead>
-      <tbody>
-         {% for row in revenueOrders %}
-            <tr>
-               <td>
-                  {{ timeFrames[loop.index0]['label'] }}
-                  <span class="light small">
-                     {{ timeFrames[loop.index0]['date'] }}
-                  </span>
-               </td>
-               <td>
-                  {{ row.totalRevenue|currency(commerce.currency) }}
-                  {% if not loop.last %}
-                     {# <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span> #}
-                  {% endif %}
-               </td>
-               <td>
-                  {{ row.totalOrders|number_format() }}
-                  {% if not loop.last %}
-                     {# <span class="compare-arrow -less" title="+£4.00 compared to last month">&#9660;</span> #}
-                  {% endif %}
-               </td>
-            </tr>
-         {% endfor %}
-      </tbody>
-   </table>
+  <div class="cw:grid cw:grid-cols-2 cw:flex-wrap cw:gap-2">
 
-   <a href="/{{ cpTrigger }}/commerce/orders" class="btn">View All Orders</a>
+   {% for row in revenueOrders %}
+
+    <div class="cw:col-span-1">
+
+      {% include 'commerce-widgets/_includes/statistic' with { 
+        heading: timeFrames[loop.index0]['label'],
+        statistic: row.totalOrders|number_format(),
+        statisticSecondary: row.totalRevenue|currency(commerce.currency),
+        changeIndicator: '3%',
+        changeDirection: 'up'
+      } %}
+
+    </div>
+
+   {% endfor %}
+
+  </div>
+
+  {% include 'commerce-widgets/_includes/footer' with {
+    buttons: [
+      {
+        text: 'View All Orders',
+        url: '/' ~ cpTrigger ~ '/commerce/orders'
+      }
+    ]
+  } only %}
 
 {% endblock %}
+

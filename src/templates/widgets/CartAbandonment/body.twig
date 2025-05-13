@@ -26,7 +26,7 @@
         statisticSecondary: abandonedCartData.totalPrice|currency(commerce.currency),
         changeIndicator: '5%',
         changeDirection: 'down',
-      } %}
+      } only %}
 
     </div>
 
@@ -36,8 +36,17 @@
     {% include 'commerce-widgets/_includes/charts/line' with {
       id: 'cart-abandonment',
       step: graphStep,
-      style: graphStyle,
-    } %}
+      style: graphStyle
+    } only %}
   </div>
+
+  {% include 'commerce-widgets/_includes/footer' with {
+    buttons: [
+      {
+        text: 'Export',
+        url: '/' ~ cpTrigger ~ '/commerce/orders'
+      }
+    ]
+  } only %}
 
 {% endblock %}
