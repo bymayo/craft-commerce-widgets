@@ -91,6 +91,25 @@ class Goal extends Widget
                      ]
                   );
                break;
+            case "fiscalYear":
+               $fiscalYearStartMonth = CommerceWidgets::$plugin->getSettings()->fiscalYearStart;
+               $fiscalMonth = date('n', strtotime("1 $fiscalYearStartMonth"));
+               $currentMonth = (int) date('n');
+               $currentYear = (int) date('Y');
+
+               if ($currentMonth >= $fiscalMonth) {
+                  $startDate = date('Y-m-d', strtotime("1 $fiscalYearStartMonth $currentYear"));
+               } else {
+                  $startDate = date('Y-m-d', strtotime("1 $fiscalYearStartMonth " . ($currentYear - 1)));
+               }
+
+               $query
+                  ->where(
+                     [
+                        '>=', 'orders.datePaid', $startDate
+                     ]
+                  );
+               break;
          }
 
          $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
