@@ -33,6 +33,14 @@ class DashboardWidgets extends Component
         ];
     }
 
+    public function getWidgetsForPage(int $pageId, int $userId): array
+    {
+        return DashboardWidget::find()
+            ->where(['pageId' => $pageId, 'userId' => $userId])
+            ->orderBy(['sortOrder' => SORT_ASC])
+            ->all();
+    }
+
     public function getWidgetsForUser(int $userId): array
     {
         return DashboardWidget::find()
@@ -41,14 +49,15 @@ class DashboardWidgets extends Component
             ->all();
     }
 
-    public function addWidget(int $userId, string $type, int $colspan = 1, array $settings = []): DashboardWidget
+    public function addWidget(int $userId, string $type, int $colspan = 1, array $settings = [], ?int $pageId = null): DashboardWidget
     {
         $maxSort = DashboardWidget::find()
-            ->where(['userId' => $userId])
+            ->where(['pageId' => $pageId, 'userId' => $userId])
             ->max('sortOrder');
 
         $record = new DashboardWidget();
         $record->userId = $userId;
+        $record->pageId = $pageId;
         $record->type = $type;
         $record->colspan = $colspan;
         $record->sortOrder = ($maxSort ?? 0) + 1;
@@ -110,11 +119,11 @@ class DashboardWidgets extends Component
         return $record->save();
     }
 
-    public function seedDefaultWidgets(int $userId): void
+    public function seedDefaultWidgets(int $userId, int $pageId): void
     {
-        $this->addWidget($userId, TotalRevenueOrders::class, 2);
-        $this->addWidget($userId, OrdersRecent::class, 1);
-        $this->addWidget($userId, TopCustomers::class, 1);
+        $this->addWidget($userId, TotalRevenueOrders::class, 2, [], $pageId);
+        $this->addWidget($userId, OrdersRecent::class, 1, [], $pageId);
+        $this->addWidget($userId, TopCustomers::class, 1, [], $pageId);
     }
 
 }

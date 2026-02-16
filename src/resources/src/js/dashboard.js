@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('cw-dashboard-grid');
     if (!grid) return;
 
+    const pageId = grid.dataset.pageId;
+
     // Init Masonry
     const msnry = new Masonry(grid, {
         itemSelector: '.cw-dashboard-widget',
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const type = link.dataset.type;
 
                     Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/add-widget', {
-                        data: { type }
+                        data: { type, pageId }
                     }).then(response => {
                         if (response.data.success && response.data.widget) {
                             const widget = response.data.widget;
@@ -65,10 +67,66 @@ document.addEventListener('DOMContentLoaded', () => {
                             msnry.appended(el);
                             msnry.layout();
                         }
+                    }).catch(() => {
+                        Craft.cp.displayError('Could not add widget.');
                     });
                 });
             });
         }
+    }
+
+    // Page management
+    const addPageBtn = document.getElementById('cw-add-page');
+    if (addPageBtn) {
+        addPageBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const name = prompt('Enter page name:', 'New Page');
+            if (name === null || name.trim() === '') return;
+
+            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/add-page', {
+                data: { name: name.trim() }
+            }).then(response => {
+                if (response.data.success) {
+                    window.location.href = Craft.getCpUrl(response.data.page.url);
+                }
+            });
+        });
+    }
+
+    const renamePageBtn = document.getElementById('cw-rename-page');
+    if (renamePageBtn) {
+        renamePageBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const currentName = document.querySelector('#main-content h1')?.textContent || '';
+            const name = prompt('Enter new page name:', currentName);
+            if (name === null || name.trim() === '') return;
+
+            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/rename-page', {
+                data: { pageId, name: name.trim() }
+            }).then(response => {
+                if (response.data.success) {
+                    window.location.reload();
+                }
+            });
+        });
+    }
+
+    const deletePageBtn = document.getElementById('cw-delete-page');
+    if (deletePageBtn) {
+        deletePageBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!confirm('Are you sure you want to delete this page and all its widgets?')) return;
+
+            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/delete-page', {
+                data: { pageId }
+            }).then(response => {
+                if (response.data.success) {
+                    window.location.href = Craft.getCpUrl(response.data.redirectUrl);
+                } else if (response.data.error) {
+                    Craft.cp.displayError(response.data.error);
+                }
+            });
+        });
     }
 
     // Bind actions on existing widgets
@@ -106,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="cw-modal-footer" style="display: none;">
-                    <button type="button" class="btn small cw-modal-remove" style="color: #dc2626;">Remove Widget</button>
+                    <a href="#" class="cw-modal-remove" style="color: #dc2626; text-decoration: none;">Remove</a>
                     <div style="display: flex; gap: 8px;">
                         <button type="button" class="btn cw-modal-cancel">Cancel</button>
                         <button type="button" class="btn submit cw-modal-save">Save</button>
@@ -163,14 +221,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label>Widget Width</label>
                     </div>
                     <div class="input">
-                        <select class="cw-colspan-select">
-                            <option value="1"${currentColspan === 1 ? ' selected' : ''}>1</option>
-                            <option value="2"${currentColspan === 2 ? ' selected' : ''}>2</option>
-                            <option value="3"${currentColspan === 3 ? ' selected' : ''}>3</option>
-                            <option value="4"${currentColspan === 4 ? ' selected' : ''}>4</option>
-                            <option value="5"${currentColspan === 5 ? ' selected' : ''}>5</option>
-                            <option value="6"${currentColspan === 6 ? ' selected' : ''}>6</option>
-                        </select>
+                        <div class="select">
+                            <select class="cw-colspan-select">
+                                <option value="1"${currentColspan === 1 ? ' selected' : ''}>1</option>
+                                <option value="2"${currentColspan === 2 ? ' selected' : ''}>2</option>
+                                <option value="3"${currentColspan === 3 ? ' selected' : ''}>3</option>
+                                <option value="4"${currentColspan === 4 ? ' selected' : ''}>4</option>
+                                <option value="5"${currentColspan === 5 ? ' selected' : ''}>5</option>
+                                <option value="6"${currentColspan === 6 ? ' selected' : ''}>6</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             `;
@@ -201,19 +261,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Remove handler
-            overlay.querySelector('.cw-modal-remove').addEventListener('click', () => {
-                if (confirm('Are you sure you want to remove this widget?')) {
-                    Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/remove-widget', {
-                        data: { widgetId }
-                    }).then(resp => {
-                        if (resp.data.success) {
-                            msnry.remove(widgetEl);
-                            msnry.layout();
-                            closeModal();
-                        }
-                    });
+            // Remove handler (two-step confirmation)
+            const removeBtn = overlay.querySelector('.cw-modal-remove');
+            let removeConfirmed = false;
+            let removeTimer = null;
+            removeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!removeConfirmed) {
+                    removeConfirmed = true;
+                    removeBtn.textContent = 'Click again to confirm';
+                    removeTimer = setTimeout(() => {
+                        removeConfirmed = false;
+                        removeBtn.textContent = 'Remove';
+                    }, 3000);
+                    return;
                 }
+                clearTimeout(removeTimer);
+                removeBtn.style.pointerEvents = 'none';
+                removeBtn.style.opacity = '0.5';
+                Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/remove-widget', {
+                    data: { widgetId }
+                }).then(resp => {
+                    if (resp.data.success) {
+                        msnry.remove(widgetEl);
+                        msnry.layout();
+                        closeModal();
+                    }
+                });
             });
 
             // Save handler

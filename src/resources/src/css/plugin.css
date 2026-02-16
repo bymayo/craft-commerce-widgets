@@ -126,6 +126,10 @@
   flex-shrink: 0;
 }
 
+.cw-modal-remove:hover {
+  text-decoration: underline !important;
+}
+
 .cw-modal-loading {
   display: flex;
   justify-content: center;

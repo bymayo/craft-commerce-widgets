@@ -4,6 +4,7 @@ namespace bymayo\commercewidgets;
 
 use bymayo\commercewidgets\services\Helpers;
 use bymayo\commercewidgets\services\DashboardWidgets;
+use bymayo\commercewidgets\services\DashboardPages;
 use bymayo\commercewidgets\variables\CommerceWidgetsVariable;
 use bymayo\commercewidgets\models\Settings;
 
@@ -29,7 +30,7 @@ class CommerceWidgets extends Plugin
     // Public Properties
     // =========================================================================
 
-    public string $schemaVersion = '4.0.0';
+    public string $schemaVersion = '4.1.0';
     public bool $hasCpSettings = true;
     public bool $hasCpSection = true;
 
@@ -44,6 +45,7 @@ class CommerceWidgets extends Plugin
         $this->setComponents([
             'helpers' => Helpers::class,
             'dashboardWidgets' => DashboardWidgets::class,
+            'dashboardPages' => DashboardPages::class,
         ]);
 
         Event::on(
@@ -51,6 +53,7 @@ class CommerceWidgets extends Plugin
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['commerce-widgets'] = 'commerce-widgets/dashboard/index';
+                $event->rules['commerce-widgets/page/<pageId:\d+>'] = 'commerce-widgets/dashboard/index';
             }
         );
 
@@ -105,6 +108,22 @@ class CommerceWidgets extends Plugin
     {
         $item = parent::getCpNavItem();
         $item['label'] = $this->getSettings()->pluginName ?: 'Commerce Widgets';
+
+        $user = Craft::$app->getUser()->getIdentity();
+        if ($user && Craft::$app->getRequest()->getIsCpRequest()) {
+            $pages = $this->dashboardPages->getPagesForUser($user->id);
+
+            if (!empty($pages)) {
+                $item['subnav'] = [];
+                foreach ($pages as $page) {
+                    $item['subnav']['page-' . $page->id] = [
+                        'label' => $page->name,
+                        'url' => 'commerce-widgets/page/' . $page->id,
+                    ];
+                }
+            }
+        }
+
         return $item;
     }
 
