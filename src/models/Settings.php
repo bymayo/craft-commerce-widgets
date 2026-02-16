@@ -12,6 +12,7 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
 
+    public $pluginName = 'Commerce Widgets';
     public $cacheDuration = 3600;
     public $defaultTargetDuration = 'monthly';
     public $fiscalYearStart = 'april';

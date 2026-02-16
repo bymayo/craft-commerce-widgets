@@ -18,9 +18,9 @@ class Goal extends Widget
     // Public Properties
     // =========================================================================
 
-    public $type;
-    public $targetValue;
-    public $targetDuration;
+    public $type = 'orders';
+    public $targetValue = 15;
+    public $targetDuration = 'default';
 
     // Static Methods
     // =========================================================================

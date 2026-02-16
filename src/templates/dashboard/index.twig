@@ -1,0 +1,39 @@
+{% extends "_layouts/cp" %}
+
+{% set title = pluginName %}
+{% set fullPageForm = true %}
+
+{% css %}
+  #content-container { background: none !important; }
+  #main-content #content { padding: 0 !important; background: none !important; border: none !important; box-shadow: none !important; }
+{% endcss %}
+
+{% block actionButton %}
+  <div class="btngroup">
+    <button type="button" class="btn menubtn" id="cw-add-widget-btn">Add Widget</button>
+    <div class="menu">
+      <ul>
+        {% for widgetType in availableTypes %}
+          <li>
+            <a href="#" data-type="{{ widgetType.class }}">{{ widgetType.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+
+  <div id="cw-dashboard-grid" class="commerce-widgets">
+
+    <div class="cw-grid-sizer"></div>
+    <div class="cw-gutter-sizer"></div>
+
+    {% for widget in widgets %}
+      {% include 'commerce-widgets/dashboard/_widget' with { widget: widget } only %}
+    {% endfor %}
+
+  </div>
+
+{% endblock %}

@@ -11,7 +11,7 @@ class Helpers extends Component
 
     public function getTargetDuration($targetDuration): string
     {
-        if ($targetDuration === 'default') {
+        if ($targetDuration === 'default' || $targetDuration === null) {
             return CommerceWidgets::$plugin->getSettings()->defaultTargetDuration;
         }
 
@@ -37,8 +37,8 @@ class Helpers extends Component
                 $fiscalMonth = date('n', strtotime("1 {$settings->fiscalYearStart}"));
                 $currentYear = (int) date('Y');
                 $startYear = ((int) date('n') >= $fiscalMonth) ? $currentYear : $currentYear - 1;
-                $endMonth = date('F', strtotime('-1 month', strtotime("1 {$settings->fiscalYearStart}")));
-                return date('F', strtotime("1 {$settings->fiscalYearStart}")) . ' ' . $startYear . ' - ' . $endMonth . ' ' . ($startYear + 1);
+                $endMonth = date('j F', strtotime('-1 month', strtotime("1 {$settings->fiscalYearStart}")));
+                return date('j F', strtotime("1 {$settings->fiscalYearStart}")) . ' ' . $startYear . ' - ' . $endMonth . ' ' . ($startYear + 1);
             case 'yearly':
                 return date('Y');
             default:

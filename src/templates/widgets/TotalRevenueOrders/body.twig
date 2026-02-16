@@ -8,12 +8,12 @@
 
     <div class="cw:col-span-1">
 
-      {% include 'commerce-widgets/_includes/statistic' with { 
+      {% include 'commerce-widgets/_includes/statistic' with {
         heading: timeFrames[loop.index0]['label'],
         statistic: row.totalOrders|number_format(),
         statisticSecondary: row.totalRevenue|currency(commerce.currency),
-        changeIndicator: '3%',
-        changeDirection: 'up'
+        changeIndicator: row.changeIndicator,
+        changeDirection: row.changeDirection
       } %}
 
     </div>

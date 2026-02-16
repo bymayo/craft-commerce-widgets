@@ -3,6 +3,7 @@
 namespace bymayo\commercewidgets;
 
 use bymayo\commercewidgets\services\Helpers;
+use bymayo\commercewidgets\services\DashboardWidgets;
 use bymayo\commercewidgets\variables\CommerceWidgetsVariable;
 use bymayo\commercewidgets\models\Settings;
 
@@ -13,6 +14,8 @@ use craft\events\PluginEvent;
 use craft\web\twig\variables\CraftVariable;
 use craft\services\Dashboard;
 use craft\events\RegisterComponentTypesEvent;
+use craft\web\UrlManager;
+use craft\events\RegisterUrlRulesEvent;
 
 use yii\base\Event;
 
@@ -26,8 +29,9 @@ class CommerceWidgets extends Plugin
     // Public Properties
     // =========================================================================
 
-    public string $schemaVersion = '3.0.0';
+    public string $schemaVersion = '4.0.0';
     public bool $hasCpSettings = true;
+    public bool $hasCpSection = true;
 
     // Public Methods
     // =========================================================================
@@ -39,7 +43,16 @@ class CommerceWidgets extends Plugin
 
         $this->setComponents([
             'helpers' => Helpers::class,
+            'dashboardWidgets' => DashboardWidgets::class,
         ]);
+
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['commerce-widgets'] = 'commerce-widgets/dashboard/index';
+            }
+        );
 
         Event::on(
             Dashboard::class,
@@ -86,6 +99,13 @@ class CommerceWidgets extends Plugin
             ),
             __METHOD__
         );
+    }
+
+    public function getCpNavItem(): ?array
+    {
+        $item = parent::getCpNavItem();
+        $item['label'] = $this->getSettings()->pluginName ?: 'Commerce Widgets';
+        return $item;
     }
 
     // Protected Methods

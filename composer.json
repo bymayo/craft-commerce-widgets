@@ -33,8 +33,6 @@
     "extra": {
         "name": "Commerce Widgets",
         "handle": "commerce-widgets",
-        "hasCpSettings": true,
-        "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-5/CHANGELOG.md",
         "components": {
             "helpers": "bymayo\\commercewidgets\\services\\Helpers"

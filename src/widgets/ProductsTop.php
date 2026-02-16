@@ -20,7 +20,7 @@ class ProductsTop extends Widget
     // =========================================================================
 
     public $orderStatusId;
-    public $orderBy;
+    public $orderBy = 'totalRevenue';
     public $limit = 5;
     public $targetDuration = 'default';
 

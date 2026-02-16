@@ -18,8 +18,8 @@ class SubscriptionPlans extends Widget
     // Public Properties
     // =========================================================================
 
-    public $limit;
-    public $orderBy;
+    public $limit = 5;
+    public $orderBy = 'dateCreated desc';
 
     // Static Methods
     // =========================================================================

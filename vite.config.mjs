@@ -13,6 +13,7 @@ export default defineConfig({
   build: {
     outDir: './src/resources/dist/js', // Specify the output directory
     emptyOutDir: true, // Clear the output directory before building
+    target: 'esnext', // Avoid class fields polyfill that creates var $ = Object.defineProperty (conflicts with jQuery)
     rollupOptions: {
       input: './src/resources/src/commerce-widgets.js', // Single input file
       output: {

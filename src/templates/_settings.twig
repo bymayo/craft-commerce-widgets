@@ -3,6 +3,18 @@
 {{
    forms.textField(
       {
+         label: 'Plugin Name',
+         id: 'pluginName',
+         name: 'pluginName',
+         instructions: 'The name displayed in the CP sidebar navigation.',
+         value: settings.pluginName
+      }
+   )
+}}
+
+{{
+   forms.textField(
+      {
          label: 'Cache Duration',
          id: 'cacheDuration',
          name: 'cacheDuration',

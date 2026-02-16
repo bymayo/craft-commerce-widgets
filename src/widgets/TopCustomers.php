@@ -18,10 +18,10 @@ class TopCustomers extends Widget
     // Public Properties
     // =========================================================================
 
-    public $includeGuests;
-    public $orderBy;
+    public $includeGuests = 1;
+    public $orderBy = 'totalRevenue';
     public $groupBy; // Remove
-    public $limit;
+    public $limit = 5;
     public $targetDuration = 'default';
     public $excludeAdmins;
 
