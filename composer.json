@@ -37,7 +37,7 @@
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/bymayo/commerce-widgets/craft-5/CHANGELOG.md",
         "components": {
-            "commerceWidgetsService": "bymayo\\commercewidgets\\services\\CommerceWidgetsService"
+            "helpers": "bymayo\\commercewidgets\\services\\Helpers"
         },
         "class": "bymayo\\commercewidgets\\CommerceWidgets"
     },

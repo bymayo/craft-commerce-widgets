@@ -15,6 +15,25 @@
 {{
    forms.selectField(
       {
+         label: 'Default Target Duration',
+         id: 'defaultTargetDuration',
+         name: 'defaultTargetDuration',
+         instructions: 'The default target duration used by widgets when set to "Plugin Default".',
+         value: settings.defaultTargetDuration,
+         options: [
+            { label: 'Daily', value: 'daily' },
+            { label: 'Weekly', value: 'weekly' },
+            { label: 'Monthly', value: 'monthly' },
+            { label: 'Yearly', value: 'yearly' },
+            { label: 'Fiscal Year', value: 'fiscalYear' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
          label: 'Fiscal Year Start',
          id: 'fiscalYearStart',
          name: 'fiscalYearStart',
@@ -33,6 +52,27 @@
             { label: 'October', value: 'october' },
             { label: 'November', value: 'november' },
             { label: 'December', value: 'december' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
+         label: 'Week Start',
+         id: 'weekStart',
+         name: 'weekStart',
+         instructions: 'Which day your week starts on.',
+         value: settings.weekStart,
+         options: [
+            { label: 'Monday', value: 'monday' },
+            { label: 'Tuesday', value: 'tuesday' },
+            { label: 'Wednesday', value: 'wednesday' },
+            { label: 'Thursday', value: 'thursday' },
+            { label: 'Friday', value: 'friday' },
+            { label: 'Saturday', value: 'saturday' },
+            { label: 'Sunday', value: 'sunday' }
          ]
       }
    )

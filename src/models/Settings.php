@@ -13,7 +13,9 @@ class Settings extends Model
     // =========================================================================
 
     public $cacheDuration = 3600;
+    public $defaultTargetDuration = 'monthly';
     public $fiscalYearStart = 'april';
+    public $weekStart = 'monday';
     public $excludeEmailAddresses = array();
 
     // Public Methods
@@ -36,8 +38,10 @@ class Settings extends Model
     {
         return [
             [['cacheDuration'], 'integer'],
+            [['defaultTargetDuration'], 'string'],
             [['fiscalYearStart'], 'string'],
-            [['excludeEmailAddresses'], 'array']
+            [['weekStart'], 'string'],
+            [['excludeEmailAddresses'], 'safe']
         ];
     }
 }

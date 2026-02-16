@@ -30,7 +30,7 @@ class Goal extends Widget
       return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Goal');
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
@@ -64,7 +64,8 @@ class Goal extends Widget
                ]
             );
 
-         switch ($this->targetDuration) {
+         $targetDuration = CommerceWidgets::$plugin->helpers->getTargetDuration($this->targetDuration);
+         switch ($targetDuration) {
             case "weekly":
                $query
                   ->where(
@@ -128,12 +129,13 @@ class Goal extends Widget
 
     public function getTitle(): ?string
     {
-      return StringHelper::titleize($this->targetDuration) . ' ' . StringHelper::titleize($this->type) . ' Goal';
+      $targetDuration = CommerceWidgets::$plugin->helpers->getTargetDuration($this->targetDuration);
+      return StringHelper::titleize($targetDuration) . ' ' . StringHelper::titleize($this->type) . ' Goal';
     }
 
       public function getSubtitle(): ?string
       {
-         return '2025';
+         return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
       }
 
     public function rules(): array
@@ -148,7 +150,7 @@ class Goal extends Widget
                 ['targetValue', 'integer'],
                 ['type', 'default', 'value' => 'orders'],
                 ['targetValue', 'default', 'value' => 15],
-                ['targetDuration', 'default', 'value' => 'monthly']
+                ['targetDuration', 'default', 'value' => 'default']
             ]
         );
 

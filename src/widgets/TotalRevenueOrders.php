@@ -30,7 +30,7 @@ class TotalRevenueOrders extends Widget
       return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Total Revenue & Orders');
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }

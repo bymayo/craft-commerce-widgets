@@ -19,7 +19,7 @@ class ConversionRate extends Widget
     // =========================================================================
 
     public static $displayName = 'Conversion Rate';
-    public $targetDuration = 'monthly';
+    public $targetDuration = 'default';
 
     // Static Methods
     // =========================================================================
@@ -29,7 +29,7 @@ class ConversionRate extends Widget
         return CommerceWidgets::getInstance()->name . ' - ' . self::$displayName;
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
@@ -52,7 +52,7 @@ class ConversionRate extends Widget
 
     public function getSubtitle(): ?string
     {
-        return date('F Y');
+        return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
     }
 
     public function getBodyHtml(): ?string

@@ -22,7 +22,7 @@ class TopCustomers extends Widget
     public $orderBy;
     public $groupBy; // Remove
     public $limit;
-    public $targetDuration = 'monthly';
+    public $targetDuration = 'default';
     public $excludeAdmins;
 
     // Static Methods
@@ -104,7 +104,7 @@ class TopCustomers extends Widget
 
     public function getSubtitle(): ?string
     {
-       return date('F Y');
+        return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
     }
 
     public function rules(): array

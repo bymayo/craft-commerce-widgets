@@ -22,7 +22,7 @@ class ProductsTop extends Widget
     public $orderStatusId;
     public $orderBy;
     public $limit = 5;
-    public $targetDuration = 'monthly';
+    public $targetDuration = 'default';
 
     // Static Methods
     // =========================================================================
@@ -101,7 +101,7 @@ class ProductsTop extends Widget
 
    public function getSubtitle(): ?string
    {
-      return date('F Y');
+      return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
    }
 
     public function rules(): array

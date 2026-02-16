@@ -19,7 +19,7 @@ class CartAbandonment extends Widget
     // =========================================================================
 
     public static $displayName = 'Cart Abandonment';
-    public $targetDuration = 'monthly';
+    public $targetDuration = 'default';
     public $previousAmount = 4;
     public $graphStep = 50;
     public $graphStyle = 'detailed';
@@ -32,7 +32,7 @@ class CartAbandonment extends Widget
         return CommerceWidgets::getInstance()->name . ' - ' . self::$displayName;
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
@@ -159,7 +159,7 @@ class CartAbandonment extends Widget
 
     public function getSubtitle(): ?string
     {
-        return date('F Y');
+        return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
     }
 
     public function getBodyHtml(): ?string

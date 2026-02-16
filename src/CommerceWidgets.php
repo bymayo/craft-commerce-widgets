@@ -2,7 +2,7 @@
 
 namespace bymayo\commercewidgets;
 
-use bymayo\commercewidgets\services\CommerceWidgetsService as CommerceWidgetsServiceService;
+use bymayo\commercewidgets\services\Helpers;
 use bymayo\commercewidgets\variables\CommerceWidgetsVariable;
 use bymayo\commercewidgets\models\Settings;
 
@@ -36,6 +36,10 @@ class CommerceWidgets extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+
+        $this->setComponents([
+            'helpers' => Helpers::class,
+        ]);
 
         Event::on(
             Dashboard::class,
