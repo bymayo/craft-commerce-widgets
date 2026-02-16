@@ -8,6 +8,7 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 use Craft;
 use craft\helpers\StringHelper;
 use craft\db\Query;
+use yii\caching\TagDependency;
 
 use Exception;
 
@@ -82,7 +83,9 @@ class TopCustomers extends BaseWidget
          }
 
          $command = $query->createCommand();
-         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
+         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+         $result = $command->cache($cacheDuration, $dependency)->queryAll();
 
          return $result;
 

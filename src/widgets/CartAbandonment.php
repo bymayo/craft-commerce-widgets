@@ -8,6 +8,7 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 use Craft;
 use craft\helpers\StringHelper;
 use craft\db\Query;
+use yii\caching\TagDependency;
 
 use Exception;
 
@@ -92,7 +93,9 @@ class CartAbandonment extends BaseWidget
             ->orderBy('month');
 
          $command = $query->createCommand();
-         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
+         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+         $result = $command->cache($cacheDuration, $dependency)->queryAll();
 
          foreach ($this->getMonthDateRange() as $month) {
             $key = array_search($month, array_column($result, 'month'));
@@ -137,7 +140,9 @@ class CartAbandonment extends BaseWidget
             )
             ->andWhere(['elements.dateDeleted' => null]);
 
-         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
+         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+         $result = $query->cache($cacheDuration, $dependency)->one();
 
          return $result;
 

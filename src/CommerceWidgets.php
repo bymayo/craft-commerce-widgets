@@ -19,6 +19,8 @@ use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
 use craft\services\UserPermissions;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\utilities\ClearCaches;
+use craft\events\RegisterCacheOptionsEvent;
 
 use yii\base\Event;
 
@@ -113,6 +115,20 @@ class CommerceWidgets extends Plugin
                             'label' => 'Add widgets to the CMS Dashboard',
                         ],
                     ],
+                ];
+            }
+        );
+
+        Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            function (RegisterCacheOptionsEvent $event) {
+                $event->options[] = [
+                    'key' => 'commerce-widgets-data',
+                    'label' => Craft::t('commerce-widgets', 'Commerce Widgets data'),
+                    'action' => function() {
+                        \yii\caching\TagDependency::invalidate(Craft::$app->getCache(), 'commerce-widgets');
+                    },
                 ];
             }
         );

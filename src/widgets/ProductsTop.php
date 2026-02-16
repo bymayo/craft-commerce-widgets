@@ -9,6 +9,7 @@ use Craft;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 use craft\commerce\Plugin as CommercePlugin;
+use yii\caching\TagDependency;
 
 use Exception;
 
@@ -84,7 +85,9 @@ class ProductsTop extends BaseWidget
          ->andWhere(['not', ['variants.id' => null]]);
       }
 
-      $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->all();
+      $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+      $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+      $result = $query->cache($cacheDuration, $dependency)->all();
 
       return $result;
 
