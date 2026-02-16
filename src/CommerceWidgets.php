@@ -27,7 +27,7 @@ class CommerceWidgets extends Plugin
     // =========================================================================
 
     public string $schemaVersion = '3.0.0';
-    public bool $hasCpSettings = false;
+    public bool $hasCpSettings = true;
 
     // Public Methods
     // =========================================================================
@@ -90,6 +90,14 @@ class CommerceWidgets extends Plugin
     protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
+    }
+
+    protected function settingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate(
+            'commerce-widgets/_settings',
+            ['settings' => $this->getSettings()]
+        );
     }
 
 }

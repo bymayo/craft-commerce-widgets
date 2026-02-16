@@ -1,0 +1,52 @@
+{% import "_includes/forms" as forms %}
+
+{{
+   forms.textField(
+      {
+         label: 'Cache Duration',
+         id: 'cacheDuration',
+         name: 'cacheDuration',
+         instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
+         value: settings.cacheDuration
+      }
+   )
+}}
+
+{{
+   forms.selectField(
+      {
+         label: 'Fiscal Year Start',
+         id: 'fiscalYearStart',
+         name: 'fiscalYearStart',
+         instructions: 'When your financial/tax year starts.',
+         value: settings.fiscalYearStart,
+         options: [
+            { label: 'January', value: 'january' },
+            { label: 'February', value: 'february' },
+            { label: 'March', value: 'march' },
+            { label: 'April', value: 'april' },
+            { label: 'May', value: 'may' },
+            { label: 'June', value: 'june' },
+            { label: 'July', value: 'july' },
+            { label: 'August', value: 'august' },
+            { label: 'September', value: 'september' },
+            { label: 'October', value: 'october' },
+            { label: 'November', value: 'november' },
+            { label: 'December', value: 'december' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.textareaField(
+      {
+         label: 'Exclude Email Addresses',
+         id: 'excludeEmailAddresses',
+         name: 'excludeEmailAddresses',
+         instructions: 'Email addresses to exclude across all widgets (one per line). Useful for excluding test or admin accounts.',
+         value: settings.excludeEmailAddresses | join('\n'),
+         rows: 4
+      }
+   )
+}}

@@ -2,7 +2,7 @@
 return array(
     '*' => array(
         'cacheDuration' => 3600,
-        'yearStart' => 'april',
+        'fiscalYearStart' => 'april',
         'excludeEmailAddresses' => array()
     )
 );

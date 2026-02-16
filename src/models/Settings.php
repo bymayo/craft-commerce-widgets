@@ -13,17 +13,30 @@ class Settings extends Model
     // =========================================================================
 
     public $cacheDuration = 3600;
-    public $yearStart = 'april';
+    public $fiscalYearStart = 'april';
     public $excludeEmailAddresses = array();
 
     // Public Methods
     // =========================================================================
 
+    public function beforeValidate(): bool
+    {
+        if (is_string($this->excludeEmailAddresses)) {
+            $this->excludeEmailAddresses = array_filter(
+                array_map('trim', explode("\n", $this->excludeEmailAddresses))
+            );
+        }
+
+        $this->cacheDuration = (int) $this->cacheDuration;
+
+        return parent::beforeValidate();
+    }
+
     public function rules(): array
     {
         return [
             [['cacheDuration'], 'integer'],
-            [['yearStart'], 'string'],
+            [['fiscalYearStart'], 'string'],
             [['excludeEmailAddresses'], 'array']
         ];
     }
