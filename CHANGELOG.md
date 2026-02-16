@@ -1,5 +1,32 @@
 # Commerce Widgets Changelog
 
+## 6.0.0 - 2026-02-16
+
+### Added
+- Custom dashboard with drag-and-drop widget management
+- Dashboard pages - create multiple dashboard pages per user
+- Pages subnav in CP sidebar for quick navigation between pages
+- "Enable Pages" plugin setting to toggle the pages feature
+- User permissions for viewing pages, managing pages, and adding CMS dashboard widgets
+- Conversion Rate widget
+- Fiscal Year option to widget target duration settings
+- CP Settings page restored
+- Tailwind CSS for modern styling
+- Vite build system
+- Improved line graph styling with detailed/minimal options
+
+### Changed
+- Complete visual redesign of all widgets
+- Improved tooltip positioning
+- Updated styling across Top Products and Top Customers widgets
+
+### Fixed
+- Subscription Plans widget compatibility
+- Icon paths in Top Products widget
+- Widget subtitle/description display and icons
+- OrderStatus color error when status is null
+- Migration class naming issue
+
 ## 5.0.1 - 2024-05-30
 ### Changed
 - Icon to a new shiny (literally) icon

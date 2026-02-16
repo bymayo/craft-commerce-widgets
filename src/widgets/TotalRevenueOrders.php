@@ -6,7 +6,6 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\helpers\DateTimeHelper;
 use craft\i18n\Formatter;
@@ -16,7 +15,7 @@ use craft\records\Session;
 
 use Exception;
 
-class TotalRevenueOrders extends Widget
+class TotalRevenueOrders extends BaseWidget
 {
 
     // Public Properties

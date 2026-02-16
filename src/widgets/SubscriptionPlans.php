@@ -6,13 +6,12 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 
 use Exception;
 
-class SubscriptionPlans extends Widget
+class SubscriptionPlans extends BaseWidget
 {
 
     // Public Properties
