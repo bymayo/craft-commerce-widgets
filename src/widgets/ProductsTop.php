@@ -6,14 +6,14 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 use craft\commerce\Plugin as CommercePlugin;
+use yii\caching\TagDependency;
 
 use Exception;
 
-class ProductsTop extends Widget
+class ProductsTop extends BaseWidget
 {
 
     // Public Properties
@@ -85,7 +85,9 @@ class ProductsTop extends Widget
          ->andWhere(['not', ['variants.id' => null]]);
       }
 
-      $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->all();
+      $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+      $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+      $result = $query->cache($cacheDuration, $dependency)->all();
 
       return $result;
 

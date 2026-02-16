@@ -6,17 +6,17 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\helpers\DateTimeHelper;
 use craft\i18n\Formatter;
 use craft\i18n\Locale;
 use craft\db\Query;
 use craft\records\Session;
+use yii\caching\TagDependency;
 
 use Exception;
 
-class TotalRevenueOrders extends Widget
+class TotalRevenueOrders extends BaseWidget
 {
 
     // Public Properties
@@ -132,7 +132,9 @@ class TotalRevenueOrders extends Widget
                break;
          }
 
-         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
+         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+         $result = $query->cache($cacheDuration, $dependency)->one();
 
          return $result;
 
@@ -204,7 +206,9 @@ class TotalRevenueOrders extends Widget
                break;
          }
 
-         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
+         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+         $result = $query->cache($cacheDuration, $dependency)->one();
 
          return $result;
 

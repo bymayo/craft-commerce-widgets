@@ -6,13 +6,12 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
 use craft\db\Query;
 
 use Exception;
 
-class ConversionRate extends Widget
+class ConversionRate extends BaseWidget
 {
 
     // Public Properties

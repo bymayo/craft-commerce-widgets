@@ -5,7 +5,7 @@ namespace bymayo\commercewidgets\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 
-class m260217_000000_AddOverviewPages extends Migration
+class m260217_000000_AddDashboardPages extends Migration
 {
 
     public function safeUp()

@@ -17,6 +17,10 @@ use craft\services\Dashboard;
 use craft\events\RegisterComponentTypesEvent;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
+use craft\services\UserPermissions;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\utilities\ClearCaches;
+use craft\events\RegisterCacheOptionsEvent;
 
 use yii\base\Event;
 
@@ -94,6 +98,41 @@ class CommerceWidgets extends Plugin
             }
         );
 
+        Event::on(
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function (RegisterUserPermissionsEvent $event) {
+                $event->permissions[] = [
+                    'heading' => 'Commerce Widgets',
+                    'permissions' => [
+                        'commerceWidgets-viewPages' => [
+                            'label' => 'View dashboard pages',
+                        ],
+                        'commerceWidgets-managePages' => [
+                            'label' => 'Create and manage dashboard pages',
+                        ],
+                        'commerceWidgets-addCmsDashboardWidgets' => [
+                            'label' => 'Add widgets to the CMS Dashboard',
+                        ],
+                    ],
+                ];
+            }
+        );
+
+        Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            function (RegisterCacheOptionsEvent $event) {
+                $event->options[] = [
+                    'key' => 'commerce-widgets-data',
+                    'label' => Craft::t('commerce-widgets', 'Commerce Widgets data'),
+                    'action' => function() {
+                        \yii\caching\TagDependency::invalidate(Craft::$app->getCache(), 'commerce-widgets');
+                    },
+                ];
+            }
+        );
+
         Craft::info(
             Craft::t(
                 'commerce-widgets',
@@ -107,19 +146,24 @@ class CommerceWidgets extends Plugin
     public function getCpNavItem(): ?array
     {
         $item = parent::getCpNavItem();
-        $item['label'] = $this->getSettings()->pluginName ?: 'Commerce Widgets';
+        $settings = $this->getSettings();
+        $item['label'] = $settings->pluginName ?: 'Commerce Widgets';
 
-        $user = Craft::$app->getUser()->getIdentity();
-        if ($user && Craft::$app->getRequest()->getIsCpRequest()) {
-            $pages = $this->dashboardPages->getPagesForUser($user->id);
+        if ($settings->enablePages) {
+            $user = Craft::$app->getUser()->getIdentity();
+            $canViewPages = $user && ($user->admin || $user->can('commerceWidgets-viewPages'));
 
-            if (!empty($pages)) {
-                $item['subnav'] = [];
-                foreach ($pages as $page) {
-                    $item['subnav']['page-' . $page->id] = [
-                        'label' => $page->name,
-                        'url' => 'commerce-widgets/page/' . $page->id,
-                    ];
+            if ($canViewPages && Craft::$app->getRequest()->getIsCpRequest()) {
+                $pages = $this->dashboardPages->getPagesForUser($user->id);
+
+                if (!empty($pages)) {
+                    $item['subnav'] = [];
+                    foreach ($pages as $page) {
+                        $item['subnav']['page-' . $page->id] = [
+                            'label' => $page->name,
+                            'url' => 'commerce-widgets/page/' . $page->id,
+                        ];
+                    }
                 }
             }
         }

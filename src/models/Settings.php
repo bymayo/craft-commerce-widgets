@@ -21,6 +21,7 @@ class Settings extends Model
     public $fiscalYearEndMonth = 'march';
     public $weekStart = 'monday';
     public $excludeEmailAddresses = array();
+    public $enablePages = true;
 
     // Public Methods
     // =========================================================================
@@ -46,7 +47,8 @@ class Settings extends Model
             [['fiscalYearStartDay', 'fiscalYearEndDay'], 'integer'],
             [['fiscalYearStartMonth', 'fiscalYearEndMonth'], 'string'],
             [['weekStart'], 'string'],
-            [['excludeEmailAddresses'], 'safe']
+            [['excludeEmailAddresses'], 'safe'],
+            [['enablePages'], 'boolean']
         ];
     }
 }

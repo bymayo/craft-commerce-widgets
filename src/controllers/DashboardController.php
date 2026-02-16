@@ -54,7 +54,11 @@ class DashboardController extends Controller
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 
         $availableTypes = $widgetsService->getAvailableWidgetTypes();
-        $pluginName = CommerceWidgets::$plugin->getSettings()->pluginName ?: 'Commerce Widgets';
+        $settings = CommerceWidgets::$plugin->getSettings();
+        $pluginName = $settings->pluginName ?: 'Commerce Widgets';
+
+        $user = Craft::$app->getUser()->getIdentity();
+        $canManagePages = $user && ($user->admin || $user->can('commerceWidgets-managePages'));
 
         return $this->renderTemplate('commerce-widgets/dashboard/index', [
             'widgets' => $widgets,
@@ -63,6 +67,8 @@ class DashboardController extends Controller
             'pages' => $pages,
             'activePage' => $activePage,
             'selectedSubnavItem' => 'page-' . $activePage->id,
+            'enablePages' => $settings->enablePages,
+            'canManagePages' => $canManagePages,
         ]);
     }
 
@@ -222,6 +228,7 @@ class DashboardController extends Controller
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
+        $this->requirePermission('commerceWidgets-managePages');
 
         $name = Craft::$app->getRequest()->getBodyParam('name', 'New Page');
         $userId = Craft::$app->getUser()->getId();
@@ -242,6 +249,7 @@ class DashboardController extends Controller
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
+        $this->requirePermission('commerceWidgets-managePages');
 
         $pageId = Craft::$app->getRequest()->getRequiredBodyParam('pageId');
         $name = Craft::$app->getRequest()->getRequiredBodyParam('name');
@@ -261,6 +269,7 @@ class DashboardController extends Controller
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
+        $this->requirePermission('commerceWidgets-managePages');
 
         $pageId = Craft::$app->getRequest()->getRequiredBodyParam('pageId');
         $userId = Craft::$app->getUser()->getId();

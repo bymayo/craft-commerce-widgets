@@ -6,12 +6,11 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
 
 use Exception;
 
-class ProductsRecent extends Widget
+class ProductsRecent extends BaseWidget
 {
 
     // Public Properties
