@@ -18,6 +18,7 @@ class Settings extends Model
     public $fiscalYearStart = 'april';
     public $weekStart = 'monday';
     public $excludeEmailAddresses = array();
+    public $enablePages = true;
 
     // Public Methods
     // =========================================================================
@@ -42,7 +43,8 @@ class Settings extends Model
             [['defaultTargetDuration'], 'string'],
             [['fiscalYearStart'], 'string'],
             [['weekStart'], 'string'],
-            [['excludeEmailAddresses'], 'safe']
+            [['excludeEmailAddresses'], 'safe'],
+            [['enablePages'], 'boolean']
         ];
     }
 }

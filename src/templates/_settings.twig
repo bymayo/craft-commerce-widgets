@@ -1,6 +1,18 @@
 {% import "_includes/forms" as forms %}
 
 {{
+   forms.lightswitchField(
+      {
+         label: 'Enable Pages',
+         id: 'enablePages',
+         name: 'enablePages',
+         instructions: 'Allow users to create multiple dashboard pages accessible via the sidebar navigation.',
+         on: settings.enablePages
+      }
+   )
+}}
+
+{{
    forms.textField(
       {
          label: 'Plugin Name',
