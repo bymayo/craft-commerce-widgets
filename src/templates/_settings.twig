@@ -37,37 +37,78 @@
             { label: 'Weekly', value: 'weekly' },
             { label: 'Monthly', value: 'monthly' },
             { label: 'Yearly', value: 'yearly' },
-            { label: 'Fiscal Year', value: 'fiscalYear' }
+            { label: 'Fiscal Year', value: 'fiscalYear' },
+            { label: 'All Time', value: 'allTime' }
          ]
       }
    )
 }}
 
-{{
-   forms.selectField(
-      {
-         label: 'Fiscal Year Start',
-         id: 'fiscalYearStart',
-         name: 'fiscalYearStart',
-         instructions: 'When your financial/tax year starts.',
-         value: settings.fiscalYearStart,
-         options: [
-            { label: 'January', value: 'january' },
-            { label: 'February', value: 'february' },
-            { label: 'March', value: 'march' },
-            { label: 'April', value: 'april' },
-            { label: 'May', value: 'may' },
-            { label: 'June', value: 'june' },
-            { label: 'July', value: 'july' },
-            { label: 'August', value: 'august' },
-            { label: 'September', value: 'september' },
-            { label: 'October', value: 'october' },
-            { label: 'November', value: 'november' },
-            { label: 'December', value: 'december' }
-         ]
-      }
-   )
-}}
+{% set dayOptions = [] %}
+{% for d in 1..31 %}
+   {% set dayOptions = dayOptions|merge([{ label: d, value: d }]) %}
+{% endfor %}
+
+{% set monthOptions = [
+   { label: 'January', value: 'january' },
+   { label: 'February', value: 'february' },
+   { label: 'March', value: 'march' },
+   { label: 'April', value: 'april' },
+   { label: 'May', value: 'may' },
+   { label: 'June', value: 'june' },
+   { label: 'July', value: 'july' },
+   { label: 'August', value: 'august' },
+   { label: 'September', value: 'september' },
+   { label: 'October', value: 'october' },
+   { label: 'November', value: 'november' },
+   { label: 'December', value: 'december' }
+] %}
+
+<div class="field">
+   <div class="heading">
+      <label>Fiscal Year Start</label>
+      <div class="instructions"><p>The day and month your financial/tax year starts.</p></div>
+   </div>
+   <div class="input" style="display: flex; gap: 8px;">
+      <div class="select">
+         <select name="fiscalYearStartDay">
+            {% for opt in dayOptions %}
+               <option value="{{ opt.value }}"{{ settings.fiscalYearStartDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
+            {% endfor %}
+         </select>
+      </div>
+      <div class="select">
+         <select name="fiscalYearStartMonth">
+            {% for opt in monthOptions %}
+               <option value="{{ opt.value }}"{{ settings.fiscalYearStartMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
+            {% endfor %}
+         </select>
+      </div>
+   </div>
+</div>
+
+<div class="field">
+   <div class="heading">
+      <label>Fiscal Year End</label>
+      <div class="instructions"><p>The day and month your financial/tax year ends.</p></div>
+   </div>
+   <div class="input" style="display: flex; gap: 8px;">
+      <div class="select">
+         <select name="fiscalYearEndDay">
+            {% for opt in dayOptions %}
+               <option value="{{ opt.value }}"{{ settings.fiscalYearEndDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
+            {% endfor %}
+         </select>
+      </div>
+      <div class="select">
+         <select name="fiscalYearEndMonth">
+            {% for opt in monthOptions %}
+               <option value="{{ opt.value }}"{{ settings.fiscalYearEndMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
+            {% endfor %}
+         </select>
+      </div>
+   </div>
+</div>
 
 {{
    forms.selectField(

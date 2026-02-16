@@ -15,7 +15,10 @@ class Settings extends Model
     public $pluginName = 'Commerce Widgets';
     public $cacheDuration = 3600;
     public $defaultTargetDuration = 'monthly';
-    public $fiscalYearStart = 'april';
+    public $fiscalYearStartDay = 1;
+    public $fiscalYearStartMonth = 'april';
+    public $fiscalYearEndDay = 31;
+    public $fiscalYearEndMonth = 'march';
     public $weekStart = 'monday';
     public $excludeEmailAddresses = array();
 
@@ -40,7 +43,8 @@ class Settings extends Model
         return [
             [['cacheDuration'], 'integer'],
             [['defaultTargetDuration'], 'string'],
-            [['fiscalYearStart'], 'string'],
+            [['fiscalYearStartDay', 'fiscalYearEndDay'], 'integer'],
+            [['fiscalYearStartMonth', 'fiscalYearEndMonth'], 'string'],
             [['weekStart'], 'string'],
             [['excludeEmailAddresses'], 'safe']
         ];

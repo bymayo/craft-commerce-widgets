@@ -93,23 +93,35 @@ class Goal extends Widget
                   );
                break;
             case "fiscalYear":
-               $fiscalYearStartMonth = CommerceWidgets::$plugin->getSettings()->fiscalYearStart;
-               $fiscalMonth = date('n', strtotime("1 $fiscalYearStartMonth"));
+               $settings = CommerceWidgets::$plugin->getSettings();
+               $startDay = (int) $settings->fiscalYearStartDay;
+               $startMonth = $settings->fiscalYearStartMonth;
+               $endDay = (int) $settings->fiscalYearEndDay;
+               $endMonth = $settings->fiscalYearEndMonth;
+               $fiscalMonth = date('n', strtotime("1 $startMonth"));
                $currentMonth = (int) date('n');
                $currentYear = (int) date('Y');
 
-               if ($currentMonth >= $fiscalMonth) {
-                  $startDate = date('Y-m-d', strtotime("1 $fiscalYearStartMonth $currentYear"));
+               if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
+                  $startYear = $currentYear;
                } else {
-                  $startDate = date('Y-m-d', strtotime("1 $fiscalYearStartMonth " . ($currentYear - 1)));
+                  $startYear = $currentYear - 1;
                }
+               $endYear = $startYear + 1;
+
+               $startDate = date('Y-m-d', strtotime("$startDay $startMonth $startYear"));
+               $endDate = date('Y-m-d', strtotime("$endDay $endMonth $endYear"));
 
                $query
                   ->where(
-                     [
-                        '>=', 'orders.datePaid', $startDate
+                     ['and',
+                        ['>=', 'orders.datePaid', $startDate],
+                        ['<=', 'orders.datePaid', $endDate . ' 23:59:59']
                      ]
                   );
+               break;
+            case "allTime":
+               // No date filter — query all completed orders
                break;
          }
 
@@ -130,7 +142,8 @@ class Goal extends Widget
     public function getTitle(): ?string
     {
       $targetDuration = CommerceWidgets::$plugin->helpers->getTargetDuration($this->targetDuration);
-      return StringHelper::titleize($targetDuration) . ' ' . StringHelper::titleize($this->type) . ' Goal';
+      $durationLabel = ucwords(preg_replace('/([a-z])([A-Z])/', '$1 $2', $targetDuration));
+      return $durationLabel . ' ' . StringHelper::titleize($this->type) . ' Goal';
     }
 
       public function getSubtitle(): ?string

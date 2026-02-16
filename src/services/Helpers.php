@@ -34,13 +34,19 @@ class Helpers extends Component
                 }
                 return date('j F', $start) . ' - ' . date('j F Y', $end);
             case 'fiscalYear':
-                $fiscalMonth = date('n', strtotime("1 {$settings->fiscalYearStart}"));
+                $startDay = (int) $settings->fiscalYearStartDay;
+                $startMonth = ucfirst($settings->fiscalYearStartMonth);
+                $endDay = (int) $settings->fiscalYearEndDay;
+                $endMonth = ucfirst($settings->fiscalYearEndMonth);
+                $fiscalMonthNum = date('n', strtotime("1 {$startMonth}"));
                 $currentYear = (int) date('Y');
-                $startYear = ((int) date('n') >= $fiscalMonth) ? $currentYear : $currentYear - 1;
-                $endMonth = date('j F', strtotime('-1 month', strtotime("1 {$settings->fiscalYearStart}")));
-                return date('j F', strtotime("1 {$settings->fiscalYearStart}")) . ' ' . $startYear . ' - ' . $endMonth . ' ' . ($startYear + 1);
+                $startYear = ((int) date('n') >= $fiscalMonthNum || ((int) date('n') == $fiscalMonthNum && (int) date('j') >= $startDay)) ? $currentYear : $currentYear - 1;
+                $endYear = $startYear + 1;
+                return "{$startDay} {$startMonth} {$startYear} - {$endDay} {$endMonth} {$endYear}";
             case 'yearly':
                 return date('Y');
+            case 'allTime':
+                return 'All Time';
             default:
                 return date('F Y');
         }
