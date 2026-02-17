@@ -2,12 +2,15 @@
 
 {% block widget %}
 
+   {% set customerIds = customers|map(c => c.customerId)|filter(id => id) %}
+   {% set users = customerIds|length ? craft.users.id(customerIds).indexBy('id').all() : {} %}
+
    <div class="cw:-ml-6 cw:-mr-6">
 
       {% for customer in customers %}
 
-         {% set element = craft.users.id(customer.customerId).one() %}
-         {% set cpEditUrl = '/' ~ cpTrigger ~ '/users/' ~ customer.customerId %}
+         {% set element = users[customer.customerId] ?? null %}
+         {% set cpEditUrl = element ? '/' ~ cpTrigger ~ '/users/' ~ customer.customerId : null %}
 
          <div class="{{ not loop.first ? 'cw:border-t! cw:border-gray-100 cw:border-solid' }} {{ loop.first and customers|length > 1 ? 'cw:pb-3' }} {{ loop.last and customers|length > 1 ? 'cw:pt-3' }} {{ not loop.last and not loop.first ? 'cw:py-3' }}">
 
@@ -15,15 +18,27 @@
 
                <div class="cw:flex cw:items-center cw:w-9/12">
 
-                  <a href="{{ cpEditUrl }}" class="cw:w-10 cw:h-10 cw:[&_svg]:w-10 cw:[&_svg]:h-10 cw:flex cw:items-center cw:justify-center cw:rounded-full cw:overflow-hidden cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
-                     {{ element.getThumbHtml(10)|raw }}
-                  </a>
+                  {% if element %}
+                     <a href="{{ cpEditUrl }}" class="cw:w-10 cw:h-10 cw:[&_svg]:w-10 cw:[&_svg]:h-10 cw:flex cw:items-center cw:justify-center cw:rounded-full cw:overflow-hidden cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
+                        {{ element.getThumbHtml(10)|raw }}
+                     </a>
+                  {% else %}
+                     <div class="cw:w-10 cw:h-10 cw:flex cw:items-center cw:justify-center cw:rounded-full cw:overflow-hidden cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0 cw:text-gray-400 cw:text-xs cw:font-semibold">
+                        {{ customer.email|first|upper }}
+                     </div>
+                  {% endif %}
 
                   <div class="cw:w-full cw:pr-10 cw:leading-tight">
-                  
-                     <a href="{{ cpEditUrl }}" class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:truncate">
-                        {{ element|length ? element.fullName ?? element.username : 'Customer' }}
-                     </a>
+
+                     {% if element %}
+                        <a href="{{ cpEditUrl }}" class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:truncate">
+                           {{ element.fullName ?? element.email ?? 'Customer' }}
+                        </a>
+                     {% else %}
+                        <span class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:truncate">
+                           Guest
+                        </span>
+                     {% endif %}
 
                      <div class="cw:max-w-[90%] cw:truncate">
                         {{ customer.email }}
@@ -34,19 +49,26 @@
                </div>
 
                <div class="cw:pl-4">
-                  {% include 'commerce-widgets/_includes/statistic' with { 
+                  {% include 'commerce-widgets/_includes/statistic' with {
                      statistic: customer.totalOrders|number_format(),
                      statisticSecondary: customer.totalRevenue|currency(commerce.currency),
-                     changeIndicator: '5%',
-                     changeDirection: 'down',
+                     changeIndicator: customer.changeIndicator|default(null),
+                     changeDirection: customer.changeDirection|default('neutral'),
+                     changeTooltip: changeTooltip,
                      padding: false,
                      border: false,
                      style: 'small'
                   } only %}
-               </div> 
+               </div>
 
             </div>
-               
+
+         </div>
+
+      {% else %}
+
+         <div class="cw:px-6 cw:text-gray-400 cw:text-sm">
+            No customers found.
          </div>
 
       {% endfor %}

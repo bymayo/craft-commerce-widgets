@@ -16,10 +16,10 @@ class TopCustomers extends BaseWidget
 
     public $includeGuests = 1;
     public $orderBy = 'totalRevenue';
-    public $groupBy; // Remove
+    public $groupBy;
     public $limit = 5;
     public $targetDuration = 'default';
-    public $excludeAdmins;
+    public $excludeAdmins = false;
 
     // Static Methods
     // =========================================================================
@@ -89,7 +89,8 @@ class TopCustomers extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
-                'customers' => CommerceWidgets::$plugin->customers->getTopCustomers($this->orderBy, (int) $this->limit, (bool) $this->includeGuests, $this->targetDuration)
+                'customers' => CommerceWidgets::$plugin->customers->getTopCustomers($this->orderBy, (int) $this->limit, (bool) $this->includeGuests, $this->targetDuration, (bool) $this->excludeAdmins),
+                'changeTooltip' => CommerceWidgets::$plugin->helpers->getChangeTooltip($this->targetDuration),
             ]
         );
     }
