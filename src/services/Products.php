@@ -21,7 +21,7 @@ class Products extends Component
 
             $query = Product::find()
                 ->limit($limit)
-                ->status(null);
+                ->orderBy('postDate desc');
 
             if ($productTypeId) {
                 $query->typeId($productTypeId);

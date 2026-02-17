@@ -27,10 +27,10 @@
                      </td>
                      <td>
                         {% include 'commerce-widgets/_includes/sku' with {
-                           sku: product.defaultSku
+                           sku: product.defaultSku|default('--')
                         } only %}
                      </td>
-                     <td>{{ product.defaultPrice|currency(commerce.currency) }}</td>
+                     <td>{{ product.defaultPrice is not null ? product.defaultPrice|currency(commerce.currency) : '--' }}</td>
                   </tr>
                {% else %}
                   <tr>

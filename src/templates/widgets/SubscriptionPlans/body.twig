@@ -18,8 +18,8 @@
                   <tr>
                      <td>
                         <div class="element hasstatus cw:flex cw:items-center">
-                           <span class="status {{ plan.enabled ? 'live' : 'disabled' }}"></span>
-                           <a href="/{{ cpTrigger }}/commerce/subscriptions?source=plan%3A{{ plan.id }}" class="cw:font-semibold">
+                           <span class="status {{ plan.enabled|default(false) ? 'live' : 'disabled' }}"></span>
+                           <a href="/{{ cpTrigger }}/commerce/subscriptions?planId={{ plan.id }}" class="cw:font-semibold">
                               {{ plan.name }}
                            </a>
                         </div>

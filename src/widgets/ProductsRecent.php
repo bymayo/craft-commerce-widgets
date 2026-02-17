@@ -9,7 +9,6 @@ use Craft;
 use craft\helpers\StringHelper;
 use craft\commerce\Plugin as CommercePlugin;
 
-use Exception;
 
 class ProductsRecent extends BaseWidget
 {

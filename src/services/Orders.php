@@ -22,7 +22,7 @@ class Orders extends Component
             $query = Order::find()
                 ->limit($limit)
                 ->isCompleted(true)
-                ->orderBy('dateUpdated desc');
+                ->orderBy('dateOrdered desc');
 
             if ($orderStatusId) {
                 $query->orderStatusId($orderStatusId);
