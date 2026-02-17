@@ -81,7 +81,7 @@
                   </span>
                   <span class="cw:ml-auto cw:tabular-nums">{{ country.statValue|number_format() }}</span>
                </div>
-               <div class="cw:bg-linear-to-r cw:from-blue-100 cw:to-blue-300 cw:h-full cw:rounded-md" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
+               <div class="cw:bg-blue-100 cw:h-full cw:rounded-md" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
             </div>
          {% endfor %}
       </div>
