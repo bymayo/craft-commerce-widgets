@@ -1,3 +1,8 @@
+{% set primaryLabel = primaryLabel ?? 'Completed' %}
+{% set secondaryLabel = secondaryLabel ?? 'Abandoned' %}
+{% set primaryData = primaryData ?? completedData %}
+{% set secondaryData = secondaryData ?? abandonedData %}
+
 <div class="cw:w-full cw:h-60">
     <canvas id="chart-line-{{ id }}" class="cw:w-full cw:h-full"></canvas>
 </div>
@@ -18,8 +23,8 @@
         labels: {{ labels|json_encode|raw }},
         datasets: [
         {
-            label: 'Completed',
-            data: {{ completedData|json_encode|raw }},
+            label: '{{ primaryLabel }}',
+            data: {{ primaryData|json_encode|raw }},
             lineTension: 0.3,
             pointBackgroundColor: style.getPropertyValue('--cw-color-blue-500'),
             borderColor: style.getPropertyValue('--cw-color-blue-500'),
@@ -28,8 +33,8 @@
             backgroundColor: gradient
         },
         {
-            label: 'Abandoned',
-            data: {{ abandonedData|json_encode|raw }},
+            label: '{{ secondaryLabel }}',
+            data: {{ secondaryData|json_encode|raw }},
             lineTension: 0.3,
             borderDash: [4,3],
             pointBackgroundColor: style.getPropertyValue('--cw-color-blue-300'),

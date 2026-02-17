@@ -8,6 +8,7 @@
 - Pages subnav in CP sidebar for quick navigation between pages
 - "Enable Pages" plugin setting to toggle the pages feature
 - User permissions for viewing pages, managing pages, and accessing widgets
+- New vs Returning Customers widget with line chart tracking new and returning customers over time
 - Conversion Rate widget with funnel visualisation (Added to Cart, Checkout, Completed)
 - Conversion Rate diagonal gradient connectors between funnel stages
 - Conversion Rate change indicators comparing current vs previous period per stage

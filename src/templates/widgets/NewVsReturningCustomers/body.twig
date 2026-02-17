@@ -1,0 +1,48 @@
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
+
+  <div class="cw:flex cw:gap-2 cw:mb-10">
+
+    <div class="cw:w-1/2">
+
+      {% include 'commerce-widgets/_includes/statistic' with {
+        heading: 'New',
+        statistic: newTotal.count|number_format(),
+        statisticSecondary: newTotal.totalRevenue|currency(commerce.currency),
+        changeIndicator: newChange.percentage,
+        changeDirection: newChange.direction,
+        changeTooltip: changeTooltip
+      } only %}
+
+    </div>
+
+    <div class="cw:w-1/2">
+
+      {% include 'commerce-widgets/_includes/statistic' with {
+        heading: 'Returning',
+        statistic: returningTotal.count|number_format(),
+        statisticSecondary: returningTotal.totalRevenue|currency(commerce.currency),
+        changeIndicator: returningChange.percentage,
+        changeDirection: returningChange.direction,
+        changeTooltip: changeTooltip
+      } only %}
+
+    </div>
+
+  </div>
+
+  <div class="{{ graphStyle == 'simple' ? 'cw:-ml-7 cw:-mr-7.5' }}">
+    {% include 'commerce-widgets/_includes/charts/line' with {
+      id: widgetId,
+      step: graphStep,
+      style: graphStyle,
+      labels: labels,
+      primaryLabel: 'New',
+      primaryData: newChart,
+      secondaryLabel: 'Returning',
+      secondaryData: returningChart
+    } only %}
+  </div>
+
+{% endblock %}
