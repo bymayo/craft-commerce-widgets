@@ -202,6 +202,37 @@ class Orders extends Component
         return $result;
     }
 
+    public function getOrdersByCountry(string $targetDuration): array
+    {
+        try {
+
+            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+
+            $query = (new Query())
+                ->select([
+                    'addresses.countryCode',
+                    'COUNT(orders.id) as orderCount'
+                ])
+                ->from(['orders' => '{{%commerce_orders}}'])
+                ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                ->join('LEFT JOIN', '{{%addresses}} addresses', 'addresses.id = orders.billingAddressId')
+                ->where(['orders.isCompleted' => 1])
+                ->andWhere(['elements.dateDeleted' => null])
+                ->andWhere(['not', ['addresses.countryCode' => null]])
+                ->groupBy('addresses.countryCode')
+                ->orderBy('orderCount desc');
+
+            CommerceWidgets::$plugin->helpers->applyDateFilter($query, $targetDuration);
+
+            return $query->cache($cacheDuration, $dependency)->all();
+
+        }
+        catch (Exception $e) {
+            return [];
+        }
+    }
+
     public function getRevenueOrders(): array
     {
         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;

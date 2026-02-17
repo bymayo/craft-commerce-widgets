@@ -153,3 +153,16 @@
       }
    )
 }}
+
+{{
+   forms.autosuggestField(
+      {
+         label: 'Mapbox Access Token',
+         id: 'mapboxAccessToken',
+         name: 'mapboxAccessToken',
+         instructions: 'Required for the Order Countries widget. Get a token from <a href="https://account.mapbox.com/access-tokens/" target="_blank">mapbox.com</a>.',
+         value: settings.mapboxAccessToken,
+         suggestEnvVars: true
+      }
+   )
+}}

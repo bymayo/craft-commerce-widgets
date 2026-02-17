@@ -1,0 +1,329 @@
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
+
+<div id="orders-map-{{ widgetId }}" style="width: 100%; height: 380px; background: #f0f1f4; border-radius: 6px; overflow: hidden; position: relative;">
+    {% if ordersByCountry is empty %}
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1;">
+            <span class="cw:text-gray-500 cw:text-sm">No order location data available</span>
+        </div>
+    {% endif %}
+</div>
+
+{% css %}
+.cw-map-popup .mapboxgl-popup-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    color: #374151;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.cw-map-popup .mapboxgl-popup-content strong {
+    color: #111827;
+    font-weight: 600;
+}
+.cw-map-popup .mapboxgl-popup-tip {
+    border-top-color: rgba(255, 255, 255, 0.95);
+}
+.cw-map-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+    border-top-color: rgba(255, 255, 255, 0.95);
+    border-bottom-color: transparent;
+}
+.cw-map-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+    border-bottom-color: rgba(255, 255, 255, 0.95);
+    border-top-color: transparent;
+}
+.cw-map-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    border-right-color: rgba(255, 255, 255, 0.95);
+    border-left-color: transparent;
+}
+.cw-map-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    border-left-color: rgba(255, 255, 255, 0.95);
+    border-right-color: transparent;
+}
+#orders-map-{{ widgetId }} .mapboxgl-ctrl-logo,
+#orders-map-{{ widgetId }} .mapboxgl-ctrl-attrib {
+    display: none !important;
+}
+{% endcss %}
+
+{% js %}
+(function() {
+
+    var orderData = {{ ordersByCountry|json_encode|raw }};
+    var mapboxToken = '{{ mapboxAccessToken|e('js') }}';
+
+    var C = {
+        'AF':[33,65],'AL':[41,20],'DZ':[28,3],'AD':[42.5,1.5],'AO':[-12.5,18.5],
+        'AG':[17.05,-61.8],'AR':[-34,-64],'AM':[40,45],'AU':[-25,135],'AT':[47.3,13.3],
+        'AZ':[40.5,47.5],'BS':[24,-76],'BH':[26,50.5],'BD':[24,90],'BB':[13.2,-59.5],
+        'BY':[53,28],'BE':[50.8,4],'BZ':[17.2,-88.7],'BJ':[9.5,2.3],'BT':[27.5,90.5],
+        'BO':[-17,-65],'BA':[44,17.8],'BW':[-22,24],'BR':[-10,-55],'BN':[4.5,114.7],
+        'BG':[43,25],'BF':[13,-2],'BI':[-3.5,30],'KH':[13,105],'CM':[6,12],
+        'CA':[60,-96],'CV':[16,-24],'CF':[7,21],'TD':[15,19],'CL':[-30,-71],
+        'CN':[35,105],'CO':[4,-72],'KM':[-12.2,44.2],'CG':[-1,15],'CD':[-3,23],
+        'CR':[10,-84],'CI':[8,-5.5],'HR':[45.2,15.5],'CU':[22,-79.5],'CY':[35,33],
+        'CZ':[49.7,15.5],'DK':[56,10],'DJ':[11.5,43],'DM':[15.4,-61.4],'DO':[19,-70.7],
+        'EC':[-2,-77.5],'EG':[27,30],'SV':[13.8,-88.9],'GQ':[2,10],'ER':[15,39],
+        'EE':[59,26],'SZ':[-26.5,31.5],'ET':[8,38],'FJ':[-18,178],'FI':[64,26],
+        'FR':[46,2],'GA':[-1,11.8],'GM':[13.5,-15.5],'GE':[42,43.5],'DE':[51,9],
+        'GH':[8,-2],'GR':[39,22],'GD':[12.1,-61.7],'GT':[15.5,-90.3],'GN':[11,-10],
+        'GW':[12,-15],'GY':[5,-59],'HT':[19,-72.4],'HN':[15,-86.5],'HU':[47,20],
+        'IS':[65,-18],'IN':[22,78],'ID':[-5,120],'IR':[32,53],'IQ':[33,44],
+        'IE':[53.5,-8],'IL':[31.5,34.8],'IT':[42.8,12.8],'JM':[18.2,-77.5],'JP':[36,138],
+        'JO':[31,36],'KZ':[48,68],'KE':[1,38],'KI':[1.4,173],'KP':[40,127],
+        'KR':[36,128],'KW':[29.5,47.8],'KG':[41,75],'LA':[18,105],'LV':[57,25],
+        'LB':[33.8,35.8],'LS':[-29.5,28.5],'LR':[6.5,-9.5],'LY':[27,17],'LI':[47.2,9.5],
+        'LT':[56,24],'LU':[49.7,6.2],'MG':[-20,47],'MW':[-13.5,34],'MY':[2.5,112.5],
+        'MV':[3.2,73],'ML':[17,-4],'MT':[35.9,14.4],'MH':[9,168],'MR':[20,-12],
+        'MU':[-20.3,57.6],'MX':[23,-102],'FM':[6.9,158.2],'MD':[47,29],'MC':[43.7,7.4],
+        'MN':[46,105],'ME':[42.5,19.3],'MA':[32,-5],'MZ':[-18.3,35],'MM':[22,98],
+        'NA':[-22,17],'NR':[-0.5,166.9],'NP':[28,84],'NL':[52.5,5.8],'NZ':[-42,174],
+        'NI':[13,-85],'NE':[16,8],'NG':[10,8],'MK':[41.5,22],'NO':[62,10],
+        'OM':[21,57],'PK':[30,70],'PW':[7.5,134.6],'PS':[31.9,35.2],'PA':[9,-80],
+        'PG':[-6,147],'PY':[-23,-58],'PE':[-10,-76],'PH':[13,122],'PL':[52,20],
+        'PT':[39.5,-8],'QA':[25.5,51.2],'RO':[46,25],'RU':[60,100],'RW':[-2,29.9],
+        'KN':[17.3,-62.7],'LC':[13.9,-61],'VC':[13.2,-61.2],'WS':[-13.8,-172],
+        'SM':[43.9,12.4],'ST':[1,7],'SA':[24,45],'SN':[14,-14],'RS':[44,21],
+        'SC':[-4.7,55.5],'SL':[8.5,-11.8],'SG':[1.4,103.8],'SK':[48.7,19.7],'SI':[46.1,15],
+        'SB':[-8,159],'SO':[6,48],'ZA':[-29,24],'SS':[7,30],'ES':[40,-4],
+        'LK':[7.9,80.8],'SD':[16,30],'SR':[4,-56],'SE':[62,15],'CH':[47,8.2],
+        'SY':[35,38],'TW':[23.5,121],'TJ':[39,71],'TZ':[-6,35],'TH':[15,100],
+        'TL':[-8.9,126],'TG':[8,1.2],'TO':[-20,-175],'TT':[10.5,-61],'TN':[34,9],
+        'TR':[39,35],'TM':[40,60],'TV':[-8,178],'UG':[1,32],'UA':[49,32],
+        'AE':[24,54],'GB':[54,-2],'US':[39,-98],'UY':[-33,-56],'UZ':[41,64],
+        'VU':[-16,167],'VE':[8,-66],'VN':[16,106],'YE':[15.5,48],'ZM':[-15,30],
+        'ZW':[-20,30],'XK':[42.6,21],'CW':[12.2,-69],'SX':[18,63],'BQ':[12.2,-68.3],
+        'GG':[49.5,-2.5],'JE':[49.2,-2.1],'IM':[54.2,-4.5],'AW':[12.5,-70],
+        'BM':[32.3,-64.8],'KY':[19.3,-81.3],'GI':[36.1,-5.4],'GL':[72,-40],
+        'GU':[13.4,144.8],'HK':[22.3,114.2],'MO':[22.2,113.5],'PR':[18.2,-66.6],
+        'VI':[18.3,-64.9],'RE':[-21.1,55.5],'GP':[16.3,-61.6],'MQ':[14.7,-61]
+    };
+
+    var features = [];
+    var totalOrders = 0;
+
+    for (var i = 0; i < orderData.length; i++) {
+        var item = orderData[i];
+        var coords = C[item.countryCode];
+        var count = parseInt(item.orderCount);
+        totalOrders += count;
+
+        if (coords) {
+            features.push({
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: [coords[1], coords[0]] },
+                properties: {
+                    countryCode: item.countryCode,
+                    orderCount: count
+                }
+            });
+        }
+    }
+
+    var geojson = { type: 'FeatureCollection', features: features };
+    var topCoords = orderData.length && C[orderData[0].countryCode] ? C[orderData[0].countryCode] : null;
+    var mapCenter = topCoords ? [topCoords[1], topCoords[0]] : [10, 25];
+
+    function loadMapbox(cb) {
+        if (window.mapboxgl) { cb(); return; }
+
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css';
+        document.head.appendChild(link);
+
+        var script = document.createElement('script');
+        script.src = 'https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js';
+        script.onload = cb;
+        document.head.appendChild(script);
+    }
+
+    loadMapbox(function() {
+        mapboxgl.accessToken = mapboxToken;
+
+        var container = document.getElementById('orders-map-{{ widgetId }}');
+
+        var map = new mapboxgl.Map({
+            container: container,
+            style: 'mapbox://styles/mapbox/light-v11',
+            projection: 'globe',
+            zoom: 1.8,
+            center: mapCenter,
+            maxZoom: 6,
+            minZoom: 1,
+            attributionControl: false
+        });
+
+        map.scrollZoom.disable();
+
+        map.on('style.load', function() {
+            map.setFog({
+                color: 'rgb(240, 241, 244)',
+                'high-color': 'rgb(240, 241, 244)',
+                'horizon-blend': 0.01,
+                'space-color': 'rgb(240, 241, 244)',
+                'star-intensity': 0
+            });
+        });
+
+        map.on('load', function() {
+            if (features.length === 0) return;
+
+            map.addSource('orders', { type: 'geojson', data: geojson });
+
+            map.addLayer({
+                id: 'orders-heat',
+                type: 'circle',
+                source: 'orders',
+                paint: {
+                    'circle-radius': [
+                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        1, 36,
+                        20, 56,
+                        100, 80,
+                        500, 100
+                    ],
+                    'circle-color': '#3b82f6',
+                    'circle-opacity': 0.08,
+                    'circle-blur': 1.2
+                }
+            });
+
+            map.addLayer({
+                id: 'orders-glow',
+                type: 'circle',
+                source: 'orders',
+                paint: {
+                    'circle-radius': [
+                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        1, 20,
+                        20, 34,
+                        100, 48,
+                        500, 62
+                    ],
+                    'circle-color': '#3b82f6',
+                    'circle-opacity': 0.12,
+                    'circle-blur': 0.8
+                }
+            });
+
+            map.addLayer({
+                id: 'orders-core',
+                type: 'circle',
+                source: 'orders',
+                paint: {
+                    'circle-radius': [
+                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        1, 10,
+                        20, 20,
+                        100, 28,
+                        500, 38
+                    ],
+                    'circle-color': '#3b82f6',
+                    'circle-opacity': 1
+                }
+            });
+
+            map.addLayer({
+                id: 'orders-labels',
+                type: 'symbol',
+                source: 'orders',
+                filter: ['>=', ['get', 'orderCount'], 3],
+                layout: {
+                    'text-field': ['to-string', ['get', 'orderCount']],
+                    'text-size': [
+                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        3, 11,
+                        50, 13,
+                        200, 15
+                    ],
+                    'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-allow-overlap': true,
+                    'text-ignore-placement': true
+                },
+                paint: {
+                    'text-color': '#ffffff'
+                }
+            });
+
+            var popup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: false,
+                className: 'cw-map-popup',
+                offset: 12,
+                maxWidth: '200px'
+            });
+
+            var countryNames = null;
+            try { countryNames = new Intl.DisplayNames(['en'], { type: 'region' }); } catch(e) {}
+
+            map.on('mouseenter', 'orders-core', function(e) {
+                map.getCanvas().style.cursor = 'pointer';
+                var f = e.features[0];
+                var code = f.properties.countryCode;
+                var count = f.properties.orderCount;
+                var name = countryNames ? countryNames.of(code) : code;
+                var label = count === 1 ? 'order' : 'orders';
+
+                popup
+                    .setLngLat(f.geometry.coordinates)
+                    .setHTML('<strong>' + name + '</strong><br>' + count + ' ' + label)
+                    .addTo(map);
+            });
+
+            map.on('mouseleave', 'orders-core', function() {
+                map.getCanvas().style.cursor = '';
+                popup.remove();
+            });
+
+            var userInteracting = false;
+            var spinInterval;
+
+            function spinGlobe() {
+                if (userInteracting) return;
+                var center = map.getCenter();
+                center.lng -= 0.08;
+                map.easeTo({
+                    center: center,
+                    duration: 50,
+                    easing: function(t) { return t; }
+                });
+            }
+
+            function startSpin() {
+                if (spinInterval) return;
+                spinInterval = setInterval(spinGlobe, 50);
+            }
+
+            function stopSpin() {
+                if (spinInterval) {
+                    clearInterval(spinInterval);
+                    spinInterval = null;
+                }
+            }
+
+            container.addEventListener('mouseenter', function() { userInteracting = true; });
+            container.addEventListener('mouseleave', function() { userInteracting = false; });
+            map.on('touchstart', function() { userInteracting = true; });
+            map.on('touchend', function() { userInteracting = false; });
+
+            startSpin();
+
+            var observer = new IntersectionObserver(function(entries) {
+                entries[0].isIntersecting ? startSpin() : stopSpin();
+            }, { threshold: 0.1 });
+
+            observer.observe(container);
+        });
+    });
+
+})();
+{% endjs %}
+
+{% endblock %}

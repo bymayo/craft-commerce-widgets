@@ -1,0 +1,5 @@
+{% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{% include 'commerce-widgets/_includes/settings/targetDuration' with {
+   value: widget['targetDuration']
+} only %}
