@@ -153,25 +153,28 @@ class CommerceWidgets extends Plugin
 
     public function getCpNavItem(): ?array
     {
-        $item = parent::getCpNavItem();
         $settings = $this->getSettings();
+
+        if (!$settings->enablePages) {
+            return null;
+        }
+
+        $item = parent::getCpNavItem();
         $item['label'] = $this->helpers->getPluginName();
 
-        if ($settings->enablePages) {
-            $user = Craft::$app->getUser()->getIdentity();
-            $canViewPages = $user && ($user->admin || $user->can('commerceWidgets-viewPages'));
+        $user = Craft::$app->getUser()->getIdentity();
+        $canViewPages = $user && ($user->admin || $user->can('commerceWidgets-viewPages'));
 
-            if ($canViewPages && Craft::$app->getRequest()->getIsCpRequest()) {
-                $pages = $this->pages->getPagesForUser($user->id);
+        if ($canViewPages && Craft::$app->getRequest()->getIsCpRequest()) {
+            $pages = $this->pages->getPagesForUser($user->id);
 
-                if (!empty($pages)) {
-                    $item['subnav'] = [];
-                    foreach ($pages as $page) {
-                        $item['subnav']['page-' . $page->id] = [
-                            'label' => $page->name,
-                            'url' => 'commerce-widgets/page/' . $page->id,
-                        ];
-                    }
+            if (!empty($pages)) {
+                $item['subnav'] = [];
+                foreach ($pages as $page) {
+                    $item['subnav']['page-' . $page->id] = [
+                        'label' => $page->name,
+                        'url' => 'commerce-widgets/page/' . $page->id,
+                    ];
                 }
             }
         }
