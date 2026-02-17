@@ -48,6 +48,8 @@
 - Updated styling across Top Products and Top Customers widgets
 
 ### Fixed
+- Top Products widget thumbnail not displaying when a Thumbnail Source is set on the product type
+- Top Products widget returning no results due to MySQL strict GROUP BY mode
 - Cart Abandonment widget not respecting target duration settings
 - Cart Abandonment chart showing hardcoded month labels instead of dynamic data
 - Cart Abandonment total price not displaying due to type casting from database

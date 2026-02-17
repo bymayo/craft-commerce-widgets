@@ -17,13 +17,25 @@
 
                   <div class="cw:flex cw:items-center cw:w-9/12">
 
+                     {% set thumbUrl = null %}
+                     {% if element %}
+                        {% set thumbField = element.fieldLayout.thumbField ?? null %}
+                        {% if thumbField %}
+                           {% set thumbAsset = attribute(element, thumbField.attribute()).one() ?? null %}
+                           {% if thumbAsset %}
+                              {% set thumbUrl = craft.app.assets.getThumbUrl(thumbAsset, 100, 100) %}
+                           {% endif %}
+                        {% endif %}
+                     {% endif %}
+
                      {% if element %}
                         <a href="{{ element.cpEditUrl }}" class="cw:w-12 cw:h-12 cw:flex cw:items-center cw:justify-center cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
-                           {{ element.getThumbHtml(100)|raw }}
+                           {% if thumbUrl %}
+                              <img src="{{ thumbUrl }}" class="cw:w-full cw:h-full cw:object-cover" alt="{{ element.title }}" loading="lazy" />
+                           {% endif %}
                         </a>
                      {% else %}
-                        <div class="cw:w-12 cw:h-12 cw:flex cw:items-center cw:justify-center cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0 cw:text-gray-400 cw:text-xs">
-                           --
+                        <div class="cw:w-12 cw:h-12 cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
                         </div>
                      {% endif %}
 

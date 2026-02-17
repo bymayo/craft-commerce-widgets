@@ -116,7 +116,18 @@ return array(
 	</tr>
 </table>
 
-## Recommendations 
+## Product Thumbnails
+
+The Top Products widget supports displaying product thumbnails. To enable this, you need to configure a **Thumbnail Source** on your product type:
+
+1. Go to **Commerce > System Settings > Product Types**
+2. Edit your product type
+3. In the field layout designer, find your image/asset field
+4. Click the gear icon on the field and enable **Use as thumbnail**
+
+Once configured, the Top Products widget will display the product image. Products without an image assigned will show an empty placeholder.
+
+## Recommendations
 
 ### Purge Inactive Carts Duration 
 It's recommended to increase the `purgeInactiveCartsDuration` setting (https://craftcms.com/docs/commerce/4.x/configuration.html#purgeinactivecartsduration) for Craft Commerce from the default (3 months) to around 6 months (`P6M`). This is because the graph on the `Cart Abandonment` widget spans across 6 months and might show incorrect results if this setting isn't adjusted. 
