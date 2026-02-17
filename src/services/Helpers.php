@@ -79,6 +79,49 @@ class Helpers extends Component
         return $query;
     }
 
+    public function calculateChange(int $current, int $previous): array
+    {
+        if ($previous === 0) {
+            if ($current === 0) {
+                return ['percentage' => null, 'direction' => 'neutral'];
+            }
+            return ['percentage' => '100%', 'direction' => 'up'];
+        }
+
+        $change = (($current - $previous) / $previous) * 100;
+        $percentage = round(abs($change)) . '%';
+
+        if ($change > 0) {
+            return ['percentage' => $percentage, 'direction' => 'up'];
+        } elseif ($change < 0) {
+            return ['percentage' => $percentage, 'direction' => 'down'];
+        }
+
+        return ['percentage' => null, 'direction' => 'neutral'];
+    }
+
+    public function getChangeTooltip(string $targetDuration): string
+    {
+        $targetDuration = $this->getTargetDuration($targetDuration);
+
+        switch ($targetDuration) {
+            case 'daily':
+                return 'Compared to previous day';
+            case 'weekly':
+                return 'Compared to previous week';
+            case 'monthly':
+                return 'Compared to previous month';
+            case 'yearly':
+                return 'Compared to previous year';
+            case 'fiscalYear':
+                return 'Compared to previous fiscal year';
+            case 'allTime':
+                return 'Compared to previous year';
+            default:
+                return 'Compared to previous period';
+        }
+    }
+
     public function getTargetDurationLabel($targetDuration): string
     {
         $targetDuration = $this->getTargetDuration($targetDuration);

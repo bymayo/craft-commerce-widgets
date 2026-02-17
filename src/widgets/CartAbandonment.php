@@ -57,16 +57,14 @@ class CartAbandonment extends BaseWidget
 
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
-            [
-               'widgetId' => $this->id,
-               'graphStep' => $this->graphStep,
-               'graphStyle' => $this->graphStyle,
-               'dateRangeChart' => array_column(CommerceWidgets::$plugin->carts->getPeriods($this->targetDuration, (int) $this->previousAmount), 'label'),
-               'abandonedCartChart' => CommerceWidgets::$plugin->carts->getTotalCarts(0, $this->targetDuration, (int) $this->previousAmount),
-               'completedCartChart' => CommerceWidgets::$plugin->carts->getTotalCarts(1, $this->targetDuration, (int) $this->previousAmount),
-               'abandonedCartData' => CommerceWidgets::$plugin->carts->getCartTotalRevenue(0, $this->targetDuration),
-               'completedCartData' => CommerceWidgets::$plugin->carts->getCartTotalRevenue(1, $this->targetDuration)
-            ]
+            array_merge(
+               [
+                   'widgetId' => $this->id,
+                   'graphStep' => $this->graphStep,
+                   'graphStyle' => $this->graphStyle,
+               ],
+               CommerceWidgets::$plugin->carts->getCartAnalytics($this->targetDuration, (int) $this->previousAmount)
+            )
         );
     }
 

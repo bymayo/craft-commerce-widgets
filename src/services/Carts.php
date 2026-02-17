@@ -6,12 +6,25 @@ use bymayo\commercewidgets\CommerceWidgets;
 
 use craft\base\Component;
 use craft\db\Query;
+use craft\commerce\Plugin as CommercePlugin;
+use craft\helpers\ConfigHelper;
+use craft\helpers\DateTimeHelper;
 use yii\caching\TagDependency;
 
+use DateTime;
 use Exception;
 
 class Carts extends Component
 {
+
+    private function getInactiveCartCutoff(): string
+    {
+        $edge = new DateTime();
+        $seconds = ConfigHelper::durationInSeconds(CommercePlugin::getInstance()->getSettings()->activeCartDuration);
+        $interval = DateTimeHelper::secondsToInterval($seconds);
+        $edge->sub($interval);
+        return $edge->format('Y-m-d H:i:s');
+    }
 
     public function getPeriods(string $targetDuration, int $previousAmount): array
     {
@@ -116,92 +129,149 @@ class Carts extends Component
         return $periods;
     }
 
-    public function getTotalCarts(int $isCompleted, string $targetDuration, int $previousAmount): array
+    public function getCartAnalytics(string $targetDuration, int $previousAmount): array
     {
         $periods = $this->getPeriods($targetDuration, $previousAmount);
+
+        $result = [
+            'labels' => array_column($periods, 'label'),
+            'completedChart' => array_fill(0, count($periods), 0),
+            'abandonedChart' => array_fill(0, count($periods), 0),
+            'completedTotal' => ['totalPrice' => 0.0, 'count' => 0],
+            'abandonedTotal' => ['totalPrice' => 0.0, 'count' => 0],
+            'completedChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'abandonedChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'changeTooltip' => CommerceWidgets::$plugin->helpers->getChangeTooltip($targetDuration),
+        ];
+
         if (empty($periods)) {
-            return [];
+            return $result;
         }
 
         $startDate = $periods[0]['start'];
         $endDate = end($periods)['end'];
+        $cutoff = $this->getInactiveCartCutoff();
+        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+        $currentPeriod = end($periods);
 
         try {
 
-            $query = (new Query())
+            // Chart data: completed + abandoned in one query
+            $chartQuery = (new Query())
                 ->select([
                     'DATE(orders.dateCreated) AS orderDate',
-                    'COALESCE(COUNT(orders.id), 0) AS count'
+                    'orders.isCompleted',
+                    'COUNT(orders.id) AS count'
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
                 ->where(['between', 'orders.dateCreated', $startDate, $endDate . ' 23:59:59'])
-                ->andWhere(['orders.isCompleted' => $isCompleted])
                 ->andWhere(['elements.dateDeleted' => null])
-                ->groupBy('orderDate');
+                ->andWhere([
+                    'or',
+                    ['orders.isCompleted' => 1],
+                    [
+                        'and',
+                        ['orders.isCompleted' => 0],
+                        ['<', 'elements.dateUpdated', $cutoff]
+                    ]
+                ])
+                ->groupBy(['orderDate', 'orders.isCompleted']);
 
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-            $results = $query->cache($cacheDuration, $dependency)->all();
+            $chartRows = $chartQuery->cache($cacheDuration, $dependency)->all();
 
-            $dateMap = [];
-            foreach ($results as $row) {
-                $dateMap[$row['orderDate']] = (int) $row['count'];
+            // Build date maps keyed by isCompleted
+            $completedMap = [];
+            $abandonedMap = [];
+            foreach ($chartRows as $row) {
+                if ((int) $row['isCompleted'] === 1) {
+                    $completedMap[$row['orderDate']] = (int) $row['count'];
+                } else {
+                    $abandonedMap[$row['orderDate']] = (int) $row['count'];
+                }
             }
 
-            $data = [];
-            foreach ($periods as $period) {
-                $count = 0;
-                foreach ($dateMap as $date => $c) {
+            // Bucket into periods
+            foreach ($periods as $i => $period) {
+                foreach ($completedMap as $date => $count) {
                     if ($date >= $period['start'] && $date <= $period['end']) {
-                        $count += $c;
+                        $result['completedChart'][$i] += $count;
                     }
                 }
-                $data[] = $count;
+                foreach ($abandonedMap as $date => $count) {
+                    if ($date >= $period['start'] && $date <= $period['end']) {
+                        $result['abandonedChart'][$i] += $count;
+                    }
+                }
             }
 
-            return $data;
-
-        }
-        catch (Exception $e) {
-            return [];
-        }
-
-    }
-
-    public function getCartTotalRevenue(int $isCompleted, string $targetDuration): ?array
-    {
-        $periods = $this->getPeriods($targetDuration, 1);
-        if (empty($periods)) {
-            return null;
-        }
-
-        $period = end($periods);
-
-        try {
-
-            $query = (new Query())
+            // Totals for current period: completed + abandoned in one query
+            $totalsQuery = (new Query())
                 ->select([
-                    'COALESCE(sum(orders.totalPrice), 0) as totalPrice',
-                    'COALESCE(count(orders.id), 0) as count'
+                    'orders.isCompleted',
+                    'COALESCE(SUM(orders.totalPrice), 0) as totalPrice',
+                    'COALESCE(COUNT(orders.id), 0) as count'
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-                ->where(['between', 'orders.dateCreated', $period['start'], $period['end'] . ' 23:59:59'])
-                ->andWhere(['orders.isCompleted' => $isCompleted])
-                ->andWhere(['elements.dateDeleted' => null]);
+                ->where(['between', 'orders.dateCreated', $currentPeriod['start'], $currentPeriod['end'] . ' 23:59:59'])
+                ->andWhere(['elements.dateDeleted' => null])
+                ->andWhere([
+                    'or',
+                    ['orders.isCompleted' => 1],
+                    [
+                        'and',
+                        ['orders.isCompleted' => 0],
+                        ['<', 'elements.dateUpdated', $cutoff]
+                    ]
+                ])
+                ->groupBy('orders.isCompleted');
 
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-            $result = $query->cache($cacheDuration, $dependency)->one();
+            $totalsRows = $totalsQuery->cache($cacheDuration, $dependency)->all();
 
-            return $result;
+            foreach ($totalsRows as $row) {
+                $total = [
+                    'totalPrice' => (float) $row['totalPrice'],
+                    'count' => (int) $row['count'],
+                ];
+                if ((int) $row['isCompleted'] === 1) {
+                    $result['completedTotal'] = $total;
+                } else {
+                    $result['abandonedTotal'] = $total;
+                }
+            }
+
+            // Calculate change vs previous period from chart data
+            $periodCount = count($periods);
+            if ($periodCount >= 2) {
+                $currentIdx = $periodCount - 1;
+                $previousIdx = $periodCount - 2;
+
+                $result['completedChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                    $result['completedChart'][$currentIdx],
+                    $result['completedChart'][$previousIdx]
+                );
+
+                // Invert direction for abandoned: decrease = good (up/green), increase = bad (down/red)
+                $abandonedChange = CommerceWidgets::$plugin->helpers->calculateChange(
+                    $result['abandonedChart'][$currentIdx],
+                    $result['abandonedChart'][$previousIdx]
+                );
+                if ($abandonedChange['direction'] === 'up') {
+                    $abandonedChange['direction'] = 'down';
+                } elseif ($abandonedChange['direction'] === 'down') {
+                    $abandonedChange['direction'] = 'up';
+                }
+                $result['abandonedChange'] = $abandonedChange;
+            }
 
         }
         catch (Exception $e) {
-            return null;
+            // Return defaults on error
         }
 
+        return $result;
     }
 
 }

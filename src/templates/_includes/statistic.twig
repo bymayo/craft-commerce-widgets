@@ -8,10 +8,10 @@
             {{ heading }}
         </div>
     {% endif %}
-    <div class="">
+    <div class="cw:w-auto">
         <span class="cw:font-semibold {{ style == 'small' ? 'cw:text-xl' : 'cw:text-2xl' }}">{{ statistic }}</span>
         {% if changeIndicator is defined and changeIndicator is not null %}
-            <span class="cw:text-xs {% if changeDirection is defined and changeDirection == 'up' %}cw:text-green-600{% elseif changeDirection is defined and changeDirection == 'down' %}cw:text-red-600{% else %}cw:text-[var(--disabled-color)]{% endif %}">
+            <span class="cw:text-xs cw:cursor-help {% if changeDirection is defined and changeDirection == 'up' %}cw:text-green-600{% elseif changeDirection is defined and changeDirection == 'down' %}cw:text-red-600{% else %}cw:text-[var(--disabled-color)]{% endif %}" {% if changeTooltip is defined %}title="{{ changeTooltip }}"{% endif %}>
                 {% if changeDirection is defined and changeDirection == 'up' %}↗{% elseif changeDirection is defined and changeDirection == 'down' %}↘{% else %}→{% endif %} {{ changeIndicator }}
             </span>
         {% endif %}

@@ -15,6 +15,10 @@
 - Product Type filter on Recent Products widget with type name in title
 - Order Status filter on Recent Orders widget with status name in title
 - Plugin Name setting now applies to all widget display names, permissions, and cache labels
+- Change indicator on Cart Abandonment widget comparing current vs previous period
+- Hover tooltip on change indicators describing the comparison period
+- `calculateChange()` helper method for reuse across widgets
+- `getChangeTooltip()` helper method for duration-aware tooltip text
 - CP Settings page restored
 - Tailwind CSS for modern styling
 - Vite build system
@@ -25,6 +29,10 @@
 - Extracted widget query logic into domain-specific services (Orders, Products, Customers, Carts, Subscriptions)
 - Shared date filtering across all services via `applyDateFilter()`
 - Recent Orders and Recent Products data now fetched in PHP services instead of Twig templates
+- Cart Abandonment widget now respects all target duration settings (daily, weekly, monthly, yearly, fiscal year, all time)
+- Cart Abandonment consolidated into a single `getCartAnalytics()` service call with 2 DB queries instead of 5 separate calls
+- Cart Abandonment only counts inactive carts (per Commerce's `activeCartDuration` setting) for abandoned stats
+- Chart legend hidden in simple graph style
 - Merged dashboard services into a single Pages service
 - Renamed dashboard controller, templates, and routes to Pages
 - Renamed database tables to `commerce_widgets_pages` and `commerce_widgets_pages_widgets`
@@ -35,6 +43,10 @@
 - Updated styling across Top Products and Top Customers widgets
 
 ### Fixed
+- Cart Abandonment widget not respecting target duration settings
+- Cart Abandonment chart showing hardcoded month labels instead of dynamic data
+- Cart Abandonment total price not displaying due to type casting from database
+- Duplicate customers in Top Customers widget caused by grouping on both email and customerId
 - Widget render failures caused by type casting when passing settings to services
 - Subscription Plans widget compatibility
 - Icon paths in Top Products widget

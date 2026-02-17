@@ -2,30 +2,32 @@
 
 {% block widget %}
 
-  {% set dataCountTotal = abandonedCartData.count + completedCartData.count %}
+  {% set dataCountTotal = abandonedTotal.count + completedTotal.count %}
 
   <div class="cw:flex cw:gap-2 cw:mb-10">
 
     <div class="cw:w-1/2">
 
-      {% include 'commerce-widgets/_includes/statistic' with { 
+      {% include 'commerce-widgets/_includes/statistic' with {
         heading: 'Completed',
-        statistic: completedCartData.count|number_format(),
-        statisticSecondary: completedCartData.totalPrice|currency(commerce.currency),
-        changeIndicator: '3%',
-        changeDirection: 'up'
+        statistic: completedTotal.count|number_format(),
+        statisticSecondary: completedTotal.totalPrice|currency(commerce.currency),
+        changeIndicator: completedChange.percentage,
+        changeDirection: completedChange.direction,
+        changeTooltip: changeTooltip
       } %}
 
     </div>
 
     <div class="cw:w-1/2">
 
-      {% include 'commerce-widgets/_includes/statistic' with { 
+      {% include 'commerce-widgets/_includes/statistic' with {
         heading: 'Abandoned',
-        statistic: abandonedCartData.count|number_format(),
-        statisticSecondary: abandonedCartData.totalPrice|currency(commerce.currency),
-        changeIndicator: '5%',
-        changeDirection: 'down',
+        statistic: abandonedTotal.count|number_format(),
+        statisticSecondary: abandonedTotal.totalPrice|currency(commerce.currency),
+        changeIndicator: abandonedChange.percentage,
+        changeDirection: abandonedChange.direction,
+        changeTooltip: changeTooltip
       } only %}
 
     </div>
@@ -37,9 +39,9 @@
       id: 'cart-abandonment',
       step: graphStep,
       style: graphStyle,
-      labels: dateRangeChart,
-      completedData: completedCartChart,
-      abandonedData: abandonedCartChart
+      labels: labels,
+      completedData: completedChart,
+      abandonedData: abandonedChart
     } only %}
   </div>
 
