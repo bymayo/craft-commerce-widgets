@@ -8,7 +8,10 @@
 - Pages subnav in CP sidebar for quick navigation between pages
 - "Enable Pages" plugin setting to toggle the pages feature
 - User permissions for viewing pages, managing pages, and accessing widgets
-- Conversion Rate widget
+- Conversion Rate widget with funnel visualisation (Added to Cart, Checkout, Completed)
+- Conversion Rate diagonal gradient connectors between funnel stages
+- Conversion Rate change indicators comparing current vs previous period per stage
+- Conversion rate percentages relative to Added to Cart baseline with tooltip explanations
 - Fiscal Year option to widget target duration settings
 - Fiscal Year start/end day and month settings for granular fiscal year configuration
 - All Time option to widget target duration settings
@@ -19,6 +22,8 @@
 - Hover tooltip on change indicators describing the comparison period
 - `calculateChange()` helper method for reuse across widgets
 - `getChangeTooltip()` helper method for duration-aware tooltip text
+- `getDateRange()` helper method for current/previous period date conditions
+- `statisticSecondaryTooltip` option on statistic component
 - CP Settings page restored
 - Tailwind CSS for modern styling
 - Vite build system
