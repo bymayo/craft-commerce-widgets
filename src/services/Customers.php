@@ -23,7 +23,7 @@ class Customers extends Component
                     'count(*) as totalOrders',
                     'SUM(orders.totalPrice) as totalRevenue',
                     'orders.email',
-                    'orders.customerId'
+                    'MAX(orders.customerId) as customerId'
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
