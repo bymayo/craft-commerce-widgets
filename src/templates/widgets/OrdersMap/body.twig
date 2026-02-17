@@ -2,6 +2,7 @@
 
 {% block widget %}
 
+{% if showMap %}
 <div id="orders-map-{{ widgetId }}" style="width: 100%; height: 380px; background: #f0f1f4; border-radius: 6px; overflow: hidden; position: relative;">
     {% if ordersByCountry is empty %}
         <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1;">
@@ -55,11 +56,49 @@
     display: none !important;
 }
 </style>
+{% endif %}
+
+{% if showBarChart %}
+   {% set topCountries = ordersByCountry|slice(0, limit) %}
+
+   {% if topCountries|length %}
+      <div id="orders-map-countries-{{ widgetId }}" class="{{ showMap ? 'cw:mt-4' }} cw:-ml-6 cw:-mr-6 cw:flex cw:flex-col cw:gap-3">
+         {% set maxValue = topCountries[0].statValue %}
+         {% for country in topCountries %}
+            <div class="cw:px-6">
+               <div class="cw:relative cw:h-2 cw:rounded-full cw:bg-blue-100 cw:overflow-hidden">
+                  <div class="cw:absolute cw:inset-y-0 cw:left-0 cw:rounded-full cw:bg-blue-500" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
+               </div>
+               <div class="cw:flex cw:justify-between cw:mt-1">
+                  <span class="cw:text-xl cw:font-semibold">{{ country.statValue|number_format() }}</span>
+                  <span class="cw:text-sm cw:text-gray-400" data-cw-country-name="{{ country.countryCode }}">{{ country.countryCode }}</span>
+               </div>
+            </div>
+         {% endfor %}
+      </div>
+   {% elseif not showMap %}
+      <div class="cw:text-gray-400 cw:text-sm">
+         No location data available.
+      </div>
+   {% endif %}
+{% endif %}
 
 {% js %}
 (function() {
 
     var orderData = {{ ordersByCountry|json_encode|raw }};
+
+    // Resolve country names for top countries bar chart
+    try {
+        var names = new Intl.DisplayNames(['en'], { type: 'region' });
+        var els = document.querySelectorAll('#orders-map-countries-{{ widgetId }} [data-cw-country-name]');
+        for (var i = 0; i < els.length; i++) {
+            var code = els[i].getAttribute('data-cw-country-name');
+            try { els[i].textContent = names.of(code); } catch(e) {}
+        }
+    } catch(e) {}
+
+    {% if showMap %}
     var mapboxToken = '{{ mapboxAccessToken|e('js') }}';
 
     var C = {
@@ -114,7 +153,7 @@
     for (var i = 0; i < orderData.length; i++) {
         var item = orderData[i];
         var coords = C[item.countryCode];
-        var count = parseInt(item.orderCount);
+        var count = parseFloat(item.statValue);
 
         if (coords) {
             features.push({
@@ -122,7 +161,7 @@
                 geometry: { type: 'Point', coordinates: [coords[1], coords[0]] },
                 properties: {
                     countryCode: item.countryCode,
-                    orderCount: count
+                    statValue: count
                 }
             });
         }
@@ -192,7 +231,7 @@
                 source: 'orders',
                 paint: {
                     'circle-radius': [
-                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        'interpolate', ['linear'], ['get', 'statValue'],
                         1, 36,
                         20, 56,
                         100, 80,
@@ -210,7 +249,7 @@
                 source: 'orders',
                 paint: {
                     'circle-radius': [
-                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        'interpolate', ['linear'], ['get', 'statValue'],
                         1, 20,
                         20, 34,
                         100, 48,
@@ -228,7 +267,7 @@
                 source: 'orders',
                 paint: {
                     'circle-radius': [
-                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        'interpolate', ['linear'], ['get', 'statValue'],
                         1, 10,
                         20, 20,
                         100, 28,
@@ -243,11 +282,10 @@
                 id: 'orders-labels',
                 type: 'symbol',
                 source: 'orders',
-                filter: ['>=', ['get', 'orderCount'], 3],
                 layout: {
-                    'text-field': ['to-string', ['get', 'orderCount']],
+                    'text-field': ['to-string', ['number-format', ['get', 'statValue'], {}]],
                     'text-size': [
-                        'interpolate', ['linear'], ['get', 'orderCount'],
+                        'interpolate', ['linear'], ['get', 'statValue'],
                         3, 11,
                         50, 13,
                         200, 15
@@ -276,16 +314,15 @@
                 map.getCanvas().style.cursor = 'pointer';
                 var f = e.features[0];
                 var code = f.properties.countryCode;
-                var count = f.properties.orderCount;
+                var value = f.properties.statValue;
                 var name = countryNames ? countryNames.of(code) : code;
-                var label = count === 1 ? 'order' : 'orders';
 
                 var el = document.createElement('div');
                 var strong = document.createElement('strong');
                 strong.textContent = name;
                 el.appendChild(strong);
                 el.appendChild(document.createElement('br'));
-                el.appendChild(document.createTextNode(count + ' ' + label));
+                el.appendChild(document.createTextNode(value.toLocaleString()));
 
                 popup
                     .setLngLat(f.geometry.coordinates)
@@ -338,6 +375,7 @@
             observer.observe(container);
         });
     });
+    {% endif %}
 
 })();
 {% endjs %}

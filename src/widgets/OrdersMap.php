@@ -15,8 +15,12 @@ class OrdersMap extends BaseWidget
     // Public Properties
     // =========================================================================
 
-    public static $displayName = 'Order Countries';
+    public static $displayName = 'Locations';
     public $targetDuration = 'default';
+    public $showMap = true;
+    public $statType = 'orderCount';
+    public $limit = 3;
+    public $showBarChart = true;
 
     // Static Methods
     // =========================================================================
@@ -39,9 +43,14 @@ class OrdersMap extends BaseWidget
     // Public Methods
     // =========================================================================
 
+    private const STAT_TYPE_LABELS = [
+        'orderCount' => 'Orders',
+        'customerCount' => 'Customers',
+    ];
+
     public function getTitle(): ?string
     {
-      return self::$displayName;
+      return (self::STAT_TYPE_LABELS[$this->statType] ?? 'Orders') . ' Per Location';
     }
 
     public function getSubtitle(): ?string
@@ -51,11 +60,11 @@ class OrdersMap extends BaseWidget
 
     public function getBodyHtml(): ?string
     {
+        $showMap = (bool) $this->showMap;
         $settings = CommerceWidgets::$plugin->getSettings();
+        $mapboxAccessToken = $showMap ? App::parseEnv($settings->mapboxAccessToken) : null;
 
-        $mapboxAccessToken = App::parseEnv($settings->mapboxAccessToken);
-
-        if (empty($mapboxAccessToken)) {
+        if ($showMap && empty($mapboxAccessToken)) {
             return '<div class="cw:text-gray-400 cw:text-sm cw:py-4">Add a Mapbox Access Token in the plugin settings to use this widget.</div>';
         }
 
@@ -65,8 +74,12 @@ class OrdersMap extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
+                'showMap' => $showMap,
+                'statType' => $this->statType,
                 'mapboxAccessToken' => $mapboxAccessToken,
-                'ordersByCountry' => CommerceWidgets::$plugin->orders->getOrdersByCountry($this->targetDuration),
+                'limit' => (int) $this->limit,
+                'showBarChart' => (bool) $this->showBarChart,
+                'ordersByCountry' => CommerceWidgets::$plugin->orders->getOrdersByCountry($this->targetDuration, $this->statType),
             ]
         );
     }

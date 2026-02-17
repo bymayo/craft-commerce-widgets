@@ -202,17 +202,24 @@ class Orders extends Component
         return $result;
     }
 
-    public function getOrdersByCountry(string $targetDuration): array
+    private const ALLOWED_STAT_TYPES = [
+        'orderCount' => 'COUNT(orders.id)',
+        'customerCount' => 'COUNT(DISTINCT orders.email)',
+    ];
+
+    public function getOrdersByCountry(string $targetDuration, string $statType = 'orderCount'): array
     {
         try {
 
             $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
             $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
+            $statExpression = self::ALLOWED_STAT_TYPES[$statType] ?? self::ALLOWED_STAT_TYPES['orderCount'];
+
             $query = (new Query())
                 ->select([
                     'addresses.countryCode',
-                    'COUNT(orders.id) as orderCount'
+                    "$statExpression as statValue"
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
@@ -221,7 +228,7 @@ class Orders extends Component
                 ->andWhere(['elements.dateDeleted' => null])
                 ->andWhere(['not', ['addresses.countryCode' => null]])
                 ->groupBy('addresses.countryCode')
-                ->orderBy('orderCount desc');
+                ->orderBy('statValue desc');
 
             CommerceWidgets::$plugin->helpers->applyDateFilter($query, $targetDuration);
 

@@ -1,4 +1,46 @@
+{% import "_includes/forms" as forms %}
+
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
+
+{{
+   forms.selectField(
+      {
+         label: 'Statistic',
+         name: 'statType',
+         value: widget['statType'],
+         options: [
+            { label: 'Orders', value: 'orderCount' },
+            { label: 'Customers', value: 'customerCount' }
+         ]
+      }
+   )
+}}
+
+{{
+   forms.lightswitchField(
+      {
+         label: 'Show Map',
+         id: 'showMap',
+         name: 'showMap',
+         on: widget['showMap']
+      }
+   )
+}}
+
+{{
+   forms.lightswitchField(
+      {
+         label: 'Show Bar Chart',
+         id: 'showBarChart',
+         name: 'showBarChart',
+         on: widget['showBarChart']
+      }
+   )
+}}
+
+{% include 'commerce-widgets/_includes/settings/limit' with {
+   value: widget['limit']
+} only %}
 
 {% include 'commerce-widgets/_includes/settings/targetDuration' with {
    value: widget['targetDuration']

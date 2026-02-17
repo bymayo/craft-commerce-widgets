@@ -5,7 +5,10 @@
 ### Added
 - Cancelled and Expired columns on Subscription Plans widget
 - Country flag and location on Top Customers widget
-- Order Countries widget with 3D Mapbox globe showing order locations by country with count pins
+- Locations widget statistic setting to show Orders or Customers
+- Locations widget Show Map lightswitch to toggle the Mapbox globe
+- Top 3 countries bar chart on Locations widget
+- Locations widget (formerly Order Countries) with 3D Mapbox globe showing order locations by country with count pins
 - Mapbox Access Token plugin setting with environment variable support
 - Custom dashboard with drag-and-drop widget management
 - Dashboard pages - create multiple dashboard pages per user
