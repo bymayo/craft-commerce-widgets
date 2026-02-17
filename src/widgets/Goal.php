@@ -7,10 +7,6 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
 use craft\helpers\StringHelper;
-use craft\db\Query;
-use yii\caching\TagDependency;
-
-use Exception;
 
 class Goal extends BaseWidget
 {
@@ -27,7 +23,7 @@ class Goal extends BaseWidget
 
     public static function displayName(): string
     {
-      return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Goal');
+      return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Goal');
     }
 
     public static function icon(): ?string
@@ -45,97 +41,8 @@ class Goal extends BaseWidget
 
     public function getTotals()
     {
-
-      try {
-
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'COALESCE(count(*), 0) as totalOrders',
-                  'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
-               ]
-            )
-            ->from(['orders' => '{{%commerce_orders}}'])
-            ->where(
-               [
-                  'orders.isCompleted' => 1,
-               ]
-            );
-
-         $targetDuration = CommerceWidgets::$plugin->helpers->getTargetDuration($this->targetDuration);
-         switch ($targetDuration) {
-            case "weekly":
-               $query
-                  ->where(
-                     [
-                        'WEEK(orders.datePaid, 1)' => date('W'),
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "monthly":
-               $query
-                  ->where(
-                     [
-                        'MONTH(orders.datePaid)' => date('n'),
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "yearly":
-               $query
-                  ->where(
-                     [
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "fiscalYear":
-               $settings = CommerceWidgets::$plugin->getSettings();
-               $startDay = (int) $settings->fiscalYearStartDay;
-               $startMonth = $settings->fiscalYearStartMonth;
-               $endDay = (int) $settings->fiscalYearEndDay;
-               $endMonth = $settings->fiscalYearEndMonth;
-               $fiscalMonth = date('n', strtotime("1 $startMonth"));
-               $currentMonth = (int) date('n');
-               $currentYear = (int) date('Y');
-
-               if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
-                  $startYear = $currentYear;
-               } else {
-                  $startYear = $currentYear - 1;
-               }
-               $endYear = $startYear + 1;
-
-               $startDate = date('Y-m-d', strtotime("$startDay $startMonth $startYear"));
-               $endDate = date('Y-m-d', strtotime("$endDay $endMonth $endYear"));
-
-               $query
-                  ->where(
-                     ['and',
-                        ['>=', 'orders.datePaid', $startDate],
-                        ['<=', 'orders.datePaid', $endDate . ' 23:59:59']
-                     ]
-                  );
-               break;
-            case "allTime":
-               // No date filter — query all completed orders
-               break;
-         }
-
-         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-         $result = $query->cache($cacheDuration, $dependency)->one();
-
-      }
-      catch (Exception $e) {
-         $result = null;
-      }
-
+      $result = CommerceWidgets::$plugin->orders->getOrderTotals($this->targetDuration);
       return ($this->type === 'orders') ? $result['totalOrders'] : $result['totalRevenue'];
-
    }
 
     // Public Methods

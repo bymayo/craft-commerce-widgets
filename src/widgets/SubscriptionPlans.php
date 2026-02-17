@@ -7,10 +7,6 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
 use craft\helpers\StringHelper;
-use craft\db\Query;
-use yii\caching\TagDependency;
-
-use Exception;
 
 class SubscriptionPlans extends BaseWidget
 {
@@ -26,7 +22,7 @@ class SubscriptionPlans extends BaseWidget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
     }
 
     public static function icon(): ?string
@@ -38,54 +34,6 @@ class SubscriptionPlans extends BaseWidget
     {
         return null;
     }
-
-    // Custom Public Methods
-    // =========================================================================
-
-    public function getSubscriptionPlans()
-    {
-
-      try {
-
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'plans.*',
-                  'COUNT(subscriptions.planId) as activeSubscriptions'
-               ]
-            )
-            ->from(
-               [
-                  'plans' => '{{%commerce_plans}}'
-               ]
-            )
-            ->join(
-               'LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', 'subscriptions.planId = plans.id'
-            )
-            ->where(
-               [
-                  'plans.isArchived' => 0
-               ]
-            )
-            ->groupBy(['plans.id'])
-            ->orderBy($this->orderBy)
-            ->limit($this->limit);
-
-         $command = $query->createCommand();
-         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-         $result = $command->cache($cacheDuration, $dependency)->queryAll();
-
-         return $result;
-
-      }
-      catch (Exception $e) {
-         $result = [];
-     }
-
-   }
 
     // Public Methods
     // =========================================================================
@@ -130,7 +78,7 @@ class SubscriptionPlans extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
-                'plans' => $this->getSubscriptionPlans()
+                'plans' => CommerceWidgets::$plugin->subscriptions->getSubscriptionPlans($this->orderBy, (int) $this->limit)
             ]
         );
     }

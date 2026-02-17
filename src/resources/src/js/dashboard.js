@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const widgetIds = [...grid.querySelectorAll('.cw-dashboard-widget')]
                 .map(el => el.dataset.id);
 
-            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/reorder-widgets', {
+            Craft.sendActionRequest('POST', 'commerce-widgets/pages/reorder-widgets', {
                 data: { widgetIds }
             });
         }
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault();
                     const type = link.dataset.type;
 
-                    Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/add-widget', {
+                    Craft.sendActionRequest('POST', 'commerce-widgets/pages/add-widget', {
                         data: { type, pageId }
                     }).then(response => {
                         if (response.data.success && response.data.widget) {
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = prompt('Enter page name:', 'New Page');
             if (name === null || name.trim() === '') return;
 
-            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/add-page', {
+            Craft.sendActionRequest('POST', 'commerce-widgets/pages/add-page', {
                 data: { name: name.trim() }
             }).then(response => {
                 if (response.data.success) {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = prompt('Enter new page name:', currentName);
             if (name === null || name.trim() === '') return;
 
-            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/rename-page', {
+            Craft.sendActionRequest('POST', 'commerce-widgets/pages/rename-page', {
                 data: { pageId, name: name.trim() }
             }).then(response => {
                 if (response.data.success) {
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if (!confirm('Are you sure you want to delete this page and all its widgets?')) return;
 
-            Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/delete-page', {
+            Craft.sendActionRequest('POST', 'commerce-widgets/pages/delete-page', {
                 data: { pageId }
             }).then(response => {
                 if (response.data.success) {
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('keydown', escHandler);
 
         // Fetch settings from server
-        Craft.sendActionRequest('GET', 'commerce-widgets/dashboard/get-widget-settings', {
+        Craft.sendActionRequest('GET', 'commerce-widgets/pages/get-widget-settings', {
             params: { widgetId }
         }).then(response => {
             if (!response.data.success) {
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearTimeout(removeTimer);
                 removeBtn.style.pointerEvents = 'none';
                 removeBtn.style.opacity = '0.5';
-                Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/remove-widget', {
+                Craft.sendActionRequest('POST', 'commerce-widgets/pages/remove-widget', {
                     data: { widgetId }
                 }).then(resp => {
                     if (resp.data.success) {
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const settings = collectSettings(modalBody);
 
-                Craft.sendActionRequest('POST', 'commerce-widgets/dashboard/save-widget-settings', {
+                Craft.sendActionRequest('POST', 'commerce-widgets/pages/save-widget-settings', {
                     data: {
                         widgetId,
                         colspan: selectedColspan,

@@ -7,6 +7,7 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
 use craft\helpers\StringHelper;
+use craft\commerce\Plugin as CommercePlugin;
 
 use Exception;
 
@@ -16,6 +17,7 @@ class OrdersRecent extends BaseWidget
     // Public Properties
     // =========================================================================
 
+    public $orderStatusId;
     public $limit = 5;
 
     // Static Methods
@@ -23,7 +25,7 @@ class OrdersRecent extends BaseWidget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Recent Orders');
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Recent Orders');
     }
 
     public static function icon(): ?string
@@ -41,7 +43,14 @@ class OrdersRecent extends BaseWidget
 
     public function getTitle(): ?string
     {
-      return 'Recent Orders';
+        if ($this->orderStatusId) {
+            $status = CommercePlugin::getInstance()->getOrderStatuses()->getOrderStatusById((int) $this->orderStatusId);
+            if ($status) {
+                return 'Recent Orders - ' . $status->name;
+            }
+        }
+
+        return 'Recent Orders';
     }
 
     public function rules(): array
@@ -51,8 +60,9 @@ class OrdersRecent extends BaseWidget
         $rules = array_merge(
             $rules,
             [
-                ['limit', 'integer'],
+                [['limit', 'orderStatusId'], 'integer'],
                 ['limit', 'default', 'value' => 5],
+                ['orderStatusId', 'default', 'value' => null]
             ]
         );
 
@@ -64,7 +74,8 @@ class OrdersRecent extends BaseWidget
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
             [
-                'widget' => $this
+                'widget' => $this,
+                'orderStatuses' => CommercePlugin::getInstance()->getOrderStatuses()->getAllOrderStatuses()
             ]
         );
     }
@@ -77,7 +88,7 @@ class OrdersRecent extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
-                'limit' => $this->limit
+                'orders' => CommerceWidgets::$plugin->orders->getRecentOrders((int) $this->limit, $this->orderStatusId ? (int) $this->orderStatusId : null)
             ]
         );
     }

@@ -5,34 +5,33 @@ namespace bymayo\commercewidgets\controllers;
 use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
-use bymayo\commercewidgets\records\DashboardWidget;
+use bymayo\commercewidgets\records\Widget;
 
 use Craft;
 use craft\web\Controller;
 use yii\web\Response;
 
-class DashboardController extends Controller
+class PagesController extends Controller
 {
 
     public function actionIndex(?int $pageId = null)
     {
         $userId = Craft::$app->getUser()->getId();
-        $pagesService = CommerceWidgets::$plugin->dashboardPages;
-        $widgetsService = CommerceWidgets::$plugin->dashboardWidgets;
+        $service = CommerceWidgets::$plugin->pages;
 
-        $pages = $pagesService->getPagesForUser($userId);
+        $pages = $service->getPagesForUser($userId);
 
         // Seed default page + widgets for first-time users
         if (empty($pages)) {
-            $defaultPage = $pagesService->seedDefaultPage($userId);
-            $widgetsService->seedDefaultWidgets($userId, $defaultPage->id);
+            $defaultPage = $service->seedDefaultPage($userId);
+            $service->seedDefaultWidgets($userId, $defaultPage->id);
             $pages = [$defaultPage];
         }
 
         // Determine active page
         $activePage = null;
         if ($pageId !== null) {
-            $activePage = $pagesService->getPageById($pageId, $userId);
+            $activePage = $service->getPageById($pageId, $userId);
         }
 
         // Redirect to first page if no valid pageId
@@ -40,7 +39,7 @@ class DashboardController extends Controller
             return $this->redirect('commerce-widgets/page/' . $pages[0]->id);
         }
 
-        $records = $widgetsService->getWidgetsForPage($activePage->id, $userId);
+        $records = $service->getWidgetsForPage($activePage->id, $userId);
 
         $widgets = [];
         foreach ($records as $record) {
@@ -53,14 +52,14 @@ class DashboardController extends Controller
         // Ensure assets load even on empty pages
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 
-        $availableTypes = $widgetsService->getAvailableWidgetTypes();
+        $availableTypes = $service->getAvailableWidgetTypes();
         $settings = CommerceWidgets::$plugin->getSettings();
-        $pluginName = $settings->pluginName ?: 'Commerce Widgets';
+        $pluginName = CommerceWidgets::$plugin->helpers->getPluginName();
 
         $user = Craft::$app->getUser()->getIdentity();
         $canManagePages = $user && ($user->admin || $user->can('commerceWidgets-managePages'));
 
-        return $this->renderTemplate('commerce-widgets/dashboard/index', [
+        return $this->renderTemplate('commerce-widgets/pages/index', [
             'widgets' => $widgets,
             'availableTypes' => $availableTypes,
             'pluginName' => $pluginName,
@@ -79,7 +78,7 @@ class DashboardController extends Controller
 
         $type = Craft::$app->getRequest()->getRequiredBodyParam('type');
         $userId = Craft::$app->getUser()->getId();
-        $service = CommerceWidgets::$plugin->dashboardWidgets;
+        $service = CommerceWidgets::$plugin->pages;
 
         $availableClasses = array_column($service->getAvailableWidgetTypes(), 'class');
         if (!in_array($type, $availableClasses, true)) {
@@ -87,13 +86,12 @@ class DashboardController extends Controller
         }
 
         $pageId = Craft::$app->getRequest()->getBodyParam('pageId');
-        $pagesService = CommerceWidgets::$plugin->dashboardPages;
 
         // Fall back to user's first page if pageId not provided
         if ($pageId) {
-            $page = $pagesService->getPageById((int) $pageId, $userId);
+            $page = $service->getPageById((int) $pageId, $userId);
         } else {
-            $page = $pagesService->getDefaultPage($userId);
+            $page = $service->getDefaultPage($userId);
         }
 
         if (!$page) {
@@ -117,7 +115,7 @@ class DashboardController extends Controller
         $widgetId = Craft::$app->getRequest()->getRequiredBodyParam('widgetId');
         $userId = Craft::$app->getUser()->getId();
 
-        $success = CommerceWidgets::$plugin->dashboardWidgets->removeWidget((int) $widgetId, $userId);
+        $success = CommerceWidgets::$plugin->pages->removeWidget((int) $widgetId, $userId);
 
         return $this->asJson(['success' => $success]);
     }
@@ -130,7 +128,7 @@ class DashboardController extends Controller
         $widgetIds = Craft::$app->getRequest()->getRequiredBodyParam('widgetIds');
         $userId = Craft::$app->getUser()->getId();
 
-        $success = CommerceWidgets::$plugin->dashboardWidgets->reorderWidgets($widgetIds, $userId);
+        $success = CommerceWidgets::$plugin->pages->reorderWidgets($widgetIds, $userId);
 
         return $this->asJson(['success' => $success]);
     }
@@ -144,7 +142,7 @@ class DashboardController extends Controller
         $colspan = Craft::$app->getRequest()->getRequiredBodyParam('colspan');
         $userId = Craft::$app->getUser()->getId();
 
-        $success = CommerceWidgets::$plugin->dashboardWidgets->resizeWidget((int) $widgetId, $userId, (int) $colspan);
+        $success = CommerceWidgets::$plugin->pages->resizeWidget((int) $widgetId, $userId, (int) $colspan);
 
         return $this->asJson(['success' => $success]);
     }
@@ -156,7 +154,7 @@ class DashboardController extends Controller
         $widgetId = Craft::$app->getRequest()->getRequiredQueryParam('widgetId');
         $userId = Craft::$app->getUser()->getId();
 
-        $record = DashboardWidget::findOne([
+        $record = Widget::findOne([
             'id' => $widgetId,
             'userId' => $userId,
         ]);
@@ -204,14 +202,14 @@ class DashboardController extends Controller
         $settings = Craft::$app->getRequest()->getBodyParam('settings', []);
         $userId = Craft::$app->getUser()->getId();
 
-        $service = CommerceWidgets::$plugin->dashboardWidgets;
+        $service = CommerceWidgets::$plugin->pages;
         $success = $service->saveWidgetSettings((int) $widgetId, $userId, (int) $colspan, $settings);
 
         if (!$success) {
             return $this->asJson(['success' => false]);
         }
 
-        $record = DashboardWidget::findOne([
+        $record = Widget::findOne([
             'id' => $widgetId,
             'userId' => $userId,
         ]);
@@ -233,7 +231,7 @@ class DashboardController extends Controller
         $name = Craft::$app->getRequest()->getBodyParam('name', 'New Page');
         $userId = Craft::$app->getUser()->getId();
 
-        $page = CommerceWidgets::$plugin->dashboardPages->addPage($userId, $name);
+        $page = CommerceWidgets::$plugin->pages->addPage($userId, $name);
 
         return $this->asJson([
             'success' => true,
@@ -260,7 +258,7 @@ class DashboardController extends Controller
             return $this->asJson(['success' => false, 'error' => 'Page name cannot be empty.']);
         }
 
-        $success = CommerceWidgets::$plugin->dashboardPages->renamePage((int) $pageId, $userId, $name);
+        $success = CommerceWidgets::$plugin->pages->renamePage((int) $pageId, $userId, $name);
 
         return $this->asJson(['success' => $success]);
     }
@@ -274,8 +272,8 @@ class DashboardController extends Controller
         $pageId = Craft::$app->getRequest()->getRequiredBodyParam('pageId');
         $userId = Craft::$app->getUser()->getId();
 
-        $pagesService = CommerceWidgets::$plugin->dashboardPages;
-        $success = $pagesService->deletePage((int) $pageId, $userId);
+        $service = CommerceWidgets::$plugin->pages;
+        $success = $service->deletePage((int) $pageId, $userId);
 
         if (!$success) {
             return $this->asJson([
@@ -284,7 +282,7 @@ class DashboardController extends Controller
             ]);
         }
 
-        $firstPage = $pagesService->getDefaultPage($userId);
+        $firstPage = $service->getDefaultPage($userId);
 
         return $this->asJson([
             'success' => true,

@@ -25,7 +25,7 @@ class ConversionRate extends BaseWidget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . self::$displayName;
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . self::$displayName;
     }
 
     public static function icon(): ?string

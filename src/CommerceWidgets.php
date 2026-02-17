@@ -3,8 +3,12 @@
 namespace bymayo\commercewidgets;
 
 use bymayo\commercewidgets\services\Helpers;
-use bymayo\commercewidgets\services\DashboardWidgets;
-use bymayo\commercewidgets\services\DashboardPages;
+use bymayo\commercewidgets\services\Orders;
+use bymayo\commercewidgets\services\Customers;
+use bymayo\commercewidgets\services\Products;
+use bymayo\commercewidgets\services\Carts;
+use bymayo\commercewidgets\services\Subscriptions;
+use bymayo\commercewidgets\services\Pages;
 use bymayo\commercewidgets\variables\CommerceWidgetsVariable;
 use bymayo\commercewidgets\models\Settings;
 
@@ -34,7 +38,7 @@ class CommerceWidgets extends Plugin
     // Public Properties
     // =========================================================================
 
-    public string $schemaVersion = '4.1.0';
+    public string $schemaVersion = '4.2.0';
     public bool $hasCpSettings = true;
     public bool $hasCpSection = true;
 
@@ -48,16 +52,20 @@ class CommerceWidgets extends Plugin
 
         $this->setComponents([
             'helpers' => Helpers::class,
-            'dashboardWidgets' => DashboardWidgets::class,
-            'dashboardPages' => DashboardPages::class,
+            'orders' => Orders::class,
+            'customers' => Customers::class,
+            'products' => Products::class,
+            'carts' => Carts::class,
+            'subscriptions' => Subscriptions::class,
+            'pages' => Pages::class,
         ]);
 
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['commerce-widgets'] = 'commerce-widgets/dashboard/index';
-                $event->rules['commerce-widgets/page/<pageId:\d+>'] = 'commerce-widgets/dashboard/index';
+                $event->rules['commerce-widgets'] = 'commerce-widgets/pages/index';
+                $event->rules['commerce-widgets/page/<pageId:\d+>'] = 'commerce-widgets/pages/index';
             }
         );
 
@@ -103,16 +111,16 @@ class CommerceWidgets extends Plugin
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function (RegisterUserPermissionsEvent $event) {
                 $event->permissions[] = [
-                    'heading' => 'Commerce Widgets',
+                    'heading' => $this->helpers->getPluginName(),
                     'permissions' => [
                         'commerceWidgets-viewPages' => [
-                            'label' => 'View dashboard pages',
+                            'label' => 'View Pages',
                         ],
                         'commerceWidgets-managePages' => [
-                            'label' => 'Create and manage dashboard pages',
+                            'label' => 'Create and manage pages',
                         ],
-                        'commerceWidgets-addCmsDashboardWidgets' => [
-                            'label' => 'Add widgets to the CMS Dashboard',
+                        'commerceWidgets-accessWidgets' => [
+                            'label' => 'Access Widgets',
                         ],
                     ],
                 ];
@@ -125,7 +133,7 @@ class CommerceWidgets extends Plugin
             function (RegisterCacheOptionsEvent $event) {
                 $event->options[] = [
                     'key' => 'commerce-widgets-data',
-                    'label' => Craft::t('commerce-widgets', 'Commerce Widgets data'),
+                    'label' => $this->helpers->getPluginName() . ' data',
                     'action' => function() {
                         \yii\caching\TagDependency::invalidate(Craft::$app->getCache(), 'commerce-widgets');
                     },
@@ -147,14 +155,14 @@ class CommerceWidgets extends Plugin
     {
         $item = parent::getCpNavItem();
         $settings = $this->getSettings();
-        $item['label'] = $settings->pluginName ?: 'Commerce Widgets';
+        $item['label'] = $this->helpers->getPluginName();
 
         if ($settings->enablePages) {
             $user = Craft::$app->getUser()->getIdentity();
             $canViewPages = $user && ($user->admin || $user->can('commerceWidgets-viewPages'));
 
             if ($canViewPages && Craft::$app->getRequest()->getIsCpRequest()) {
-                $pages = $this->dashboardPages->getPagesForUser($user->id);
+                $pages = $this->pages->getPagesForUser($user->id);
 
                 if (!empty($pages)) {
                     $item['subnav'] = [];

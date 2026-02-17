@@ -7,10 +7,6 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
 use craft\helpers\StringHelper;
-use craft\db\Query;
-use yii\caching\TagDependency;
-
-use Exception;
 
 class TopCustomers extends BaseWidget
 {
@@ -30,7 +26,7 @@ class TopCustomers extends BaseWidget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Top Customers');
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Top Customers');
     }
 
     public static function icon(): ?string
@@ -42,59 +38,6 @@ class TopCustomers extends BaseWidget
     {
         return null;
     }
-
-    // Custom Public Methods
-    // =========================================================================
-
-    public function getCustomers()
-    {
-
-      try {
-
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'count(*) as totalOrders',
-                  'SUM(orders.totalPrice) as totalRevenue',
-                  'orders.email',
-                  'orders.customerId'
-               ]
-            )
-            ->from(['orders' => '{{%commerce_orders}}'])
-            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-            ->where(['orders.isCompleted' => 1])
-            ->andWhere(['elements.dateDeleted' => null])
-            ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email', 'orders.customerId'])
-            ->limit($this->limit);
-
-        if(!empty(CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses)) 
-        {
-            $query->andWhere(['not in', 'orders.email', CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses]);
-        }
-
-         if($this->includeGuests == false)
-         {
-            $query
-               ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
-               ->andWhere(['not', ['customers.userId' => null]]);
-         }
-
-         $command = $query->createCommand();
-         $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-         $result = $command->cache($cacheDuration, $dependency)->queryAll();
-
-         return $result;
-
-      }
-      catch (Exception $e) {
-         $result = [];
-     }
-
-   }
 
     // Public Methods
     // =========================================================================
@@ -146,7 +89,7 @@ class TopCustomers extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
-                'customers' => $this->getCustomers()
+                'customers' => CommerceWidgets::$plugin->customers->getTopCustomers($this->orderBy, (int) $this->limit, (bool) $this->includeGuests, $this->targetDuration)
             ]
         );
     }

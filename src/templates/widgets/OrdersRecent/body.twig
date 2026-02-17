@@ -15,7 +15,7 @@
                </tr>
             </thead>
             <tbody>
-               {% for order in craft.orders().limit(limit).status(null).orderBy('dateUpdated desc').all() %}
+               {% for order in orders %}
                   <tr>
                      <td>
                         <div class="element hasstatus cw:flex cw:items-center">

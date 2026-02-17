@@ -7,11 +7,7 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
 use craft\helpers\StringHelper;
-use craft\db\Query;
 use craft\commerce\Plugin as CommercePlugin;
-use yii\caching\TagDependency;
-
-use Exception;
 
 class ProductsTop extends BaseWidget
 {
@@ -29,7 +25,7 @@ class ProductsTop extends BaseWidget
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Top Products');
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Top Products');
     }
 
     public static function icon(): ?string
@@ -41,57 +37,6 @@ class ProductsTop extends BaseWidget
     {
         return null;
     }
-
-    // Custom Public Methods
-    // =========================================================================
-
-    public function getProducts()
-    {
-
-      $query = (
-         new Query()
-         )
-         ->select(
-            [
-               'variants.primaryOwnerId as id',
-               'purchasables.sku as sku',
-               'SUM(items.total) as totalRevenue',
-               'count(*) as totalOrdered',
-            ]
-         )
-         ->from(['items' => '{{%commerce_lineitems}}'])
-         ->join(
-            'LEFT JOIN', '{{%commerce_purchasables}} purchasables', 'purchasables.id = items.purchasableId'
-         )
-         ->join(
-            'LEFT JOIN', '{{%commerce_variants}} variants', 'variants.id = purchasables.id'
-         )
-         ->join(
-            'LEFT JOIN', '{{%commerce_orders}} orders', 'orders.id = items.orderId'
-         )
-         ->join(
-            'LEFT JOIN', '{{%elements}} elements', 'elements.id = variants.primaryOwnerId'
-         )
-         ->where(['elements.dateDeleted' => null])
-         ->andWhere(['orders.isCompleted' => 1])
-         ->groupBy(['items.purchasableId'])
-         ->orderBy($this->orderBy . ' desc')
-         ->limit($this->limit);
-
-      if($this->orderStatusId != null)
-      {
-         $query
-         ->andWhere(['orders.orderStatusId' => $this->orderStatusId])
-         ->andWhere(['not', ['variants.id' => null]]);
-      }
-
-      $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-      $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-      $result = $query->cache($cacheDuration, $dependency)->all();
-
-      return $result;
-
-   }
 
     // Public Methods
     // =========================================================================
@@ -127,16 +72,9 @@ class ProductsTop extends BaseWidget
     public function getSettingsHtml(): ?string
     {
 
-      // Credit - craft/vendor/craftcms/commerce/src/widgets/Orders.php
-      $id = StringHelper::basename(get_class($this)) . '-' . StringHelper::randomString();
-      $namespaceId = Craft::$app->getView()->namespaceInputId($id);
-
-      Craft::$app->getView()->registerJs("new CommerceWidgets.OrderStatuses('" . $namespaceId . "');");
-
       return Craft::$app->getView()->renderTemplate(
          'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/settings',
          [
-            'id' => $id,
             'widget' => $this,
             'orderStatuses' => CommercePlugin::getInstance()->getOrderStatuses()->getAllOrderStatuses()
          ]
@@ -151,7 +89,7 @@ class ProductsTop extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                'widgetId' => $this->id,
-               'products' => $this->getProducts()
+               'products' => CommerceWidgets::$plugin->products->getTopProducts($this->orderBy, (int) $this->limit, $this->orderStatusId ? (int) $this->orderStatusId : null, $this->targetDuration)
             ]
         );
     }

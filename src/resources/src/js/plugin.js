@@ -5,3 +5,4 @@ import { opacify } from 'colorizr';
 window.CwChart = Chart;
 window.convert = convert;
 window.opacify = opacify;
+

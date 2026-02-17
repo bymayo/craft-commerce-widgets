@@ -2,6 +2,22 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
+{% set productTypeOptions = [{ label: 'All', value: '' }] %}
+{% for type in productTypes %}
+   {% set productTypeOptions = productTypeOptions|merge([{ label: type.name, value: type.id }]) %}
+{% endfor %}
+
+{{
+   forms.selectField(
+      {
+         label: 'Product Type',
+         name: 'productTypeId',
+         value: widget['productTypeId'],
+         options: productTypeOptions
+      }
+   )
+}}
+
 {{
    forms.textField(
       {

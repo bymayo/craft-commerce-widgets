@@ -4,12 +4,12 @@ namespace bymayo\commercewidgets\records;
 
 use craft\db\ActiveRecord;
 
-class DashboardPage extends ActiveRecord
+class Pages extends ActiveRecord
 {
 
     public static function tableName(): string
     {
-        return '{{%commercewidgets_dashboard_pages}}';
+        return '{{%commerce_widgets_pages}}';
     }
 
 }

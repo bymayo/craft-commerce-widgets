@@ -15,6 +15,6 @@ abstract class BaseWidget extends Widget
             return false;
         }
 
-        return $user->admin || $user->can('commerceWidgets-addCmsDashboardWidgets');
+        return $user->admin || $user->can('commerceWidgets-accessWidgets');
     }
 }
