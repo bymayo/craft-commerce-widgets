@@ -42,17 +42,22 @@ class Orders extends Component
 
         try {
 
+            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+
             $query = (new Query())
                 ->select([
                     'COALESCE(count(*), 0) as totalOrders',
-                    'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
+                    'COALESCE(SUM(orders.totalPaid), 0) as totalRevenue'
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
-                ->where(['orders.isCompleted' => 1]);
+                ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                ->where(['orders.isCompleted' => 1])
+                ->andWhere(['elements.dateDeleted' => null]);
 
             CommerceWidgets::$plugin->helpers->applyDateFilter($query, $targetDuration);
 
-            $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
+            $result = $query->cache($cacheDuration, $dependency)->one();
 
         }
         catch (Exception $e) {
@@ -66,6 +71,13 @@ class Orders extends Component
     public function getTimeFrames(): array
     {
         $settings = CommerceWidgets::$plugin->getSettings();
+        $weekStart = $settings->weekStart ?? 'monday';
+
+        $weekStartDate = strtotime("last $weekStart", strtotime('tomorrow'));
+        $weekEndDate = strtotime('+6 days', $weekStartDate);
+        $prevWeekStartDate = strtotime('-7 days', $weekStartDate);
+        $prevWeekEndDate = strtotime('-1 day', $weekStartDate);
+
         $startDay = (int) $settings->fiscalYearStartDay;
         $startMonth = $settings->fiscalYearStartMonth;
         $endDay = (int) $settings->fiscalYearEndDay;
@@ -89,107 +101,60 @@ class Orders extends Component
         return [
             [
                 'label' => 'Today',
-                'date' => date('d M Y'),
-                'current' => ['DATE_FORMAT(orders.dateCreated, "%Y-%m-%d")' => date('Y-m-d')],
-                'previous' => ['DATE_FORMAT(orders.dateCreated, "%Y-%m-%d")' => date('Y-m-d', strtotime('-1 day'))],
+                'changeTooltip' => 'Compared to yesterday',
+                'current' => ['DATE_FORMAT(orders.datePaid, "%Y-%m-%d")' => date('Y-m-d')],
+                'previous' => ['DATE_FORMAT(orders.datePaid, "%Y-%m-%d")' => date('Y-m-d', strtotime('-1 day'))],
             ],
             [
                 'label' => 'Week',
-                'date' => date('d M Y', strtotime('monday this week')) . ' - ' . date('d M Y', strtotime('sunday this week')),
-                'current' => ['between', 'orders.dateCreated', date('Y-m-d', strtotime('monday this week')), date('Y-m-d', strtotime('sunday this week'))],
-                'previous' => ['between', 'orders.dateCreated', date('Y-m-d', strtotime('monday last week')), date('Y-m-d', strtotime('sunday last week'))],
+                'changeTooltip' => 'Compared to previous week',
+                'current' => ['between', 'orders.datePaid', date('Y-m-d', $weekStartDate), date('Y-m-d', $weekEndDate) . ' 23:59:59'],
+                'previous' => ['between', 'orders.datePaid', date('Y-m-d', $prevWeekStartDate), date('Y-m-d', $prevWeekEndDate) . ' 23:59:59'],
             ],
             [
                 'label' => 'Month',
-                'date' => date('M Y'),
-                'current' => ['between', 'orders.dateCreated', date('Y-m-d', strtotime('first day of this month')), date('Y-m-d', strtotime('last day of this month'))],
-                'previous' => ['between', 'orders.dateCreated', date('Y-m-d', strtotime('first day of last month')), date('Y-m-d', strtotime('last day of last month'))],
+                'changeTooltip' => 'Compared to previous month',
+                'current' => ['between', 'orders.datePaid', date('Y-m-d', strtotime('first day of this month')), date('Y-m-d', strtotime('last day of this month')) . ' 23:59:59'],
+                'previous' => ['between', 'orders.datePaid', date('Y-m-d', strtotime('first day of last month')), date('Y-m-d', strtotime('last day of last month')) . ' 23:59:59'],
             ],
             [
                 'label' => 'Year',
-                'date' => date('Y'),
-                'current' => ['YEAR(orders.dateCreated)' => date('Y')],
-                'previous' => ['YEAR(orders.dateCreated)' => date('Y', strtotime('-1 year'))],
+                'changeTooltip' => 'Compared to previous year',
+                'current' => ['YEAR(orders.datePaid)' => date('Y')],
+                'previous' => ['YEAR(orders.datePaid)' => date('Y', strtotime('-1 year'))],
             ],
             [
                 'label' => 'Fiscal Year',
-                'date' => date('d M Y', strtotime($fiscalStart)) . ' - ' . date('d M Y', strtotime($fiscalEnd)),
-                'current' => ['between', 'orders.dateCreated', $fiscalStart, $fiscalEnd . ' 23:59:59'],
-                'previous' => ['between', 'orders.dateCreated', $prevFiscalStart, $prevFiscalEnd . ' 23:59:59'],
+                'changeTooltip' => 'Compared to previous fiscal year',
+                'current' => ['between', 'orders.datePaid', $fiscalStart, $fiscalEnd . ' 23:59:59'],
+                'previous' => ['between', 'orders.datePaid', $prevFiscalStart, $prevFiscalEnd . ' 23:59:59'],
             ],
             [
                 'label' => 'All Time',
-                'date' => '∞',
+                'changeTooltip' => null,
                 'current' => null,
                 'previous' => null,
             ],
         ];
     }
 
-    public function getRevenueOrdersRow(array $timeFrame): ?array
+    private function buildRevenueQuery(?array $condition): Query
     {
+        $query = (new Query())
+            ->select([
+                'COALESCE(SUM(orders.totalPaid), 0) as totalRevenue',
+                'COALESCE(COUNT(orders.id), 0) as totalOrders',
+            ])
+            ->from(['orders' => '{{%commerce_orders}}'])
+            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+            ->where(['orders.isCompleted' => 1])
+            ->andWhere(['elements.dateDeleted' => null]);
 
-        try {
-
-            $query = (new Query())
-                ->select([
-                    'COALESCE(sum(orders.totalPrice), 0) as totalRevenue',
-                    'COALESCE(count(orders.id), 0) as totalOrders'
-                ])
-                ->from(['orders' => '{{%commerce_orders}}'])
-                ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-                ->where(['orders.isCompleted' => 1])
-                ->andWhere(['elements.dateDeleted' => null]);
-
-            if ($timeFrame['current'] !== null) {
-                $query->andWhere($timeFrame['current']);
-            }
-
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-            $result = $query->cache($cacheDuration, $dependency)->one();
-
-            return $result;
-
-        }
-        catch (Exception $e) {
-            return null;
+        if ($condition !== null) {
+            $query->andWhere($condition);
         }
 
-    }
-
-    public function getPreviousRevenueOrdersRow(array $timeFrame): ?array
-    {
-
-        if ($timeFrame['previous'] === null) {
-            return null;
-        }
-
-        try {
-
-            $query = (new Query())
-                ->select([
-                    'COALESCE(sum(orders.totalPrice), 0) as totalRevenue',
-                    'COALESCE(count(orders.id), 0) as totalOrders'
-                ])
-                ->from(['orders' => '{{%commerce_orders}}'])
-                ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-                ->where(['orders.isCompleted' => 1])
-                ->andWhere(['elements.dateDeleted' => null]);
-
-            $query->andWhere($timeFrame['previous']);
-
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
-            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
-            $result = $query->cache($cacheDuration, $dependency)->one();
-
-            return $result;
-
-        }
-        catch (Exception $e) {
-            return null;
-        }
-
+        return $query;
     }
 
     public function getConversionData(string $targetDuration): array
@@ -257,29 +222,47 @@ class Orders extends Component
 
     public function getRevenueOrders(): array
     {
-
+        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $dependency = new TagDependency(['tags' => 'commerce-widgets']);
         $data = [];
 
         foreach ($this->getTimeFrames() as $timeFrame) {
-            $current = $this->getRevenueOrdersRow($timeFrame);
-            $previous = $this->getPreviousRevenueOrdersRow($timeFrame);
+            try {
+                $current = $this->buildRevenueQuery($timeFrame['current'])
+                    ->cache($cacheDuration, $dependency)
+                    ->one();
+            } catch (Exception $e) {
+                $current = null;
+            }
 
             $row = $current ?? ['totalRevenue' => 0, 'totalOrders' => 0];
+            $row['changeIndicator'] = null;
+            $row['changeDirection'] = 'neutral';
+            $row['changeTooltip'] = $timeFrame['changeTooltip'];
 
-            if ($current && $previous) {
-                $change = CommerceWidgets::$plugin->helpers->calculateChange((float) $current['totalRevenue'], (float) $previous['totalRevenue']);
-                $row['changeIndicator'] = $change['percentage'];
-                $row['changeDirection'] = $change['direction'];
-            } else {
-                $row['changeIndicator'] = null;
-                $row['changeDirection'] = 'neutral';
+            if ($current && $timeFrame['previous'] !== null) {
+                try {
+                    $previous = $this->buildRevenueQuery($timeFrame['previous'])
+                        ->cache($cacheDuration, $dependency)
+                        ->one();
+                } catch (Exception $e) {
+                    $previous = null;
+                }
+
+                if ($previous) {
+                    $change = CommerceWidgets::$plugin->helpers->calculateChange(
+                        (float) $current['totalRevenue'],
+                        (float) $previous['totalRevenue']
+                    );
+                    $row['changeIndicator'] = $change['percentage'];
+                    $row['changeDirection'] = $change['direction'];
+                }
             }
 
             $data[] = $row;
         }
 
         return $data;
-
     }
 
 }
