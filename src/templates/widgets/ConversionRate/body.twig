@@ -74,13 +74,4 @@
     {% endfor %}
   </div>
 
-  {% include 'commerce-widgets/_includes/footer' with {
-    buttons: [
-      {
-        text: 'Export',
-        url: '/' ~ cpTrigger ~ '/commerce/orders'
-      }
-    ]
-  } only %}
-
 {% endblock %}
