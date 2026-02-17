@@ -30,7 +30,7 @@ class Customers extends Component
                 ->where(['orders.isCompleted' => 1])
                 ->andWhere(['elements.dateDeleted' => null])
                 ->orderBy($orderBy . ' desc')
-                ->groupBy(['orders.email', 'orders.customerId'])
+                ->groupBy(['orders.email'])
                 ->limit($limit);
 
             CommerceWidgets::$plugin->helpers->applyDateFilter($query, $targetDuration, 'orders.datePaid');

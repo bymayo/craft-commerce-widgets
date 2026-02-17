@@ -7,9 +7,14 @@
 - Dashboard pages - create multiple dashboard pages per user
 - Pages subnav in CP sidebar for quick navigation between pages
 - "Enable Pages" plugin setting to toggle the pages feature
-- User permissions for viewing pages, managing pages, and adding CMS dashboard widgets
+- User permissions for viewing pages, managing pages, and accessing widgets
 - Conversion Rate widget
 - Fiscal Year option to widget target duration settings
+- Fiscal Year start/end day and month settings for granular fiscal year configuration
+- All Time option to widget target duration settings
+- Product Type filter on Recent Products widget with type name in title
+- Order Status filter on Recent Orders widget with status name in title
+- Plugin Name setting now applies to all widget display names, permissions, and cache labels
 - CP Settings page restored
 - Tailwind CSS for modern styling
 - Vite build system
@@ -17,10 +22,20 @@
 
 ### Changed
 - Complete visual redesign of all widgets
+- Extracted widget query logic into domain-specific services (Orders, Products, Customers, Carts, Subscriptions)
+- Shared date filtering across all services via `applyDateFilter()`
+- Recent Orders and Recent Products data now fetched in PHP services instead of Twig templates
+- Merged dashboard services into a single Pages service
+- Renamed dashboard controller, templates, and routes to Pages
+- Renamed database tables to `commerce_widgets_pages` and `commerce_widgets_pages_widgets`
+- Renamed permission handle from `commerceWidgets-addCmsDashboardWidgets` to `commerceWidgets-accessWidgets`
+- Order Status dropdown in Top Products and Recent Orders now uses a standard select field
+- Updated config.php to match all current plugin settings
 - Improved tooltip positioning
 - Updated styling across Top Products and Top Customers widgets
 
 ### Fixed
+- Widget render failures caused by type casting when passing settings to services
 - Subscription Plans widget compatibility
 - Icon paths in Top Products widget
 - Widget subtitle/description display and icons
