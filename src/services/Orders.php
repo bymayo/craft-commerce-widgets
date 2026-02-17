@@ -21,7 +21,7 @@ class Orders extends Component
 
             $query = Order::find()
                 ->limit($limit)
-                ->status(null)
+                ->isCompleted(true)
                 ->orderBy('dateUpdated desc');
 
             if ($orderStatusId) {
