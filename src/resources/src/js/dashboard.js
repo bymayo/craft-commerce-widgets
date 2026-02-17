@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Execute any captured JS from widget settings
             if (response.data.settingsJs) {
                 try {
-                    eval(response.data.settingsJs);
+                    new Function(response.data.settingsJs)();
                 } catch (e) {
                     // Silently ignore JS init errors
                 }
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function execWidgetJs(js) {
         if (!js) return;
-        try { eval(js); } catch (e) { console.error('Widget JS error:', e); }
+        try { new Function(js)(); } catch (e) { console.error('Widget JS error:', e); }
     }
 
     function escapeHtml(str) {
