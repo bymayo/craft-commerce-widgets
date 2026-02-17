@@ -7,15 +7,42 @@
 @source inline("text-blue-{50,{100..900..100},950}");
 @source inline("text-gray-{50,{100..900..100},950}");
 
-/* Masonry grid sizing — 6 columns, 16px gutter */
-.cw-grid-sizer,
-.cw-colspan-1 { width: calc((100% - 80px) / 6); }
+/* Masonry grid sizing — 7 columns, 16px gutter */
 .cw-gutter-sizer { width: 16px; }
-.cw-colspan-2 { width: calc(2 * (100% - 80px) / 6 + 16px); }
-.cw-colspan-3 { width: calc(3 * (100% - 80px) / 6 + 32px); }
-.cw-colspan-4 { width: calc(4 * (100% - 80px) / 6 + 48px); }
-.cw-colspan-5 { width: calc(5 * (100% - 80px) / 6 + 64px); }
-.cw-colspan-6 { width: calc(6 * (100% - 80px) / 6 + 80px); }
+
+/* Mobile: all widgets full width */
+.cw-grid-sizer,
+.cw-colspan-1,
+.cw-colspan-2,
+.cw-colspan-3,
+.cw-colspan-4,
+.cw-colspan-5,
+.cw-colspan-6,
+.cw-colspan-7 { width: 100%; }
+
+/* Tablet: 2-column grid */
+@media (min-width: 768px) {
+  .cw-grid-sizer,
+  .cw-colspan-1 { width: calc((100% - 16px) / 2); }
+  .cw-colspan-2,
+  .cw-colspan-3,
+  .cw-colspan-4,
+  .cw-colspan-5,
+  .cw-colspan-6,
+  .cw-colspan-7 { width: 100%; }
+}
+
+/* Desktop: full 7-column grid */
+@media (min-width: 1200px) {
+  .cw-grid-sizer,
+  .cw-colspan-1 { width: calc((100% - 96px) / 7); }
+  .cw-colspan-2 { width: calc(2 * (100% - 96px) / 7 + 16px); }
+  .cw-colspan-3 { width: calc(3 * (100% - 96px) / 7 + 32px); }
+  .cw-colspan-4 { width: calc(4 * (100% - 96px) / 7 + 48px); }
+  .cw-colspan-5 { width: calc(5 * (100% - 96px) / 7 + 64px); }
+  .cw-colspan-6 { width: calc(6 * (100% - 96px) / 7 + 80px); }
+  .cw-colspan-7 { width: 100%; }
+}
 
 .cw-dashboard-widget {
   margin-bottom: 16px;

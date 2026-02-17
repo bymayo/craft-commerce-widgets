@@ -230,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <option value="4"${currentColspan === 4 ? ' selected' : ''}>4</option>
                                 <option value="5"${currentColspan === 5 ? ' selected' : ''}>5</option>
                                 <option value="6"${currentColspan === 6 ? ' selected' : ''}>6</option>
+                                <option value="7"${currentColspan === 7 ? ' selected' : ''}>7</option>
                             </select>
                         </div>
                     </div>
@@ -311,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Update colspan class
                         widgetEl.dataset.colspan = w.colspan;
-                        for (let i = 1; i <= 6; i++) {
+                        for (let i = 1; i <= 7; i++) {
                             widgetEl.classList.remove('cw-colspan-' + i);
                         }
                         widgetEl.classList.add('cw-colspan-' + w.colspan);
