@@ -15,7 +15,7 @@
         changeIndicator: completedChange.percentage,
         changeDirection: completedChange.direction,
         changeTooltip: changeTooltip
-      } %}
+      } only %}
 
     </div>
 
@@ -36,7 +36,7 @@
 
   <div class="{{ graphStyle == 'simple' ? 'cw:-ml-7 cw:-mr-7.5' }}">
     {% include 'commerce-widgets/_includes/charts/line' with {
-      id: 'cart-abandonment',
+      id: widgetId,
       step: graphStep,
       style: graphStyle,
       labels: labels,

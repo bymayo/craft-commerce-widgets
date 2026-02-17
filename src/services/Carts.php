@@ -87,27 +87,15 @@ class Carts extends Component
                 break;
 
             case 'fiscalYear':
-                $startDay = (int) $settings->fiscalYearStartDay;
-                $startMonth = $settings->fiscalYearStartMonth;
-                $endDay = (int) $settings->fiscalYearEndDay;
-                $endMonth = $settings->fiscalYearEndMonth;
-                $fiscalMonth = date('n', strtotime("1 $startMonth"));
-                $currentMonth = (int) date('n');
-                $currentYear = (int) date('Y');
-
-                if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
-                    $currentStartYear = $currentYear;
-                } else {
-                    $currentStartYear = $currentYear - 1;
-                }
+                $fiscal = CommerceWidgets::$plugin->helpers->getFiscalYearDates();
 
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
-                    $sYear = $currentStartYear - $i;
+                    $sYear = $fiscal['startYear'] - $i;
                     $eYear = $sYear + 1;
-                    $start = date('Y-m-d', strtotime("$startDay $startMonth $sYear"));
-                    $end = date('Y-m-d', strtotime("$endDay $endMonth $eYear"));
+                    $start = date('Y-m-d', strtotime("{$fiscal['startDay']} {$fiscal['startMonth']} $sYear"));
+                    $end = date('Y-m-d', strtotime("{$fiscal['endDay']} {$fiscal['endMonth']} $eYear"));
                     $periods[] = [
-                        'label' => 'FY ' . substr($sYear, 2) . '/' . substr($eYear, 2),
+                        'label' => 'FY ' . substr((string) $sYear, 2) . '/' . substr((string) $eYear, 2),
                         'start' => $start,
                         'end' => $end,
                     ];

@@ -47,7 +47,17 @@
 - Improved tooltip positioning
 - Updated styling across Top Products and Top Customers widgets
 
+### Improved
+- Extracted fiscal year calculation into shared `getFiscalYearDates()` helper, removing duplication across 5 files
+- Extracted order status select into shared settings component used by Recent Orders and Top Products
+- Line chart JavaScript wrapped in IIFE to prevent global scope pollution with multiple widgets
+- Removed unused bar chart template
+
 ### Fixed
+- Top Customers widget using `totalPrice` instead of `totalPaid` for revenue calculation
+- Cart Abandonment widget using hardcoded chart ID causing conflicts with multiple instances
+- Loose type comparisons in Customers and Products services
+- Missing `only` keyword on Cart Abandonment statistic include
 - Total Revenue & Orders widget filtering by cart creation date instead of payment date
 - Total Revenue & Orders widget missing orders on end-of-period boundaries (week/month)
 - Total Revenue & Orders widget using `totalPrice` instead of `totalPaid` for revenue

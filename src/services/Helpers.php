@@ -24,10 +24,41 @@ class Helpers extends Component
         return $targetDuration;
     }
 
+    public function getFiscalYearDates(): array
+    {
+        $settings = CommerceWidgets::$plugin->getSettings();
+        $startDay = (int) $settings->fiscalYearStartDay;
+        $startMonth = $settings->fiscalYearStartMonth;
+        $endDay = (int) $settings->fiscalYearEndDay;
+        $endMonth = $settings->fiscalYearEndMonth;
+        $fiscalMonth = date('n', strtotime("1 $startMonth"));
+        $currentMonth = (int) date('n');
+        $currentYear = (int) date('Y');
+
+        if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
+            $startYear = $currentYear;
+        } else {
+            $startYear = $currentYear - 1;
+        }
+        $endYear = $startYear + 1;
+
+        return [
+            'start' => date('Y-m-d', strtotime("$startDay $startMonth $startYear")),
+            'end' => date('Y-m-d', strtotime("$endDay $endMonth $endYear")),
+            'prevStart' => date('Y-m-d', strtotime("$startDay $startMonth " . ($startYear - 1))),
+            'prevEnd' => date('Y-m-d', strtotime("$endDay $endMonth $startYear")),
+            'startYear' => $startYear,
+            'endYear' => $endYear,
+            'startDay' => $startDay,
+            'startMonth' => $startMonth,
+            'endDay' => $endDay,
+            'endMonth' => $endMonth,
+        ];
+    }
+
     public function applyDateFilter(Query $query, string $targetDuration, string $dateColumn = 'orders.datePaid'): Query
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
-        $settings = CommerceWidgets::$plugin->getSettings();
 
         switch ($targetDuration) {
             case 'daily':
@@ -53,27 +84,11 @@ class Helpers extends Component
                 ]);
                 break;
             case 'fiscalYear':
-                $startDay = (int) $settings->fiscalYearStartDay;
-                $startMonth = $settings->fiscalYearStartMonth;
-                $endDay = (int) $settings->fiscalYearEndDay;
-                $endMonth = $settings->fiscalYearEndMonth;
-                $fiscalMonth = date('n', strtotime("1 $startMonth"));
-                $currentMonth = (int) date('n');
-                $currentYear = (int) date('Y');
-
-                if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
-                    $startYear = $currentYear;
-                } else {
-                    $startYear = $currentYear - 1;
-                }
-                $endYear = $startYear + 1;
-
-                $startDate = date('Y-m-d', strtotime("$startDay $startMonth $startYear"));
-                $endDate = date('Y-m-d', strtotime("$endDay $endMonth $endYear"));
+                $fiscal = $this->getFiscalYearDates();
 
                 $query->andWhere(['and',
-                    ['>=', $dateColumn, $startDate],
-                    ['<=', $dateColumn, $endDate . ' 23:59:59']
+                    ['>=', $dateColumn, $fiscal['start']],
+                    ['<=', $dateColumn, $fiscal['end'] . ' 23:59:59']
                 ]);
                 break;
             case 'allTime':
@@ -87,7 +102,6 @@ class Helpers extends Component
     public function getDateRange(string $targetDuration, string $dateColumn = 'orders.dateCreated'): array
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
-        $settings = CommerceWidgets::$plugin->getSettings();
 
         switch ($targetDuration) {
             case 'daily':
@@ -111,29 +125,11 @@ class Helpers extends Component
                     'previous' => ["YEAR($dateColumn)" => date('Y', strtotime('-1 year'))],
                 ];
             case 'fiscalYear':
-                $startDay = (int) $settings->fiscalYearStartDay;
-                $startMonth = $settings->fiscalYearStartMonth;
-                $endDay = (int) $settings->fiscalYearEndDay;
-                $endMonth = $settings->fiscalYearEndMonth;
-                $fiscalMonth = date('n', strtotime("1 $startMonth"));
-                $currentMonth = (int) date('n');
-                $currentYear = (int) date('Y');
-
-                if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
-                    $startYear = $currentYear;
-                } else {
-                    $startYear = $currentYear - 1;
-                }
-                $endYear = $startYear + 1;
-
-                $fiscalStart = date('Y-m-d', strtotime("$startDay $startMonth $startYear"));
-                $fiscalEnd = date('Y-m-d', strtotime("$endDay $endMonth $endYear"));
-                $prevFiscalStart = date('Y-m-d', strtotime("$startDay $startMonth " . ($startYear - 1)));
-                $prevFiscalEnd = date('Y-m-d', strtotime("$endDay $endMonth $startYear"));
+                $fiscal = $this->getFiscalYearDates();
 
                 return [
-                    'current' => ['between', $dateColumn, $fiscalStart, $fiscalEnd . ' 23:59:59'],
-                    'previous' => ['between', $dateColumn, $prevFiscalStart, $prevFiscalEnd . ' 23:59:59'],
+                    'current' => ['between', $dateColumn, $fiscal['start'], $fiscal['end'] . ' 23:59:59'],
+                    'previous' => ['between', $dateColumn, $fiscal['prevStart'], $fiscal['prevEnd'] . ' 23:59:59'],
                 ];
             case 'allTime':
             default:
@@ -203,15 +199,10 @@ class Helpers extends Component
                 }
                 return date('j F', $start) . ' - ' . date('j F Y', $end);
             case 'fiscalYear':
-                $startDay = (int) $settings->fiscalYearStartDay;
-                $startMonth = ucfirst($settings->fiscalYearStartMonth);
-                $endDay = (int) $settings->fiscalYearEndDay;
-                $endMonth = ucfirst($settings->fiscalYearEndMonth);
-                $fiscalMonthNum = date('n', strtotime("1 {$startMonth}"));
-                $currentYear = (int) date('Y');
-                $startYear = ((int) date('n') >= $fiscalMonthNum || ((int) date('n') == $fiscalMonthNum && (int) date('j') >= $startDay)) ? $currentYear : $currentYear - 1;
-                $endYear = $startYear + 1;
-                return "{$startDay} {$startMonth} {$startYear} - {$endDay} {$endMonth} {$endYear}";
+                $fiscal = $this->getFiscalYearDates();
+                $startMonth = ucfirst($fiscal['startMonth']);
+                $endMonth = ucfirst($fiscal['endMonth']);
+                return "{$fiscal['startDay']} {$startMonth} {$fiscal['startYear']} - {$fiscal['endDay']} {$endMonth} {$fiscal['endYear']}";
             case 'yearly':
                 return date('Y');
             case 'allTime':

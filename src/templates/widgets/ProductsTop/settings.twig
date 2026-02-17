@@ -2,21 +2,10 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-{% set orderStatusOptions = [{ label: 'All', value: '' }] %}
-{% for status in orderStatuses %}
-   {% set orderStatusOptions = orderStatusOptions|merge([{ label: status.name, value: status.id }]) %}
-{% endfor %}
-
-{{
-   forms.selectField(
-      {
-         label: 'Order Status',
-         name: 'orderStatusId',
-         value: widget['orderStatusId'],
-         options: orderStatusOptions
-      }
-   )
-}}
+{% include 'commerce-widgets/_includes/settings/orderStatus' with {
+   orderStatuses: orderStatuses,
+   value: widget['orderStatusId']
+} only %}
 
 {{
    forms.selectField(

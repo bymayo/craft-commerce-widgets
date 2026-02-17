@@ -78,25 +78,7 @@ class Orders extends Component
         $prevWeekStartDate = strtotime('-7 days', $weekStartDate);
         $prevWeekEndDate = strtotime('-1 day', $weekStartDate);
 
-        $startDay = (int) $settings->fiscalYearStartDay;
-        $startMonth = $settings->fiscalYearStartMonth;
-        $endDay = (int) $settings->fiscalYearEndDay;
-        $endMonth = $settings->fiscalYearEndMonth;
-        $fiscalMonth = date('n', strtotime("1 $startMonth"));
-        $currentMonth = (int) date('n');
-        $currentYear = (int) date('Y');
-
-        if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
-            $startYear = $currentYear;
-        } else {
-            $startYear = $currentYear - 1;
-        }
-        $endYear = $startYear + 1;
-
-        $fiscalStart = date('Y-m-d', strtotime("$startDay $startMonth $startYear"));
-        $fiscalEnd = date('Y-m-d', strtotime("$endDay $endMonth $endYear"));
-        $prevFiscalStart = date('Y-m-d', strtotime("$startDay $startMonth " . ($startYear - 1)));
-        $prevFiscalEnd = date('Y-m-d', strtotime("$endDay $endMonth $startYear"));
+        $fiscal = CommerceWidgets::$plugin->helpers->getFiscalYearDates();
 
         return [
             [
@@ -126,8 +108,8 @@ class Orders extends Component
             [
                 'label' => 'Fiscal Year',
                 'changeTooltip' => 'Compared to previous fiscal year',
-                'current' => ['between', 'orders.datePaid', $fiscalStart, $fiscalEnd . ' 23:59:59'],
-                'previous' => ['between', 'orders.datePaid', $prevFiscalStart, $prevFiscalEnd . ' 23:59:59'],
+                'current' => ['between', 'orders.datePaid', $fiscal['start'], $fiscal['end'] . ' 23:59:59'],
+                'previous' => ['between', 'orders.datePaid', $fiscal['prevStart'], $fiscal['prevEnd'] . ' 23:59:59'],
             ],
             [
                 'label' => 'All Time',

@@ -122,7 +122,7 @@ class Products extends Component
             $query->limit($limit);
         }
 
-        if ($orderStatusId != null) {
+        if ($orderStatusId !== null) {
             $query->andWhere(['orders.orderStatusId' => $orderStatusId]);
         }
 

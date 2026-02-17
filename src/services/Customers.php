@@ -80,7 +80,7 @@ class Customers extends Component
         $query = (new Query())
             ->select([
                 'count(*) as totalOrders',
-                'SUM(orders.totalPrice) as totalRevenue',
+                'SUM(orders.totalPaid) as totalRevenue',
                 'orders.email',
                 'MAX(orders.customerId) as customerId'
             ])
@@ -99,7 +99,7 @@ class Customers extends Component
             $query->andWhere(['not in', 'orders.email', CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses]);
         }
 
-        if ($includeGuests == false) {
+        if ($includeGuests === false) {
             $query
                 ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
                 ->andWhere(['not', ['customers.userId' => null]]);
