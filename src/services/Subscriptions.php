@@ -30,15 +30,12 @@ class Subscriptions extends Component
             $query = (new Query())
                 ->select([
                     'plans.*',
-                    'COUNT(subscriptions.planId) as activeSubscriptions'
+                    'COALESCE(SUM(CASE WHEN subscriptions.dateCanceled IS NULL AND subscriptions.dateExpired IS NULL THEN 1 ELSE 0 END), 0) as activeSubscriptions',
+                    'COALESCE(SUM(CASE WHEN subscriptions.dateExpired IS NOT NULL THEN 1 ELSE 0 END), 0) as expiredSubscriptions',
+                    'COALESCE(SUM(CASE WHEN subscriptions.dateCanceled IS NOT NULL THEN 1 ELSE 0 END), 0) as cancelledSubscriptions',
                 ])
                 ->from(['plans' => '{{%commerce_plans}}'])
-                ->join('LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', [
-                    'and',
-                    'subscriptions.planId = plans.id',
-                    ['subscriptions.dateCanceled' => null],
-                    ['subscriptions.dateExpired' => null],
-                ])
+                ->join('LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', 'subscriptions.planId = plans.id')
                 ->where(['plans.isArchived' => 0])
                 ->groupBy(['plans.id'])
                 ->orderBy($safeOrderBy)

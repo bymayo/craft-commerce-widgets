@@ -10,7 +10,9 @@
             <thead>
                <tr>
                   <th>Plan</th>
-                  <th>Active Subscriptions</th>
+                  <th>Active</th>
+                  <th>Cancelled</th>
+                  <th>Expired</th>
                </tr>
             </thead>
             <tbody>
@@ -25,10 +27,12 @@
                         </div>
                      </td>
                      <td>{{ plan.activeSubscriptions|number_format() }}</td>
+                     <td>{{ plan.cancelledSubscriptions|number_format() }}</td>
+                     <td>{{ plan.expiredSubscriptions|number_format() }}</td>
                   </tr>
                {% else %} 
                   <tr>
-                     <td colspan="2">
+                     <td colspan="4">
                         No subscriptions found.
                      </td>
                   </tr>

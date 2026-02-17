@@ -3,6 +3,7 @@
 ## 6.0.0 - 2026-02-17
 
 ### Added
+- Cancelled and Expired columns on Subscription Plans widget
 - Order Countries widget with 3D Mapbox globe showing order locations by country with count pins
 - Mapbox Access Token plugin setting with environment variable support
 - Custom dashboard with drag-and-drop widget management
@@ -57,6 +58,9 @@
 - Removed unused bar chart template
 
 ### Fixed
+- Subscription Plans widget only counting active subscriptions, now correctly counts all subscription states
+- Responsive layout issues on widgets
+- Widget refresh and resize behaviour
 - Top Customers widget using `totalPrice` instead of `totalPaid` for revenue calculation
 - Cart Abandonment widget using hardcoded chart ID causing conflicts with multiple instances
 - Loose type comparisons in Customers and Products services
