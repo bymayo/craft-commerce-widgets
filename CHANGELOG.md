@@ -48,6 +48,12 @@
 - Updated styling across Top Products and Top Customers widgets
 
 ### Fixed
+- Total Revenue & Orders widget filtering by cart creation date instead of payment date
+- Total Revenue & Orders widget missing orders on end-of-period boundaries (week/month)
+- Total Revenue & Orders widget using `totalPrice` instead of `totalPaid` for revenue
+- Total Revenue & Orders widget counting trashed orders in totals
+- Total Revenue & Orders widget ignoring the `weekStart` plugin setting
+- Total Revenue & Orders widget missing change indicator tooltips
 - Top Products widget thumbnail not displaying when a Thumbnail Source is set on the product type
 - Top Products widget returning no results due to MySQL strict GROUP BY mode
 - Cart Abandonment widget not respecting target duration settings
