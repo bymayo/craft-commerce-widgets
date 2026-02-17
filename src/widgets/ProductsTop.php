@@ -89,7 +89,8 @@ class ProductsTop extends BaseWidget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                'widgetId' => $this->id,
-               'products' => CommerceWidgets::$plugin->products->getTopProducts($this->orderBy, (int) $this->limit, $this->orderStatusId ? (int) $this->orderStatusId : null, $this->targetDuration)
+               'products' => CommerceWidgets::$plugin->products->getTopProducts($this->orderBy, (int) $this->limit, $this->orderStatusId ? (int) $this->orderStatusId : null, $this->targetDuration),
+               'changeTooltip' => CommerceWidgets::$plugin->helpers->getChangeTooltip($this->targetDuration),
             ]
         );
     }
