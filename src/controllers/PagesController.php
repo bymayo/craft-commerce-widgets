@@ -99,7 +99,7 @@ class PagesController extends Controller
         }
 
         $record = $service->addWidget($userId, $type, 1, [], (int) $page->id);
-        $widgetData = $this->_renderWidget($record);
+        $widgetData = $this->_renderWidget($record, true);
 
         return $this->asJson([
             'success' => true,
@@ -214,7 +214,7 @@ class PagesController extends Controller
             'userId' => $userId,
         ]);
 
-        $widgetData = $this->_renderWidget($record);
+        $widgetData = $this->_renderWidget($record, true);
 
         return $this->asJson([
             'success' => true,
@@ -290,7 +290,7 @@ class PagesController extends Controller
         ]);
     }
 
-    private function _renderWidget($record): ?array
+    private function _renderWidget($record, bool $bufferJs = false): ?array
     {
         $type = $record->type;
 
@@ -302,9 +302,21 @@ class PagesController extends Controller
         $widget = new $type($settings);
         $widget->id = $record->id;
 
+        $view = Craft::$app->getView();
+        $bodyJs = '';
+
         try {
+            if ($bufferJs) {
+                $view->startJsBuffer();
+            }
             $html = $widget->getBodyHtml();
+            if ($bufferJs) {
+                $bodyJs = $view->clearJsBuffer(false);
+            }
         } catch (\Throwable $e) {
+            if ($bufferJs) {
+                $view->clearJsBuffer(false);
+            }
             $html = '<p class="error">Widget failed to render.</p>';
         }
 
@@ -315,6 +327,7 @@ class PagesController extends Controller
             'subtitle' => $widget->getSubtitle(),
             'colspan' => (int) $record->colspan,
             'html' => $html,
+            'bodyJs' => $bodyJs,
         ];
     }
 

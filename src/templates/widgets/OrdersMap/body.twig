@@ -14,7 +14,7 @@
     {% endif %}
 </div>
 
-{% css %}
+<style>
 .cw-map-popup .mapboxgl-popup-content {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
@@ -54,7 +54,7 @@
 #orders-map-{{ widgetId }} .mapboxgl-ctrl-attrib {
     display: none !important;
 }
-{% endcss %}
+</style>
 
 {% js %}
 (function() {

@@ -2,18 +2,12 @@
 
 namespace bymayo\commercewidgets\services;
 
+use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\records\Pages as PagesRecord;
 use bymayo\commercewidgets\records\Widget;
-use bymayo\commercewidgets\widgets\CartAbandonment;
-use bymayo\commercewidgets\widgets\ConversionRate;
-use bymayo\commercewidgets\widgets\Goal;
-use bymayo\commercewidgets\widgets\OrdersRecent;
-use bymayo\commercewidgets\widgets\ProductsRecent;
-use bymayo\commercewidgets\widgets\ProductsTop;
-use bymayo\commercewidgets\widgets\SubscriptionPlans;
-use bymayo\commercewidgets\widgets\TopCustomers;
-use bymayo\commercewidgets\widgets\TotalRevenueOrders;
+use bymayo\commercewidgets\widgets\BaseWidget;
 
+use Craft;
 use craft\base\Component;
 
 class Pages extends Component
@@ -103,17 +97,29 @@ class Pages extends Component
 
     public function getAvailableWidgetTypes(): array
     {
-        return [
-            ['class' => TotalRevenueOrders::class, 'name' => 'Total Revenue & Orders'],
-            ['class' => TopCustomers::class, 'name' => 'Top Customers'],
-            ['class' => OrdersRecent::class, 'name' => 'Recent Orders'],
-            ['class' => Goal::class, 'name' => 'Goal'],
-            ['class' => CartAbandonment::class, 'name' => 'Cart Abandonment'],
-            ['class' => ConversionRate::class, 'name' => 'Conversion Rate'],
-            ['class' => ProductsTop::class, 'name' => 'Top Products'],
-            ['class' => ProductsRecent::class, 'name' => 'Recent Products'],
-            ['class' => SubscriptionPlans::class, 'name' => 'Subscription Plans'],
-        ];
+        $types = [];
+        $dir = Craft::getAlias('@bymayo/commercewidgets/widgets');
+
+        foreach (glob($dir . '/*.php') as $file) {
+            $className = 'bymayo\\commercewidgets\\widgets\\' . basename($file, '.php');
+
+            if (!class_exists($className) || !is_subclass_of($className, BaseWidget::class)) {
+                continue;
+            }
+
+            $fullName = property_exists($className, 'displayName') ? $className::$displayName : $className::displayName();
+            $prefix = CommerceWidgets::$plugin->helpers->getPluginName() . ' - ';
+            $name = str_starts_with($fullName, $prefix) ? substr($fullName, strlen($prefix)) : $fullName;
+
+            $types[] = [
+                'class' => $className,
+                'name' => $name,
+            ];
+        }
+
+        usort($types, fn($a, $b) => strcmp($a['name'], $b['name']));
+
+        return $types;
     }
 
     public function getWidgetsForPage(int $pageId, int $userId): array
@@ -204,9 +210,9 @@ class Pages extends Component
 
     public function seedDefaultWidgets(int $userId, int $pageId): void
     {
-        $this->addWidget($userId, TotalRevenueOrders::class, 2, [], $pageId);
-        $this->addWidget($userId, OrdersRecent::class, 1, [], $pageId);
-        $this->addWidget($userId, TopCustomers::class, 1, [], $pageId);
+        $this->addWidget($userId, \bymayo\commercewidgets\widgets\TotalRevenueOrders::class, 2, [], $pageId);
+        $this->addWidget($userId, \bymayo\commercewidgets\widgets\OrdersRecent::class, 1, [], $pageId);
+        $this->addWidget($userId, \bymayo\commercewidgets\widgets\TopCustomers::class, 1, [], $pageId);
     }
 
 }

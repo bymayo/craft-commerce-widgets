@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             observer.observe(el);
                             msnry.appended(el);
                             msnry.layout();
+                            execWidgetJs(widget.bodyJs);
                         }
                     }).catch(() => {
                         Craft.cp.displayError('Could not add widget.');
@@ -332,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const bodyEl = widgetEl.querySelector('.cw-widget-body');
                         if (bodyEl) bodyEl.innerHTML = w.html;
 
+                        execWidgetJs(w.bodyJs);
                         closeModal();
                         msnry.layout();
                     }
@@ -366,6 +368,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         return settings;
+    }
+
+    function execWidgetJs(js) {
+        if (!js) return;
+        try { eval(js); } catch (e) { console.error('Widget JS error:', e); }
     }
 
     function escapeHtml(str) {
