@@ -219,10 +219,14 @@ class Customers extends Component
                 'count(*) as totalOrders',
                 'SUM(orders.totalPaid) as totalRevenue',
                 'orders.email',
-                'MAX(orders.customerId) as customerId'
+                'MAX(orders.customerId) as customerId',
+                'MAX(addresses.countryCode) as countryCode',
+                'MAX(addresses.locality) as locality',
+                'MAX(addresses.administrativeArea) as administrativeArea'
             ])
             ->from(['orders' => '{{%commerce_orders}}'])
             ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+            ->join('LEFT JOIN', '{{%addresses}} addresses', 'addresses.id = orders.billingAddressId')
             ->where(['orders.isCompleted' => 1])
             ->andWhere(['elements.dateDeleted' => null])
             ->orderBy($orderBy)

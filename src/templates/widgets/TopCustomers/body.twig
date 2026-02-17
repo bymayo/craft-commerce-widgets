@@ -5,6 +5,12 @@
    {% set customerIds = customers|map(c => c.customerId)|filter(id => id) %}
    {% set users = customerIds|length ? craft.users.id(customerIds).indexBy('id').all() : {} %}
 
+   {% set regionalIndicators = {
+      A: '🇦', B: '🇧', C: '🇨', D: '🇩', E: '🇪', F: '🇫', G: '🇬', H: '🇭', I: '🇮', J: '🇯',
+      K: '🇰', L: '🇱', M: '🇲', N: '🇳', O: '🇴', P: '🇵', Q: '🇶', R: '🇷', S: '🇸', T: '🇹',
+      U: '🇺', V: '🇻', W: '🇼', X: '🇽', Y: '🇾', Z: '🇿'
+   } %}
+
    <div class="cw:-ml-6 cw:-mr-6">
 
       {% for customer in customers %}
@@ -41,7 +47,12 @@
                      {% endif %}
 
                      <div class="cw:max-w-[90%] cw:truncate">
-                        {{ customer.email }}
+                        {% if customer.countryCode and customer.countryCode matches '/^[A-Z]{2}$/' %}
+                           <span>{{ regionalIndicators[customer.countryCode|first] ~ regionalIndicators[customer.countryCode|last] }}</span>
+                           {{ [customer.locality, customer.administrativeArea, customer.countryCode]|filter|join(', ') }}
+                        {% else %}
+                           🏴‍☠️ Unknown
+                        {% endif %}
                      </div>
 
                   </div>
