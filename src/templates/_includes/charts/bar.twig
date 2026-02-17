@@ -1,21 +1,25 @@
+{% set previousValue = previousValue ?? 0 %}
+{% set currentValue = currentValue ?? 0 %}
+{% set previousLabel = previousLabel ?? 'Previous' %}
+{% set currentLabel = currentLabel ?? 'Current' %}
+
 <div class="cw:w-full cw:h-72">
     <canvas id="chart-bar-{{ id }}" class="cw:w-full cw:h-full"></canvas>
 </div>
 
 {% js %}
 
-    function initializeBarChart(id) {
-        
+    (function() {
         const style = window.getComputedStyle(document.body);
 
-        const cwChartElement = document.getElementById('chart-bar-' + id).getContext('2d');
+        const cwChartElement = document.getElementById('chart-bar-{{ id }}').getContext('2d');
 
         const data = {
-            labels: ['Sessions'],
+            labels: [''],
             datasets: [
                 {
-                    label: 'April',
-                    data: [92],
+                    label: '{{ previousLabel }}',
+                    data: [{{ previousValue }}],
                     pointBackgroundColor: style.getPropertyValue('--cw-color-blue-500'),
                     fill: 'start',
                     pointRadius: 0,
@@ -24,8 +28,8 @@
                     categoryPercentage: 1.0
                 },
                 {
-                    label: 'May',
-                    data: [40],
+                    label: '{{ currentLabel }}',
+                    data: [{{ currentValue }}],
                     pointRadius: 0,
                     pointBackgroundColor: style.getPropertyValue('--cw-color-blue-300'),
                     borderColor: style.getPropertyValue('--cw-color-blue-300'),
@@ -93,9 +97,7 @@
             }
         };
 
-        const chart = new CwChart(cwChartElement, config);
-    }
-
-    initializeBarChart('{{ id }}');
+        new CwChart(cwChartElement, config);
+    })();
 
 {% endjs %}

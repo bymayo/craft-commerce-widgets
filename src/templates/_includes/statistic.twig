@@ -16,7 +16,7 @@
             </span>
         {% endif %}
     </div>
-    <div class="cw:text-xs cw:text-gray-400">
+    <div class="cw:text-xs cw:text-gray-400 {{ statisticSecondaryTooltip is defined and statisticSecondaryTooltip ? 'cw:cursor-help' }}" {% if statisticSecondaryTooltip is defined and statisticSecondaryTooltip %}title="{{ statisticSecondaryTooltip }}"{% endif %}>
         {{ statisticSecondary }}
     </div>
 </div>

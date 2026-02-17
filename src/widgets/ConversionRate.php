@@ -7,9 +7,6 @@ use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
 use craft\helpers\StringHelper;
-use craft\db\Query;
-
-use Exception;
 
 class ConversionRate extends BaseWidget
 {
@@ -60,7 +57,12 @@ class ConversionRate extends BaseWidget
 
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
-            []
+            array_merge(
+                [
+                    'widgetId' => $this->id,
+                ],
+                CommerceWidgets::$plugin->orders->getConversionData($this->targetDuration)
+            )
         );
     }
 

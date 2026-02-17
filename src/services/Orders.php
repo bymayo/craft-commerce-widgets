@@ -192,35 +192,67 @@ class Orders extends Component
 
     }
 
-    public function getChangeIndicator($current, $previous): array
+    public function getConversionData(string $targetDuration): array
     {
+        $dateRange = CommerceWidgets::$plugin->helpers->getDateRange($targetDuration);
+        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
-        $current = (float) $current;
-        $previous = (float) $previous;
-
-        if ($previous == 0) {
-            return [
-                'percentage' => null,
-                'direction' => $current > 0 ? 'up' : 'neutral'
-            ];
-        }
-
-        $change = (($current - $previous) / $previous) * 100;
-        $percentage = round(abs($change), 1) . '%';
-
-        if ($change > 0) {
-            $direction = 'up';
-        } elseif ($change < 0) {
-            $direction = 'down';
-        } else {
-            $direction = 'neutral';
-        }
-
-        return [
-            'percentage' => $percentage,
-            'direction' => $direction
+        $result = [
+            'addToCart' => ['current' => 0, 'previous' => 0],
+            'checkout' => ['current' => 0, 'previous' => 0],
+            'completed' => ['current' => 0, 'previous' => 0],
+            'addToCartChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'checkoutChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'completedChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'changeTooltip' => CommerceWidgets::$plugin->helpers->getChangeTooltip($targetDuration),
         ];
 
+        try {
+
+            foreach (['current', 'previous'] as $period) {
+                $query = (new Query())
+                    ->select([
+                        'COALESCE(COUNT(orders.id), 0) as addToCart',
+                        'COALESCE(SUM(CASE WHEN orders.billingAddressId IS NOT NULL OR orders.shippingAddressId IS NOT NULL THEN 1 ELSE 0 END), 0) as checkout',
+                        'COALESCE(SUM(CASE WHEN orders.isCompleted = 1 THEN 1 ELSE 0 END), 0) as completed',
+                    ])
+                    ->from(['orders' => '{{%commerce_orders}}'])
+                    ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                    ->andWhere(['elements.dateDeleted' => null]);
+
+                if ($dateRange[$period] !== null) {
+                    $query->andWhere($dateRange[$period]);
+                }
+
+                $row = $query->cache($cacheDuration, $dependency)->one();
+
+                if ($row) {
+                    $result['addToCart'][$period] = (int) $row['addToCart'];
+                    $result['checkout'][$period] = (int) $row['checkout'];
+                    $result['completed'][$period] = (int) $row['completed'];
+                }
+            }
+
+            $result['addToCartChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['addToCart']['current'],
+                $result['addToCart']['previous']
+            );
+            $result['checkoutChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['checkout']['current'],
+                $result['checkout']['previous']
+            );
+            $result['completedChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['completed']['current'],
+                $result['completed']['previous']
+            );
+
+        }
+        catch (Exception $e) {
+            // Return defaults on error
+        }
+
+        return $result;
     }
 
     public function getRevenueOrders(): array
@@ -235,7 +267,7 @@ class Orders extends Component
             $row = $current ?? ['totalRevenue' => 0, 'totalOrders' => 0];
 
             if ($current && $previous) {
-                $change = $this->getChangeIndicator($current['totalRevenue'], $previous['totalRevenue']);
+                $change = CommerceWidgets::$plugin->helpers->calculateChange((float) $current['totalRevenue'], (float) $previous['totalRevenue']);
                 $row['changeIndicator'] = $change['percentage'];
                 $row['changeDirection'] = $change['direction'];
             } else {

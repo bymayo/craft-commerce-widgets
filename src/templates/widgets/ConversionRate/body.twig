@@ -2,86 +2,100 @@
 
 {% block widget %}
 
+  {% set addToCartRate = addToCart.current > 0 ? '100%' : '--' %}
+  {% set checkoutRate = addToCart.current > 0 ? ((checkout.current / addToCart.current) * 100)|round ~ '%' : '--' %}
+  {% set completedRate = addToCart.current > 0 ? ((completed.current / addToCart.current) * 100)|round ~ '%' : '--' %}
+
+  {% set barBase = addToCart.current %}
+  {% set sessionsPct = 0 %}
+  {% set addToCartPct = 100 %}
+  {% set checkoutPct = barBase > 0 ? ((checkout.current / barBase) * 100)|round : 0 %}
+  {% set completedPct = barBase > 0 ? ((completed.current / barBase) * 100)|round : 0 %}
+
   <div class="cw:grid cw:grid-cols-4">
-    <div class="cw:col-span-1 cw:pr-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+    <div class="cw:col-span-1 cw:border-r! cw:border-gray-200 cw:border-solid">
 
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
+      <div class="cw:mb-7 cw:pr-4">
+        {% include 'commerce-widgets/_includes/statistic' with {
             heading: 'Sessions',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
+            statistic: '--',
+            statisticSecondary: 'Requires analytics',
             padding: false,
             border: false,
             style: 'small'
         } only %}
       </div>
 
-      {% include 'commerce-widgets/_includes/charts/bar' with {
-        id: 'conversion-sessions'
-      } only %}
+      <div class="cw:h-48 cw:flex cw:items-end">
+        <div class="cw:w-full cw:bg-gray-100" style="height: {{ sessionsPct }}%"></div>
+      </div>
 
     </div>
-    <div class="cw:col-span-1 cw:px-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+    <div class="cw:col-span-1 cw:border-r! cw:border-gray-200 cw:border-solid">
 
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
+      <div class="cw:mb-7 cw:px-4">
+        {% include 'commerce-widgets/_includes/statistic' with {
             heading: 'Added to Cart',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
+            statistic: addToCart.current|number_format(),
+            statisticSecondary: addToCartRate,
+            statisticSecondaryTooltip: 'Baseline for conversion rate',
+            changeIndicator: addToCartChange.percentage,
+            changeDirection: addToCartChange.direction,
+            changeTooltip: changeTooltip,
             padding: false,
             border: false,
             style: 'small'
         } only %}
       </div>
 
-      {% include 'commerce-widgets/_includes/charts/bar' with {
-        id: 'conversion-added-to-cart'
-      } only %}
+      <div class="cw:h-48 cw:relative">
+        <div class="cw:absolute cw:bottom-0 cw:left-0 cw:w-3/4 cw:z-10 cw:bg-blue-500 cw:rounded-tl" style="height: {{ addToCartPct }}%"></div>
+        <div class="cw:absolute cw:bottom-0 cw:right-0 cw:w-1/4" style="height: {{ addToCartPct }}%; background: linear-gradient(to right, var(--cw-color-blue-300), var(--cw-color-blue-100)); clip-path: polygon(0 0, 100% {{ addToCartPct > 0 ? (100 - (checkoutPct / addToCartPct * 100))|round : 100 }}%, 100% 100%, 0 100%)"></div>
+      </div>
 
     </div>
-    <div class="cw:col-span-1 cw:px-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+    <div class="cw:col-span-1 cw:border-r! cw:border-gray-200 cw:border-solid">
 
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
+      <div class="cw:mb-7 cw:px-4">
+        {% include 'commerce-widgets/_includes/statistic' with {
             heading: 'Checkout',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
+            statistic: checkout.current|number_format(),
+            statisticSecondary: checkoutRate,
+            statisticSecondaryTooltip: 'Conversion rate compared to Added to Cart',
+            changeIndicator: checkoutChange.percentage,
+            changeDirection: checkoutChange.direction,
+            changeTooltip: changeTooltip,
             padding: false,
             border: false,
             style: 'small'
         } only %}
       </div>
 
-      {% include 'commerce-widgets/_includes/charts/bar' with {
-        id: 'conversion-checkout'
-      } only %}
+      <div class="cw:h-48 cw:relative">
+        <div class="cw:absolute cw:bottom-0 cw:left-0 cw:w-3/4 cw:z-10 cw:bg-blue-500" style="height: {{ checkoutPct }}%"></div>
+        <div class="cw:absolute cw:bottom-0 cw:right-0 cw:w-1/4" style="height: {{ checkoutPct }}%; background: linear-gradient(to right, var(--cw-color-blue-300), var(--cw-color-blue-100)); clip-path: polygon(0 0, 100% {{ checkoutPct > 0 ? (100 - (completedPct / checkoutPct * 100))|round : 100 }}%, 100% 100%, 0 100%)"></div>
+      </div>
 
     </div>
-    <div class="cw:col-span-1 cw:pl-4">
+    <div class="cw:col-span-1">
 
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
+      <div class="cw:mb-7 cw:pl-4">
+        {% include 'commerce-widgets/_includes/statistic' with {
             heading: 'Completed',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
+            statistic: completed.current|number_format(),
+            statisticSecondary: completedRate,
+            statisticSecondaryTooltip: 'Conversion rate compared to Added to Cart',
+            changeIndicator: completedChange.percentage,
+            changeDirection: completedChange.direction,
+            changeTooltip: changeTooltip,
             padding: false,
             border: false,
             style: 'small'
         } only %}
       </div>
 
-      <div class="cw:mt-auto">
-        {% include 'commerce-widgets/_includes/charts/bar' with {
-          id: 'conversion-statistic'
-        } only %}
+      <div class="cw:h-48 cw:relative">
+        <div class="cw:absolute cw:bottom-0 cw:left-0 cw:w-full cw:bg-blue-500 cw:rounded-tr" style="height: {{ completedPct }}%"></div>
       </div>
 
     </div>
