@@ -7,6 +7,10 @@
         <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1;">
             <span class="cw:text-gray-500 cw:text-sm">No order location data available</span>
         </div>
+    {% else %}
+        <div id="orders-map-loading-{{ widgetId }}" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1;">
+            <span class="cw:text-gray-400 cw:text-sm">Loading map...</span>
+        </div>
     {% endif %}
 </div>
 
@@ -106,13 +110,11 @@
     };
 
     var features = [];
-    var totalOrders = 0;
 
     for (var i = 0; i < orderData.length; i++) {
         var item = orderData[i];
         var coords = C[item.countryCode];
         var count = parseInt(item.orderCount);
-        totalOrders += count;
 
         if (coords) {
             features.push({
@@ -141,6 +143,10 @@
         var script = document.createElement('script');
         script.src = 'https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js';
         script.onload = cb;
+        script.onerror = function() {
+            var el = document.getElementById('orders-map-loading-{{ widgetId }}');
+            if (el) el.innerHTML = '<span class="cw:text-gray-400 cw:text-sm">Failed to load map</span>';
+        };
         document.head.appendChild(script);
     }
 
@@ -173,6 +179,9 @@
         });
 
         map.on('load', function() {
+            var loadingEl = document.getElementById('orders-map-loading-{{ widgetId }}');
+            if (loadingEl) loadingEl.remove();
+
             if (features.length === 0) return;
 
             map.addSource('orders', { type: 'geojson', data: geojson });
@@ -271,9 +280,16 @@
                 var name = countryNames ? countryNames.of(code) : code;
                 var label = count === 1 ? 'order' : 'orders';
 
+                var el = document.createElement('div');
+                var strong = document.createElement('strong');
+                strong.textContent = name;
+                el.appendChild(strong);
+                el.appendChild(document.createElement('br'));
+                el.appendChild(document.createTextNode(count + ' ' + label));
+
                 popup
                     .setLngLat(f.geometry.coordinates)
-                    .setHTML('<strong>' + name + '</strong><br>' + count + ' ' + label)
+                    .setDOMContent(el)
                     .addTo(map);
             });
 
@@ -286,7 +302,7 @@
             var spinInterval;
 
             function spinGlobe() {
-                if (userInteracting) return;
+                if (userInteracting || document.hidden) return;
                 var center = map.getCenter();
                 center.lng -= 0.08;
                 map.easeTo({

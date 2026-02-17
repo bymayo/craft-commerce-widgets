@@ -1,8 +1,10 @@
 # Commerce Widgets Changelog
 
-## 6.0.0 - 2026-02-16
+## 6.0.0 - 2026-02-17
 
 ### Added
+- Order Countries widget with 3D Mapbox globe showing order locations by country with count pins
+- Mapbox Access Token plugin setting with environment variable support
 - Custom dashboard with drag-and-drop widget management
 - Dashboard pages - create multiple dashboard pages per user
 - Pages subnav in CP sidebar for quick navigation between pages

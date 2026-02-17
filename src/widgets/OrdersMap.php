@@ -6,6 +6,7 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
+use craft\helpers\App;
 use craft\helpers\StringHelper;
 
 class OrdersMap extends BaseWidget
@@ -52,7 +53,7 @@ class OrdersMap extends BaseWidget
     {
         $settings = CommerceWidgets::$plugin->getSettings();
 
-        $mapboxAccessToken = Craft::parseEnv($settings->mapboxAccessToken);
+        $mapboxAccessToken = App::parseEnv($settings->mapboxAccessToken);
 
         if (empty($mapboxAccessToken)) {
             return '<div class="cw:text-gray-400 cw:text-sm cw:py-4">Add a Mapbox Access Token in the plugin settings to use this widget.</div>';
