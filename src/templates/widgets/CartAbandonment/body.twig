@@ -36,7 +36,10 @@
     {% include 'commerce-widgets/_includes/charts/line' with {
       id: 'cart-abandonment',
       step: graphStep,
-      style: graphStyle
+      style: graphStyle,
+      labels: dateRangeChart,
+      completedData: completedCartChart,
+      abandonedData: abandonedCartChart
     } only %}
   </div>
 

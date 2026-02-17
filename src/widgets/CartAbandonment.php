@@ -61,11 +61,11 @@ class CartAbandonment extends BaseWidget
                'widgetId' => $this->id,
                'graphStep' => $this->graphStep,
                'graphStyle' => $this->graphStyle,
-               'dateRangeChart' => CommerceWidgets::$plugin->carts->getMonthDateRange((int) $this->previousAmount),
-               'abandonedCartChart' => CommerceWidgets::$plugin->carts->getTotalCarts(0, (int) $this->previousAmount),
-               'completedCartChart' => CommerceWidgets::$plugin->carts->getTotalCarts(1, (int) $this->previousAmount),
-               'abandonedCartData' => CommerceWidgets::$plugin->carts->getCartTotalRevenue(0),
-               'completedCartData' => CommerceWidgets::$plugin->carts->getCartTotalRevenue(1)
+               'dateRangeChart' => array_column(CommerceWidgets::$plugin->carts->getPeriods($this->targetDuration, (int) $this->previousAmount), 'label'),
+               'abandonedCartChart' => CommerceWidgets::$plugin->carts->getTotalCarts(0, $this->targetDuration, (int) $this->previousAmount),
+               'completedCartChart' => CommerceWidgets::$plugin->carts->getTotalCarts(1, $this->targetDuration, (int) $this->previousAmount),
+               'abandonedCartData' => CommerceWidgets::$plugin->carts->getCartTotalRevenue(0, $this->targetDuration),
+               'completedCartData' => CommerceWidgets::$plugin->carts->getCartTotalRevenue(1, $this->targetDuration)
             ]
         );
     }

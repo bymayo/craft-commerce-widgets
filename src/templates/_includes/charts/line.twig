@@ -14,11 +14,11 @@
     gradient.addColorStop(1, opacify(convert(style.getPropertyValue('--cw-color-blue-300'), 'rgba'), 0.2));
 
     const data = {
-        labels: ['February', 'March', 'April', 'May'],
+        labels: {{ labels|json_encode|raw }},
         datasets: [
         {
             label: 'Completed',
-            data: [5, 92, 18, 90],
+            data: {{ completedData|json_encode|raw }},
             lineTension: 0.3,
             pointBackgroundColor: style.getPropertyValue('--cw-color-blue-500'),
             borderColor: style.getPropertyValue('--cw-color-blue-500'),
@@ -28,7 +28,7 @@
         },
         {
             label: 'Abandoned',
-            data: [0, 40, 12, 150],
+            data: {{ abandonedData|json_encode|raw }},
             lineTension: 0.3,
             borderDash: [4,3],
             pointBackgroundColor: style.getPropertyValue('--cw-color-blue-300'),
