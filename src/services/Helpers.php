@@ -30,6 +30,11 @@ class Helpers extends Component
         $settings = CommerceWidgets::$plugin->getSettings();
 
         switch ($targetDuration) {
+            case 'daily':
+                $query->andWhere([
+                    "DATE_FORMAT($dateColumn, \"%Y-%m-%d\")" => date('Y-m-d')
+                ]);
+                break;
             case 'weekly':
                 $query->andWhere([
                     'WEEK(' . $dateColumn . ', 1)' => date('W'),

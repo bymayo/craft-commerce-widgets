@@ -18,13 +18,6 @@
    )
 }}
 
-{{
-   forms.textField(
-      {
-         label: 'Limit',
-         id: 'limit',
-         name: 'limit',
-         value: widget['limit']
-      }
-   )
-}}
+{% include 'commerce-widgets/_includes/settings/limit' with {
+   value: widget['limit']
+} only %}

@@ -66,10 +66,9 @@ class Goal extends BaseWidget
 
         $rules = array_merge(
             $rules,
-            $rules,
             [
                 [['type', 'targetDuration'], 'string'],
-                ['targetValue', 'integer'],
+                ['targetValue', 'integer', 'min' => 1],
                 ['type', 'default', 'value' => 'orders'],
                 ['targetValue', 'default', 'value' => 15],
                 ['targetDuration', 'default', 'value' => 'default']
@@ -91,6 +90,7 @@ class Goal extends BaseWidget
 
     public function getBodyHtml(): ?string
     {
+        Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
