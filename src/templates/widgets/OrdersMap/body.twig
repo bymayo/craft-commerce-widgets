@@ -61,18 +61,27 @@
 {% if showBarChart %}
    {% set topCountries = ordersByCountry|slice(0, limit) %}
 
+   {% set regionalIndicators = {
+      A: '🇦', B: '🇧', C: '🇨', D: '🇩', E: '🇪', F: '🇫', G: '🇬', H: '🇭', I: '🇮', J: '🇯',
+      K: '🇰', L: '🇱', M: '🇲', N: '🇳', O: '🇴', P: '🇵', Q: '🇶', R: '🇷', S: '🇸', T: '🇹',
+      U: '🇺', V: '🇻', W: '🇼', X: '🇽', Y: '🇾', Z: '🇿'
+   } %}
+
    {% if topCountries|length %}
-      <div id="orders-map-countries-{{ widgetId }}" class="{{ showMap ? 'cw:mt-4' }} cw:-ml-6 cw:-mr-6 cw:flex cw:flex-col cw:gap-3">
+      <div id="orders-map-countries-{{ widgetId }}" class="{{ showMap ? 'cw:mt-4' }} cw:flex cw:flex-col cw:gap-y-1">
          {% set maxValue = topCountries[0].statValue %}
          {% for country in topCountries %}
-            <div class="cw:px-6">
-               <div class="cw:relative cw:h-2 cw:rounded-full cw:bg-blue-100 cw:overflow-hidden">
-                  <div class="cw:absolute cw:inset-y-0 cw:left-0 cw:rounded-full cw:bg-blue-500" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
+            <div class="cw:bg-blue-50 cw:h-9 cw:relative cw:rounded-md cw:overflow-hidden">
+               <div class="cw:absolute cw:w-full cw:h-full cw:flex cw:items-center cw:px-4">
+                  <span class="cw:font-semibold cw:flex cw:items-center cw:gap-1.5">
+                     {% if country.countryCode matches '/^[A-Z]{2}$/' %}
+                        <span>{{ regionalIndicators[country.countryCode|first] ~ regionalIndicators[country.countryCode|last] }}</span>
+                     {% endif %}
+                     <span data-cw-country-name="{{ country.countryCode }}">{{ country.countryCode }}</span>
+                  </span>
+                  <span class="cw:ml-auto cw:tabular-nums">{{ country.statValue|number_format() }}</span>
                </div>
-               <div class="cw:flex cw:justify-between cw:mt-1">
-                  <span class="cw:text-xl cw:font-semibold">{{ country.statValue|number_format() }}</span>
-                  <span class="cw:text-sm cw:text-gray-400" data-cw-country-name="{{ country.countryCode }}">{{ country.countryCode }}</span>
-               </div>
+               <div class="cw:bg-linear-to-r cw:from-blue-100 cw:to-blue-300 cw:h-full cw:rounded-md" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
             </div>
          {% endfor %}
       </div>
@@ -322,7 +331,7 @@
                 strong.textContent = name;
                 el.appendChild(strong);
                 el.appendChild(document.createElement('br'));
-                el.appendChild(document.createTextNode(value.toLocaleString()));
+                el.appendChild(document.createTextNode(value.toLocaleString() + ' {{ statType == "customerCount" ? "Customers" : "Orders" }}'));
 
                 popup
                     .setLngLat(f.geometry.coordinates)
