@@ -9,6 +9,10 @@
 > CP "Pages" is now possible to create custom pages/subpages full of widgets, as well as still having widgets on the CP dashboard.
 
 ### Added
+- "Data last refreshed" timestamp label on custom pages when caching is enabled
+- Revenue tooltip on Top Products and Top Customers widgets explaining the total
+- Install migration for fresh installs to create pages and widgets tables
+- Tabbed settings page (General, Dates, Pages)
 - Cancelled and Expired columns on Subscription Plans widget
 - Country flag and location on Top Customers widget
 - Locations widget statistic setting to show Orders or Customers
@@ -44,6 +48,7 @@
 - Improved line graph styling with detailed/minimal options
 
 ### Changed
+- Default target duration changed from monthly to yearly
 - Complete visual redesign of all widgets
 - Extracted widget query logic into domain-specific services (Orders, Products, Customers, Carts, Subscriptions)
 - Shared date filtering across all services via `applyDateFilter()`
@@ -61,6 +66,9 @@
 - Improved tooltip positioning
 - Updated styling across Top Products and Top Customers widgets
 
+### Removed
+- Export button from Top Products widget
+
 ### Improved
 - Extracted fiscal year calculation into shared `getFiscalYearDates()` helper, removing duplication across 5 files
 - Extracted order status select into shared settings component used by Recent Orders and Top Products
@@ -68,6 +76,11 @@
 - Removed unused bar chart template
 
 ### Fixed
+- All date calculations now respect Craft's configured timezone instead of using the server timezone ([#32](https://github.com/bymayo/craft-commerce-widgets/issues/32))
+- PostgreSQL compatibility by replacing MySQL-specific date functions (DATE_FORMAT, YEAR, MONTH, WEEK) with database-agnostic BETWEEN conditions ([#58](https://github.com/bymayo/craft-commerce-widgets/issues/58))
+- Cart Abandonment direction arrow now reflects actual data direction with inverted colour sentiment (up + red = more abandons, down + green = fewer abandons)
+- Fresh install error when enabling pages due to missing database tables
+- Mapbox globe error on Locations widget
 - Error when adding Top Customers and Top Products widgets
 - Subscription Plans widget only counting active subscriptions, now correctly counts all subscription states
 - Responsive layout issues on widgets
