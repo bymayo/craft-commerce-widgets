@@ -12,5 +12,5 @@
             {{ targetFormatted }}
         </span>
     </div>
-    <div class="cw:bg-linear-to-r cw:from-blue-100 cw:to-blue-300 cw:h-full cw:border-r-3! cw:border-r-blue-500! cw:border-r-solid"{% if total < target %} style="width: {{ (total / target) * 100 }}%"{% endif %}></div>
+    <div class="cw:bg-linear-to-r cw:from-blue-100 cw:to-blue-300 cw:h-full cw:border-r-3! cw:border-r-blue-500! cw:border-r-solid"{% if target > 0 and total < target %} style="width: {{ (total / target) * 100 }}%"{% endif %}></div>
 </div>

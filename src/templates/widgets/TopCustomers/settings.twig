@@ -27,33 +27,13 @@
    )
 }}
 
-{{
-   forms.textField(
-      {
-         label: 'Limit',
-         id: 'limit',
-         name: 'limit',
-         value: widget['limit']
-      }
-   )
-}}
+{% include 'commerce-widgets/_includes/settings/limit' with {
+   value: widget['limit']
+} only %}
 
-{{
-   forms.selectField(
-      {
-         label: 'Target Duration',
-         id: 'targetDuration',
-         name: 'targetDuration',
-         value: widget['targetDuration'],
-         options: [
-            { label: 'Daily', value: 'daily' },
-            { label: 'Weekly', value: 'weekly' },
-            { label: 'Monthly', value: 'monthly' },
-            { label: 'Yearly', value: 'yearly' }
-         ]
-      }
-   )
-}}
+{% include 'commerce-widgets/_includes/settings/targetDuration' with {
+   value: widget['targetDuration']
+} only %}
 
 {{
    forms.lightswitchField(

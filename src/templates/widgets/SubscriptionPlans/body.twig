@@ -10,7 +10,9 @@
             <thead>
                <tr>
                   <th>Plan</th>
-                  <th>Active Subscriptions</th>
+                  <th>Active</th>
+                  <th>Cancelled</th>
+                  <th>Expired</th>
                </tr>
             </thead>
             <tbody>
@@ -18,17 +20,19 @@
                   <tr>
                      <td>
                         <div class="element hasstatus cw:flex cw:items-center">
-                           <span class="status {{ plan.enabled ? 'live' : 'disabled' }}"></span>
-                           <a href="/{{ cpTrigger }}/commerce/subscriptions?source=plan%3A{{ plan.id }}" class="cw:font-semibold">
+                           <span class="status {{ plan.enabled|default(false) ? 'live' : 'disabled' }}"></span>
+                           <a href="/{{ cpTrigger }}/commerce/subscriptions?planId={{ plan.id }}" class="cw:font-semibold">
                               {{ plan.name }}
                            </a>
                         </div>
                      </td>
                      <td>{{ plan.activeSubscriptions|number_format() }}</td>
+                     <td>{{ plan.cancelledSubscriptions|number_format() }}</td>
+                     <td>{{ plan.expiredSubscriptions|number_format() }}</td>
                   </tr>
                {% else %} 
                   <tr>
-                     <td colspan="2">
+                     <td colspan="4">
                         No subscriptions found.
                      </td>
                   </tr>

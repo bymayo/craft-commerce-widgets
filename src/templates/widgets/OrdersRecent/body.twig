@@ -11,15 +11,15 @@
                <tr>
                   <th>Order</th>
                   <th>Total Paid</th>
-                  <th>Date Ordered</th>
+                  <th>Date Paid</th>
                </tr>
             </thead>
             <tbody>
-               {% for order in craft.orders().limit(limit).status(null).orderBy('dateUpdated desc').all() %}
+               {% for order in orders %}
                   <tr>
                      <td>
                         <div class="element hasstatus cw:flex cw:items-center">
-                           <span class="status {{ order.orderStatus.color }}"></span>
+                           <span class="status {{ order.orderStatus.color|default('') }}"></span>
                            {# <span class="cw:mr-2">
                               {{ order.orderStatus.labelHtml|raw }} 
                            </span> #}
@@ -31,7 +31,7 @@
                      <td>
                         {{ order.totalPaid|currency(order.currency) }}
                      </td>
-                     <td>{{ order.dateCreated|datetime('short') }}</td>
+                     <td>{{ order.datePaid|datetime('short') }}</td>
                   </tr>
                {% else %}
                   <tr>

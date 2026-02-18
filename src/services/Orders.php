@@ -1,0 +1,339 @@
+<?php
+
+namespace bymayo\commercewidgets\services;
+
+use bymayo\commercewidgets\CommerceWidgets;
+
+use craft\base\Component;
+use craft\db\Query;
+use craft\commerce\elements\Order;
+use yii\caching\TagDependency;
+
+use Exception;
+
+class Orders extends Component
+{
+
+    public function getRecentOrders(int $limit = 5, ?int $orderStatusId = null): array
+    {
+
+        try {
+
+            $query = Order::find()
+                ->limit($limit)
+                ->isCompleted(true)
+                ->orderBy('dateOrdered desc');
+
+            if ($orderStatusId) {
+                $query->orderStatusId($orderStatusId);
+            }
+
+            return $query->all();
+
+        }
+        catch (Exception $e) {
+            return [];
+        }
+
+    }
+
+    public function getOrderTotals(string $targetDuration): array
+    {
+
+        try {
+
+            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+
+            $query = (new Query())
+                ->select([
+                    'COALESCE(count(*), 0) as totalOrders',
+                    'COALESCE(SUM(orders.totalPaid), 0) as totalRevenue'
+                ])
+                ->from(['orders' => '{{%commerce_orders}}'])
+                ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                ->where(['orders.isCompleted' => 1])
+                ->andWhere(['elements.dateDeleted' => null]);
+
+            CommerceWidgets::$plugin->helpers->applyDateFilter($query, $targetDuration);
+
+            $result = $query->cache($cacheDuration, $dependency)->one();
+
+        }
+        catch (Exception $e) {
+            $result = null;
+        }
+
+        return $result ?? ['totalOrders' => 0, 'totalRevenue' => 0];
+
+    }
+
+    public function getTimeFrames(): array
+    {
+        $settings = CommerceWidgets::$plugin->getSettings();
+        $helpers = CommerceWidgets::$plugin->helpers;
+        $now = $helpers->craftNow();
+        $toDate = ($settings->comparisonMode ?? 'full') === 'toDate';
+        $suffix = $toDate ? ' (to date)' : '';
+
+        $weekStart = $settings->weekStart ?? 'monday';
+        $tomorrow = (clone $now)->modify('+1 day');
+        $weekStartDate = (clone $tomorrow)->modify("last $weekStart")->setTime(0, 0, 0);
+        $weekEndDate = (clone $weekStartDate)->modify('+6 days')->setTime(23, 59, 59);
+        $prevWeekStartDate = (clone $weekStartDate)->modify('-7 days');
+        if ($toDate) {
+            $weekEndDate = clone $now;
+            $elapsed = $weekStartDate->diff($now);
+            $prevWeekEndDate = (clone $prevWeekStartDate)->add($elapsed);
+        } else {
+            $prevWeekEndDate = (clone $weekEndDate)->modify('-7 days');
+        }
+
+        $todayStart = (clone $now)->setTime(0, 0, 0);
+        $todayEnd = (clone $now)->setTime(23, 59, 59);
+        $yesterdayStart = (clone $todayStart)->modify('-1 day');
+        $yesterdayEnd = (clone $todayEnd)->modify('-1 day');
+
+        $thisMonthStart = (clone $now)->modify('first day of this month')->setTime(0, 0, 0);
+        $thisMonthEnd = (clone $now)->modify('last day of this month')->setTime(23, 59, 59);
+        $lastMonthStart = (clone $now)->modify('first day of last month')->setTime(0, 0, 0);
+        if ($toDate) {
+            $thisMonthEnd = clone $now;
+            $elapsed = $thisMonthStart->diff($now);
+            $lastMonthEnd = (clone $lastMonthStart)->add($elapsed);
+        } else {
+            $lastMonthEnd = (clone $now)->modify('last day of last month')->setTime(23, 59, 59);
+        }
+
+        $thisYearStart = (clone $now)->modify('first day of january this year')->setTime(0, 0, 0);
+        $lastYearStart = (clone $thisYearStart)->modify('-1 year');
+        if ($toDate) {
+            $thisYearEnd = clone $now;
+            $elapsed = $thisYearStart->diff($now);
+            $lastYearEnd = (clone $lastYearStart)->add($elapsed);
+        } else {
+            $thisYearEnd = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
+            $lastYearEnd = (clone $thisYearEnd)->modify('-1 year');
+        }
+
+        $fiscal = $helpers->getFiscalYearDates();
+        $fiscalCurrent = $fiscal['start'];
+        $fiscalPrev = $fiscal['prevStart'];
+        $fiscalCurrentEnd = $fiscal['end'];
+        $fiscalPrevEnd = $fiscal['prevEnd'];
+        if ($toDate) {
+            $fiscalCurrentEnd = $helpers->toUtc($now);
+            $fiscalStart = $helpers->craftDate($fiscal['startDay'] . ' ' . $fiscal['startMonth'] . ' ' . $fiscal['startYear']);
+            $fiscalStart->setTime(0, 0, 0);
+            $elapsed = $fiscalStart->diff($now);
+            $prevFiscalStart = $helpers->craftDate($fiscal['startDay'] . ' ' . $fiscal['startMonth'] . ' ' . ($fiscal['startYear'] - 1));
+            $prevFiscalStart->setTime(0, 0, 0);
+            $fiscalPrevEnd = $helpers->toUtc((clone $prevFiscalStart)->add($elapsed));
+        }
+
+        return [
+            [
+                'label' => 'Today',
+                'changeTooltip' => 'Compared to yesterday',
+                'current' => ['between', 'orders.datePaid', $helpers->toUtc($todayStart), $helpers->toUtc($todayEnd)],
+                'previous' => ['between', 'orders.datePaid', $helpers->toUtc($yesterdayStart), $helpers->toUtc($yesterdayEnd)],
+            ],
+            [
+                'label' => 'Week',
+                'changeTooltip' => 'Compared to previous week' . $suffix,
+                'current' => ['between', 'orders.datePaid', $helpers->toUtc($weekStartDate), $helpers->toUtc($weekEndDate)],
+                'previous' => ['between', 'orders.datePaid', $helpers->toUtc($prevWeekStartDate), $helpers->toUtc($prevWeekEndDate)],
+            ],
+            [
+                'label' => 'Month',
+                'changeTooltip' => 'Compared to previous month' . $suffix,
+                'current' => ['between', 'orders.datePaid', $helpers->toUtc($thisMonthStart), $helpers->toUtc($thisMonthEnd)],
+                'previous' => ['between', 'orders.datePaid', $helpers->toUtc($lastMonthStart), $helpers->toUtc($lastMonthEnd)],
+            ],
+            [
+                'label' => 'Year',
+                'changeTooltip' => 'Compared to previous year' . $suffix,
+                'current' => ['between', 'orders.datePaid', $helpers->toUtc($thisYearStart), $helpers->toUtc($thisYearEnd)],
+                'previous' => ['between', 'orders.datePaid', $helpers->toUtc($lastYearStart), $helpers->toUtc($lastYearEnd)],
+            ],
+            [
+                'label' => 'Fiscal Year',
+                'changeTooltip' => 'Compared to previous fiscal year' . $suffix,
+                'current' => ['between', 'orders.datePaid', $fiscalCurrent, $fiscalCurrentEnd],
+                'previous' => ['between', 'orders.datePaid', $fiscalPrev, $fiscalPrevEnd],
+            ],
+            [
+                'label' => 'All Time',
+                'changeTooltip' => null,
+                'current' => null,
+                'previous' => null,
+            ],
+        ];
+    }
+
+    private function buildRevenueQuery(?array $condition): Query
+    {
+        $query = (new Query())
+            ->select([
+                'COALESCE(SUM(orders.totalPaid), 0) as totalRevenue',
+                'COALESCE(COUNT(orders.id), 0) as totalOrders',
+            ])
+            ->from(['orders' => '{{%commerce_orders}}'])
+            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+            ->where(['orders.isCompleted' => 1])
+            ->andWhere(['elements.dateDeleted' => null]);
+
+        if ($condition !== null) {
+            $query->andWhere($condition);
+        }
+
+        return $query;
+    }
+
+    public function getConversionData(string $targetDuration): array
+    {
+        $dateRange = CommerceWidgets::$plugin->helpers->getDateRange($targetDuration);
+        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+
+        $result = [
+            'addToCart' => ['current' => 0, 'previous' => 0],
+            'checkout' => ['current' => 0, 'previous' => 0],
+            'completed' => ['current' => 0, 'previous' => 0],
+            'addToCartChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'checkoutChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'completedChange' => ['percentage' => null, 'direction' => 'neutral'],
+            'changeTooltip' => CommerceWidgets::$plugin->helpers->getChangeTooltip($targetDuration),
+        ];
+
+        try {
+
+            foreach (['current', 'previous'] as $period) {
+                $query = (new Query())
+                    ->select([
+                        'COALESCE(COUNT(orders.id), 0) as addToCart',
+                        'COALESCE(SUM(CASE WHEN orders.billingAddressId IS NOT NULL OR orders.shippingAddressId IS NOT NULL THEN 1 ELSE 0 END), 0) as checkout',
+                        'COALESCE(SUM(CASE WHEN orders.isCompleted = 1 THEN 1 ELSE 0 END), 0) as completed',
+                    ])
+                    ->from(['orders' => '{{%commerce_orders}}'])
+                    ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                    ->andWhere(['elements.dateDeleted' => null]);
+
+                if ($dateRange[$period] !== null) {
+                    $query->andWhere($dateRange[$period]);
+                }
+
+                $row = $query->cache($cacheDuration, $dependency)->one();
+
+                if ($row) {
+                    $result['addToCart'][$period] = (int) $row['addToCart'];
+                    $result['checkout'][$period] = (int) $row['checkout'];
+                    $result['completed'][$period] = (int) $row['completed'];
+                }
+            }
+
+            $result['addToCartChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['addToCart']['current'],
+                $result['addToCart']['previous']
+            );
+            $result['checkoutChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['checkout']['current'],
+                $result['checkout']['previous']
+            );
+            $result['completedChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['completed']['current'],
+                $result['completed']['previous']
+            );
+
+        }
+        catch (Exception $e) {
+            // Return defaults on error
+        }
+
+        return $result;
+    }
+
+    private const ALLOWED_STAT_TYPES = [
+        'orderCount' => 'COUNT(orders.id)',
+        'customerCount' => 'COUNT(DISTINCT orders.email)',
+    ];
+
+    public function getOrdersByCountry(string $targetDuration, string $statType = 'orderCount'): array
+    {
+        try {
+
+            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+
+            $statExpression = self::ALLOWED_STAT_TYPES[$statType] ?? self::ALLOWED_STAT_TYPES['orderCount'];
+
+            $query = (new Query())
+                ->select([
+                    'addresses.countryCode',
+                    "$statExpression as statValue"
+                ])
+                ->from(['orders' => '{{%commerce_orders}}'])
+                ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                ->join('LEFT JOIN', '{{%addresses}} addresses', 'addresses.id = orders.billingAddressId')
+                ->where(['orders.isCompleted' => 1])
+                ->andWhere(['elements.dateDeleted' => null])
+                ->andWhere(['not', ['addresses.countryCode' => null]])
+                ->groupBy('addresses.countryCode')
+                ->orderBy('statValue desc');
+
+            CommerceWidgets::$plugin->helpers->applyDateFilter($query, $targetDuration);
+
+            return $query->cache($cacheDuration, $dependency)->all();
+
+        }
+        catch (Exception $e) {
+            return [];
+        }
+    }
+
+    public function getRevenueOrders(): array
+    {
+        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+        $data = [];
+
+        foreach ($this->getTimeFrames() as $timeFrame) {
+            try {
+                $current = $this->buildRevenueQuery($timeFrame['current'])
+                    ->cache($cacheDuration, $dependency)
+                    ->one();
+            } catch (Exception $e) {
+                $current = null;
+            }
+
+            $row = $current ?? ['totalRevenue' => 0, 'totalOrders' => 0];
+            $row['changeIndicator'] = null;
+            $row['changeDirection'] = 'neutral';
+            $row['changeTooltip'] = $timeFrame['changeTooltip'];
+
+            if ($current && $timeFrame['previous'] !== null) {
+                try {
+                    $previous = $this->buildRevenueQuery($timeFrame['previous'])
+                        ->cache($cacheDuration, $dependency)
+                        ->one();
+                } catch (Exception $e) {
+                    $previous = null;
+                }
+
+                if ($previous) {
+                    $change = CommerceWidgets::$plugin->helpers->calculateChange(
+                        (float) $current['totalRevenue'],
+                        (float) $previous['totalRevenue']
+                    );
+                    $row['changeIndicator'] = $change['percentage'];
+                    $row['changeDirection'] = $change['direction'];
+                }
+            }
+
+            $data[] = $row;
+        }
+
+        return $data;
+    }
+
+}

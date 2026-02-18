@@ -23,23 +23,13 @@
          id: 'targetValue',
          instructions: 'E.g. If chosen `Orders` type, a `Target Value` of 100 would mean 100 orders',
          name: 'targetValue',
-         value: widget['targetValue']
+         value: widget['targetValue'],
+         type: 'number',
+         min: 1
       }
    )
 }}
 
-{{
-   forms.selectField(
-      {
-         label: 'Target Duration',
-         id: 'targetDuration',
-         name: 'targetDuration',
-         value: widget['targetDuration'],
-         options: [
-            { label: 'Weekly', value: 'weekly' },
-            { label: 'Monthly', value: 'monthly' },
-            { label: 'Yearly', value: 'yearly' }
-         ]
-      }
-   )
-}}
+{% include 'commerce-widgets/_includes/settings/targetDuration' with {
+   value: widget['targetDuration']
+} only %}

@@ -1,20 +1,5 @@
-{% import "_includes/forms" as forms %}
-
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-{{
-   forms.selectField(
-      {
-         label: 'Target Duration',
-         id: 'targetDuration',
-         name: 'targetDuration',
-         value: widget['targetDuration'],
-         options: [
-            { label: 'Daily', value: 'daily' },
-            { label: 'Weekly', value: 'weekly' },
-            { label: 'Monthly', value: 'monthly' },
-            { label: 'Yearly', value: 'yearly' }
-         ]
-      }
-   )
-}}
+{% include 'commerce-widgets/_includes/settings/targetDuration' with {
+   value: widget['targetDuration']
+} only %}

@@ -12,9 +12,19 @@ class Settings extends Model
     // Public Properties
     // =========================================================================
 
+    public $pluginName = 'Commerce Widgets';
     public $cacheDuration = 3600;
-    public $fiscalYearStart = 'april';
+    public $defaultTargetDuration = 'yearly';
+    public $fiscalYearStartDay = 1;
+    public $fiscalYearStartMonth = 'april';
+    public $fiscalYearEndDay = 31;
+    public $fiscalYearEndMonth = 'march';
+    public $weekStart = 'monday';
     public $excludeEmailAddresses = array();
+    public $enablePages = false;
+    public $defaultPageWidgets = [];
+    public $comparisonMode = 'full';
+    public $mapboxAccessToken = '';
 
     // Public Methods
     // =========================================================================
@@ -36,8 +46,15 @@ class Settings extends Model
     {
         return [
             [['cacheDuration'], 'integer'],
-            [['fiscalYearStart'], 'string'],
-            [['excludeEmailAddresses'], 'array']
+            [['defaultTargetDuration'], 'string'],
+            [['fiscalYearStartDay', 'fiscalYearEndDay'], 'integer'],
+            [['fiscalYearStartMonth', 'fiscalYearEndMonth'], 'string'],
+            [['weekStart'], 'string'],
+            [['excludeEmailAddresses'], 'safe'],
+            [['enablePages'], 'boolean'],
+            [['defaultPageWidgets'], 'safe'],
+            [['comparisonMode'], 'string'],
+            [['mapboxAccessToken'], 'string']
         ];
     }
 }

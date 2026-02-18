@@ -1,0 +1,17 @@
+{% import "_includes/forms" as forms %}
+
+{% set orderStatusOptions = [{ label: 'All', value: '' }] %}
+{% for status in orderStatuses %}
+   {% set orderStatusOptions = orderStatusOptions|merge([{ label: status.name, value: status.id }]) %}
+{% endfor %}
+
+{{
+   forms.selectField(
+      {
+         label: 'Order Status',
+         name: 'orderStatusId',
+         value: value,
+         options: orderStatusOptions
+      }
+   )
+}}

@@ -2,90 +2,29 @@
 
 {% do view.registerAssetBundle("bymayo\\commercewidgets\\assetbundles\\commercewidgets\\CommerceWidgetsAsset") %}
 
-<div id="{{ id }}">
+{% include 'commerce-widgets/_includes/settings/orderStatus' with {
+   orderStatuses: orderStatuses,
+   value: widget['orderStatusId']
+} only %}
 
-   <div class="field">
-       <div class="heading">
-           <label>Order Status</label>
-       </div>
-       <div class="input ltr">
-           <input type="hidden" class="status-input" name="orderStatusId" value="{{ widget['orderStatusId'] }}">
-           <a class="btn menubtn">
-              <span class="status"></span> {{ "All"|t('commerce') }}
-           </a>
-           <div class="menu">
-               <ul class="padded">
-                   <li>
-                      <a>
-                         <span class="commerceStatusLabel">
-                           <span class="status"></span> {{ "All"|t('commerce') }}
-                        </span>
-                     </a>
-                   </li>
-                   {% for status in orderStatuses %}
-                       <li>
-                           <a data-id="{{ status.id }}">{{ status.labelHtml|raw }}</a>
-                       </li>
-                   {% endfor %}
-               </ul>
-           </div>
-       </div>
-   </div>
+{{
+   forms.selectField(
+      {
+         label: 'Order By',
+         name: 'orderBy',
+         value: widget['orderBy'],
+         options: [
+            { label: 'Ordered Total', value: 'totalOrdered' },
+            { label: 'Revenue Total', value: 'totalRevenue' }
+         ]
+      }
+   )
+}}
 
-   {{
-      forms.selectField(
-         {
-            label: 'Order By',
-            name: 'orderBy',
-            value: widget['orderBy'],
-            options: [
-               { label: 'Ordered Total', value: 'totalOrdered' },
-               { label: 'Revenue Total', value: 'totalRevenue' }
-            ]
-         }
-      )
-   }}
+{% include 'commerce-widgets/_includes/settings/limit' with {
+   value: widget['limit']
+} only %}
 
-   {{
-      forms.textField(
-         {
-            label: 'Limit',
-            id: 'limit',
-            name: 'limit',
-            value: widget['limit']
-         }
-      )
-   }}
-
-   {# {{
-      forms.selectField(
-         {
-            label: 'Product Types',
-            id: 'productTypes',
-            name: 'productTypes',
-            value: widget['productTypes'],
-            options: [
-               { label: 'all', value: 'All' }
-            ]
-         }
-      )
-   }} #}
-
-   {{
-      forms.selectField(
-         {
-            label: 'Target Duration',
-            id: 'targetDuration',
-            name: 'targetDuration',
-            value: widget['targetDuration'],
-            options: [
-               { label: 'Daily', value: 'daily' },
-               { label: 'Weekly', value: 'weekly' },
-               { label: 'Monthly', value: 'monthly' },
-               { label: 'Yearly', value: 'yearly' }
-            ]
-         }
-      )
-   }}
-
-</div>
+{% include 'commerce-widgets/_includes/settings/targetDuration' with {
+   value: widget['targetDuration']
+} only %}

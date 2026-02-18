@@ -6,30 +6,26 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
-use craft\db\Query;
 
-use Exception;
-
-class SubscriptionPlans extends Widget
+class SubscriptionPlans extends BaseWidget
 {
 
     // Public Properties
     // =========================================================================
 
-    public $limit;
-    public $orderBy;
+    public $limit = 5;
+    public $orderBy = 'dateCreated desc';
 
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Subscription Plans');
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
@@ -38,52 +34,6 @@ class SubscriptionPlans extends Widget
     {
         return null;
     }
-
-    // Custom Public Methods
-    // =========================================================================
-
-    public function getSubscriptionPlans()
-    {
-
-      try {
-
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'plans.*',
-                  'COUNT(subscriptions.planId) as activeSubscriptions'
-               ]
-            )
-            ->from(
-               [
-                  'plans' => '{{%commerce_plans}}'
-               ]
-            )
-            ->join(
-               'LEFT JOIN', '{{%commerce_subscriptions}} subscriptions', 'subscriptions.planId = plans.id'
-            )
-            ->where(
-               [
-                  'plans.isArchived' => 0
-               ]
-            )
-            ->groupBy(['plans.id'])
-            ->orderBy($this->orderBy)
-            ->limit($this->limit);
-
-         $command = $query->createCommand();
-         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
-
-         return $result;
-
-      }
-      catch (Exception $e) {
-         $result = [];
-     }
-
-   }
 
     // Public Methods
     // =========================================================================
@@ -128,7 +78,7 @@ class SubscriptionPlans extends Widget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
-                'plans' => $this->getSubscriptionPlans()
+                'plans' => CommerceWidgets::$plugin->subscriptions->getSubscriptionPlans($this->orderBy, (int) $this->limit)
             ]
         );
     }

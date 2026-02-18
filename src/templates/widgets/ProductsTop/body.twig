@@ -2,11 +2,14 @@
 
 {% block widget %}
 
+   {% set productIds = products|map(p => p.id)|filter(id => id) %}
+   {% set elements = productIds|length ? craft.products.id(productIds).status(null).indexBy('id').all() : {} %}
+
    <div class="cw:-ml-6 cw:-mr-6">
 
          {% for product in products %}
 
-            {% set element = craft.products.id(product.id).status(null).one() %}
+            {% set element = elements[product.id] ?? null %}
 
             <div class="{{ not loop.first ? 'cw:border-t! cw:border-gray-100 cw:border-solid' }} {{ loop.first and products|length > 1 ? 'cw:pb-3' }} {{ loop.last and products|length > 1 ? 'cw:pt-3' }} {{ not loop.last and not loop.first ? 'cw:py-3' }}">
 
@@ -14,19 +17,43 @@
 
                   <div class="cw:flex cw:items-center cw:w-9/12">
 
-                     <a href="{{ element.cpEditUrl }}" class="cw:w-12 cw:h-12 cw:flex cw:items-center cw:justify-center cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
-                        {{ element.getThumbHtml(100)|raw }}
-                     </a>
+                     {% set thumbUrl = null %}
+                     {% if element %}
+                        {% set thumbField = element.fieldLayout.thumbField ?? null %}
+                        {% if thumbField %}
+                           {% set thumbAsset = attribute(element, thumbField.attribute()).one() ?? null %}
+                           {% if thumbAsset %}
+                              {% set thumbUrl = craft.app.assets.getThumbUrl(thumbAsset, 100, 100) %}
+                           {% endif %}
+                        {% endif %}
+                     {% endif %}
+
+                     {% if element %}
+                        <a href="{{ element.cpEditUrl }}" class="cw:w-12 cw:h-12 cw:flex cw:items-center cw:justify-center cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
+                           {% if thumbUrl %}
+                              <img src="{{ thumbUrl }}" class="cw:w-full cw:h-full cw:object-cover" alt="{{ element.title }}" loading="lazy" />
+                           {% endif %}
+                        </a>
+                     {% else %}
+                        <div class="cw:w-12 cw:h-12 cw:rounded cw:overflow-hidden cw:border! cw:border-gray-200 cw:border-solid cw:mr-2 cw:bg-gray-50 cw:flex-shrink-0">
+                        </div>
+                     {% endif %}
 
                      <div class="cw:w-full cw:pr-10">
-                     
-                        <a href="{{ element.cpEditUrl }}" class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:mb-0.5 cw:truncate">
-                           {{ element.title }}
-                        </a>
+
+                        {% if element %}
+                           <a href="{{ element.cpEditUrl }}" class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:mb-0.5 cw:truncate">
+                              {{ element.title }}
+                           </a>
+                        {% else %}
+                           <span class="cw:max-w-[90%] cw:inline-block cw:font-semibold cw:mb-0.5 cw:truncate cw:text-gray-400">
+                              Deleted Product
+                           </span>
+                        {% endif %}
 
                         <div class="cw:w-full">
                            {% include 'commerce-widgets/_includes/sku' with {
-                              sku: product.sku
+                              sku: product.sku|default('--')
                            } only %}
                         </div>
 
@@ -35,19 +62,27 @@
                   </div>
 
                   <div class="cw:pl-4">
-                     {% include 'commerce-widgets/_includes/statistic' with { 
+                     {% include 'commerce-widgets/_includes/statistic' with {
                         statistic: product.totalOrdered|number_format(),
                         statisticSecondary: product.totalRevenue|currency(commerce.currency),
-                        changeIndicator: '5%',
-                        changeDirection: 'down',
+                        statisticSecondaryTooltip: 'Total revenue for this product across all orders',
+                        changeIndicator: product.changeIndicator|default(null),
+                        changeDirection: product.changeDirection|default('neutral'),
+                        changeTooltip: changeTooltip,
                         padding: false,
                         border: false,
                         style: 'small'
                      } only %}
-                  </div> 
+                  </div>
 
                </div>
-                
+
+            </div>
+
+         {% else %}
+
+            <div class="cw:px-6 cw:text-gray-400 cw:text-sm">
+               No products found.
             </div>
 
          {% endfor %}
@@ -59,10 +94,6 @@
          {
             text: 'View All Products',
             url: '/' ~ cpTrigger ~ '/commerce/products'
-         },
-         {
-            text: 'Export',
-            url: '/' ~ cpTrigger ~ '/commerce/export'
          }
       ]
    } only %}

@@ -1,8 +1,18 @@
 <?php
 return array(
     '*' => array(
+        'pluginName' => 'Commerce Widgets',
         'cacheDuration' => 3600,
-        'fiscalYearStart' => 'april',
-        'excludeEmailAddresses' => array()
+        'defaultTargetDuration' => 'yearly',
+        'fiscalYearStartDay' => 1,
+        'fiscalYearStartMonth' => 'april',
+        'fiscalYearEndDay' => 31,
+        'fiscalYearEndMonth' => 'march',
+        'weekStart' => 'monday',
+        'excludeEmailAddresses' => array(),
+        'comparisonMode' => 'full',
+        'enablePages' => false,
+        'defaultPageWidgets' => array(),
+        'mapboxAccessToken' => ''
     )
 );

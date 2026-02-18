@@ -1,5 +1,81 @@
 # Commerce Widgets Changelog
 
+## 5.1.0 - 2026-02-18
+
+> [!IMPORTANT]  
+> This is a major overhal of the plugin, with a complete visual redesign of all widgets (+ New widgets) and a new page system. You may need to save some settings on each widget after updating. I've tried my best to keep these where possible.
+
+> [!NOTE]  
+> CP "Pages" is now possible to create custom pages/subpages full of widgets, as well as still having widgets on the CP dashboard.
+
+### Added
+- *NEW WIDGET* Locations widget - Interactive 3D Mapbox globe showing order/customer locations by country
+- *NEW WIDGET* New vs Returning Customers widget with line chart tracking new and returning customers over time
+- *NEW WIDGET* Conversion Rate widget with funnel visualisation (Added to Cart, Checkout, Completed)
+- *NEW* Custom Pages - create multiple dashboard pages per user with drag-and-drop widget management
+- Comparison Mode setting ("Full Period" or "To Date") for fairer change indicators — "To Date" compares equivalent elapsed portions (e.g. Jan 1–Feb 18 2026 vs Jan 1–Feb 18 2025)
+- "Data last refreshed" timestamp label on custom pages when caching is enabled ([#25](https://github.com/bymayo/craft-commerce-widgets/issues/25))
+- Revenue tooltip on Top Products and Top Customers widgets explaining the total
+- Cancelled and Expired columns on Subscription Plans widget
+- Country flag and location on Top Customers widget
+- Mapbox Access Token plugin setting with environment variable support
+- "Enable Pages" plugin setting to toggle the pages feature
+- User permissions for viewing pages, managing pages, and accessing widgets
+- Fiscal Year option to widget target duration settings
+- Fiscal Year start/end day and month settings for granular fiscal year configuration ([#24](https://github.com/bymayo/craft-commerce-widgets/issues/24))
+- All Time option to widget target duration settings
+- Product Type filter on Recent Products widget with type name in title
+- Order Status filter on Recent Orders widget with status name in title
+- Plugin Name setting
+- Change indicator on Cart Abandonment widget comparing current vs previous period
+- Hover tooltip on change indicators describing the comparison period
+- Improved line graph styling with detailed/minimal options
+
+### Changed
+- Default target duration changed from monthly to yearly
+- Complete visual redesign of all widgets
+- Extracted widget query logic into specific services (Orders, Products, Customers, Carts, Subscriptions)
+- Shared date filtering across all services via `applyDateFilter()`
+- Recent Orders and Recent Products data now fetched in PHP services instead of Twig templates
+- Cart Abandonment widget now respects all target duration settings (daily, weekly, monthly, yearly, fiscal year, all time)
+- Cart Abandonment consolidated into a single `getCartAnalytics()` service call with 2 DB queries instead of 5 separate calls
+- Cart Abandonment only counts inactive carts (per Commerce's `activeCartDuration` setting) for abandoned stats
+- Chart legend hidden in simple graph style
+- Order Status dropdown in Top Products and Recent Orders now uses a standard select field
+- Updated config.php to match all current plugin settings
+- Improved tooltip positioning
+- Updated styling across Top Products and Top Customers widgets
+
+### Improved
+- Extracted fiscal year calculation into shared `getFiscalYearDates()` helper, removing duplication across 5 files
+- Extracted order status select into shared settings component used by Recent Orders and Top Products
+- Line chart JavaScript wrapped in IIFE to prevent global scope pollution with multiple widgets
+- Removed unused bar chart template
+
+### Fixed
+- All date calculations now respect Craft's configured timezone instead of using the server timezone ([#32](https://github.com/bymayo/craft-commerce-widgets/issues/32))
+- PostgreSQL compatibility by replacing MySQL-specific date functions (DATE_FORMAT, YEAR, MONTH, WEEK) with database-agnostic BETWEEN conditions ([#58](https://github.com/bymayo/craft-commerce-widgets/issues/58))
+- Error when adding Top Customers and Top Products widgets ([#69](https://github.com/bymayo/craft-commerce-widgets/issues/69))
+- Settings screen is no longer blank and has settings ([#36](https://github.com/bymayo/craft-commerce-widgets/issues/36))
+- Top customers error ([#31](https://github.com/bymayo/craft-commerce-widgets/issues/31))
+- Top Products & Cart Abandonment Graph trashed elements ([#30](https://github.com/bymayo/craft-commerce-widgets/issues/30))
+- SQL 5.7 error on Top Customers widget ([#29](https://github.com/bymayo/craft-commerce-widgets/issues/29))
+- SQL Error in Subscriptions Widget ([#13](https://github.com/bymayo/craft-commerce-widgets/issues/13))
+- Cart Abandonment direction arrow now reflects actual data direction with inverted colour sentiment (up + red = more abandons, down + green = fewer abandons)
+- Subscription Plans widget only counting active subscriptions, now correctly counts all subscription states
+- Widget refresh and resize behaviour
+- Top Customers widget using `totalPrice` instead of `totalPaid` for revenue calculation
+- Total Revenue & Orders widget filtering by cart creation date instead of payment date
+- Total Revenue & Orders widget missing orders on end-of-period boundaries (week/month)
+- Total Revenue & Orders widget using `totalPrice` instead of `totalPaid` for revenue
+- Total Revenue & Orders widget counting trashed orders in totals
+- Top Products widget returning no results due to MySQL strict GROUP BY mode
+- Cart Abandonment widget not respecting target duration settings
+- Cart Abandonment total price not displaying due to type casting from database
+- Duplicate customers in Top Customers widget caused by grouping on both email and customerId
+- Icon paths in Top Products widget
+- OrderStatus color error when status is null
+
 ## 5.0.1 - 2024-05-30
 ### Changed
 - Icon to a new shiny (literally) icon

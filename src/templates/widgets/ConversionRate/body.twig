@@ -2,98 +2,76 @@
 
 {% block widget %}
 
-  <div class="cw:grid cw:grid-cols-4">
-    <div class="cw:col-span-1 cw:pr-4 cw:border-r! cw:border-gray-200 cw:border-solid">
+  {% set addToCartRate = addToCart.current > 0 ? '100%' : '--' %}
+  {% set checkoutRate = addToCart.current > 0 ? ((checkout.current / addToCart.current) * 100)|round ~ '%' : '--' %}
+  {% set completedRate = addToCart.current > 0 ? ((completed.current / addToCart.current) * 100)|round ~ '%' : '--' %}
 
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
-            heading: 'Sessions',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
-            padding: false,
-            border: false,
-            style: 'small'
-        } only %}
+  {% set barBase = addToCart.current %}
+  {% set addToCartPct = 100 %}
+  {% set checkoutPct = barBase > 0 ? ((checkout.current / barBase) * 100)|round : 0 %}
+  {% set completedPct = barBase > 0 ? ((completed.current / barBase) * 100)|round : 0 %}
+
+  {% set columns = [
+    {
+      heading: 'Added to Cart',
+      statistic: addToCart.current|number_format(),
+      statisticSecondary: addToCartRate,
+      statisticSecondaryTooltip: 'Baseline for conversion rate',
+      changeIndicator: addToCartChange.percentage,
+      changeDirection: addToCartChange.direction,
+      barPct: addToCartPct,
+      nextBarPct: checkoutPct,
+    },
+    {
+      heading: 'Checkout',
+      statistic: checkout.current|number_format(),
+      statisticSecondary: checkoutRate,
+      statisticSecondaryTooltip: 'Conversion rate compared to Added to Cart',
+      changeIndicator: checkoutChange.percentage,
+      changeDirection: checkoutChange.direction,
+      barPct: checkoutPct,
+      nextBarPct: completedPct,
+    },
+    {
+      heading: 'Completed',
+      statistic: completed.current|number_format(),
+      statisticSecondary: completedRate,
+      statisticSecondaryTooltip: 'Conversion rate compared to Added to Cart',
+      changeIndicator: completedChange.percentage,
+      changeDirection: completedChange.direction,
+      barPct: completedPct,
+      nextBarPct: null,
+    },
+  ] %}
+
+  <div class="cw:grid cw:grid-cols-3">
+    {% for column in columns %}
+      <div class="cw:col-span-1 {{ not loop.last ? 'cw:border-r! cw:border-gray-200 cw:border-solid' }}">
+
+        <div class="cw:mb-7 {{ loop.first ? 'cw:pr-4' : (loop.last ? 'cw:pl-4' : 'cw:px-4') }}">
+          {% include 'commerce-widgets/_includes/statistic' with {
+              heading: column.heading,
+              statistic: column.statistic,
+              statisticSecondary: column.statisticSecondary,
+              statisticSecondaryTooltip: column.statisticSecondaryTooltip,
+              changeIndicator: column.changeIndicator,
+              changeDirection: column.changeDirection,
+              changeTooltip: changeTooltip,
+              padding: false,
+              border: false,
+              style: 'small'
+          } only %}
+        </div>
+
+        <div class="cw:h-48 cw:relative">
+          <div class="cw:absolute cw:bottom-0 cw:left-0 cw:z-10 cw:bg-blue-500 {{ loop.last ? 'cw:w-full cw:rounded-tr' : 'cw:w-3/4' }} {{ loop.first ? 'cw:rounded-tl' }}" style="height: {{ column.barPct }}%"></div>
+          {% if column.nextBarPct is not null %}
+            <div class="cw:absolute cw:bottom-0 cw:right-0 cw:w-1/4" style="height: {{ column.barPct }}%; background: linear-gradient(to right, var(--cw-color-blue-300), var(--cw-color-blue-100)); clip-path: polygon(0 0, 100% {{ column.barPct > 0 ? (100 - (column.nextBarPct / column.barPct * 100))|round : 100 }}%, 100% 100%, 0 100%)"></div>
+          {% endif %}
+        </div>
+
       </div>
-
-      {% include 'commerce-widgets/_includes/charts/bar' with {
-        id: 'conversion-sessions'
-      } only %}
-
-    </div>
-    <div class="cw:col-span-1 cw:px-4 cw:border-r! cw:border-gray-200 cw:border-solid">
-
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
-            heading: 'Added to Cart',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
-            padding: false,
-            border: false,
-            style: 'small'
-        } only %}
-      </div>
-
-      {% include 'commerce-widgets/_includes/charts/bar' with {
-        id: 'conversion-added-to-cart'
-      } only %}
-
-    </div>
-    <div class="cw:col-span-1 cw:px-4 cw:border-r! cw:border-gray-200 cw:border-solid">
-
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
-            heading: 'Checkout',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
-            padding: false,
-            border: false,
-            style: 'small'
-        } only %}
-      </div>
-
-      {% include 'commerce-widgets/_includes/charts/bar' with {
-        id: 'conversion-checkout'
-      } only %}
-
-    </div>
-    <div class="cw:col-span-1 cw:pl-4">
-
-      <div class="cw:mb-2">
-        {% include 'commerce-widgets/_includes/statistic' with { 
-            heading: 'Completed',
-            statistic: '120',
-            statisticSecondary: '100%',
-            changeIndicator: '5%',
-            changeDirection: 'down',
-            padding: false,
-            border: false,
-            style: 'small'
-        } only %}
-      </div>
-
-      <div class="cw:mt-auto">
-        {% include 'commerce-widgets/_includes/charts/bar' with {
-          id: 'conversion-statistic'
-        } only %}
-      </div>
-
-    </div>
+    {% endfor %}
   </div>
-
-  {% include 'commerce-widgets/_includes/footer' with {
-    buttons: [
-      {
-        text: 'Export',
-        url: '/' ~ cpTrigger ~ '/commerce/orders'
-      }
-    ]
-  } only %}
 
 {% endblock %}

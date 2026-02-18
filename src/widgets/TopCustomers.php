@@ -6,34 +6,30 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
-use craft\db\Query;
 
-use Exception;
-
-class TopCustomers extends Widget
+class TopCustomers extends BaseWidget
 {
 
     // Public Properties
     // =========================================================================
 
-    public $includeGuests;
-    public $orderBy;
-    public $groupBy; // Remove
-    public $limit;
-    public $targetDuration = 'monthly';
-    public $excludeAdmins;
+    public $includeGuests = 1;
+    public $orderBy = 'totalRevenue';
+    public $groupBy;
+    public $limit = 5;
+    public $targetDuration = 'default';
+    public $excludeAdmins = false;
 
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-        return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Top Customers');
+        return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Top Customers');
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
@@ -42,57 +38,6 @@ class TopCustomers extends Widget
     {
         return null;
     }
-
-    // Custom Public Methods
-    // =========================================================================
-
-    public function getCustomers()
-    {
-
-      try {
-
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'count(*) as totalOrders',
-                  'SUM(orders.totalPrice) as totalRevenue',
-                  'orders.email',
-                  'orders.customerId'
-               ]
-            )
-            ->from(['orders' => '{{%commerce_orders}}'])
-            ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-            ->where(['orders.isCompleted' => 1])
-            ->andWhere(['elements.dateDeleted' => null])
-            ->orderBy($this->orderBy . ' desc')
-            ->groupBy(['orders.email', 'orders.customerId'])
-            ->limit($this->limit);
-
-        if(!empty(CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses)) 
-        {
-            $query->andWhere(['not in', 'orders.email', CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses]);
-        }
-
-         if($this->includeGuests == false)
-         {
-            $query
-               ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
-               ->andWhere(['not', ['customers.userId' => null]]);
-         }
-
-         $command = $query->createCommand();
-         $result = $command->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->queryAll();
-
-         return $result;
-
-      }
-      catch (Exception $e) {
-         $result = [];
-     }
-
-   }
 
     // Public Methods
     // =========================================================================
@@ -104,7 +49,7 @@ class TopCustomers extends Widget
 
     public function getSubtitle(): ?string
     {
-       return date('F Y');
+        return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
     }
 
     public function rules(): array
@@ -144,7 +89,8 @@ class TopCustomers extends Widget
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',
             [
                 'widgetId' => $this->id,
-                'customers' => $this->getCustomers()
+                'customers' => CommerceWidgets::$plugin->customers->getTopCustomers($this->orderBy, (int) $this->limit, (bool) $this->includeGuests, $this->targetDuration, (bool) $this->excludeAdmins),
+                'changeTooltip' => CommerceWidgets::$plugin->helpers->getChangeTooltip($this->targetDuration),
             ]
         );
     }

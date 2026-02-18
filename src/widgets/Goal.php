@@ -6,31 +6,27 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use Craft;
-use craft\base\Widget;
 use craft\helpers\StringHelper;
-use craft\db\Query;
 
-use Exception;
-
-class Goal extends Widget
+class Goal extends BaseWidget
 {
 
     // Public Properties
     // =========================================================================
 
-    public $type;
-    public $targetValue;
-    public $targetDuration;
+    public $type = 'orders';
+    public $targetValue = 15;
+    public $targetDuration = 'default';
 
     // Static Methods
     // =========================================================================
 
     public static function displayName(): string
     {
-      return CommerceWidgets::getInstance()->name . ' - ' . Craft::t('commerce-widgets', 'Goal');
+      return CommerceWidgets::$plugin->helpers->getPluginName() . ' - ' . Craft::t('commerce-widgets', 'Goal');
     }
 
-    public static function iconPath()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@bymayo/commercewidgets/icon-mask.svg");
     }
@@ -45,63 +41,8 @@ class Goal extends Widget
 
     public function getTotals()
     {
-
-      try {
-
-         $query = (
-            new Query()
-            )
-            ->select(
-               [
-                  'COALESCE(count(*), 0) as totalOrders',
-                  'COALESCE(SUM(orders.totalPaid),0) as totalRevenue'
-               ]
-            )
-            ->from(['orders' => '{{%commerce_orders}}'])
-            ->where(
-               [
-                  'orders.isCompleted' => 1,
-               ]
-            );
-
-         switch ($this->targetDuration) {
-            case "weekly":
-               $query
-                  ->where(
-                     [
-                        'WEEK(orders.datePaid, 1)' => date('W'),
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "monthly":
-               $query
-                  ->where(
-                     [
-                        'MONTH(orders.datePaid)' => date('n'),
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-            case "yearly":
-               $query
-                  ->where(
-                     [
-                        'YEAR(orders.datePaid)' => date('Y')
-                     ]
-                  );
-               break;
-         }
-
-         $result = $query->cache(CommerceWidgets::$plugin->getSettings()->cacheDuration)->one();
-
-      }
-      catch (Exception $e) {
-         $result = null;
-      }
-
+      $result = CommerceWidgets::$plugin->orders->getOrderTotals($this->targetDuration);
       return ($this->type === 'orders') ? $result['totalOrders'] : $result['totalRevenue'];
-
    }
 
     // Public Methods
@@ -109,12 +50,14 @@ class Goal extends Widget
 
     public function getTitle(): ?string
     {
-      return StringHelper::titleize($this->targetDuration) . ' ' . StringHelper::titleize($this->type) . ' Goal';
+      $targetDuration = CommerceWidgets::$plugin->helpers->getTargetDuration($this->targetDuration);
+      $durationLabel = ucwords(preg_replace('/([a-z])([A-Z])/', '$1 $2', $targetDuration));
+      return $durationLabel . ' ' . StringHelper::titleize($this->type) . ' Goal';
     }
 
       public function getSubtitle(): ?string
       {
-         return '2025';
+         return CommerceWidgets::$plugin->helpers->getTargetDurationLabel($this->targetDuration);
       }
 
     public function rules(): array
@@ -123,13 +66,12 @@ class Goal extends Widget
 
         $rules = array_merge(
             $rules,
-            $rules,
             [
                 [['type', 'targetDuration'], 'string'],
-                ['targetValue', 'integer'],
+                ['targetValue', 'integer', 'min' => 1],
                 ['type', 'default', 'value' => 'orders'],
                 ['targetValue', 'default', 'value' => 15],
-                ['targetDuration', 'default', 'value' => 'monthly']
+                ['targetDuration', 'default', 'value' => 'default']
             ]
         );
 
@@ -148,6 +90,7 @@ class Goal extends Widget
 
     public function getBodyHtml(): ?string
     {
+        Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
 
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/widgets/' . StringHelper::basename(get_class($this)) . '/body',

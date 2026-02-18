@@ -1,26 +1,97 @@
-{% import "_includes/forms" as forms %}
+{% extends '_layouts/cp' %}
 
-{{
-   forms.textField(
-      {
-         label: 'Cache Duration',
-         id: 'cacheDuration',
-         name: 'cacheDuration',
-         instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
-         value: settings.cacheDuration
-      }
-   )
-}}
+{% import '_includes/forms' as forms %}
 
-{{
-   forms.selectField(
-      {
-         label: 'Fiscal Year Start',
-         id: 'fiscalYearStart',
-         name: 'fiscalYearStart',
-         instructions: 'When your financial/tax year starts.',
-         value: settings.fiscalYearStart,
-         options: [
+{% set fullPageForm = true %}
+
+{% set title = 'Commerce Widgets Settings' %}
+
+{% set tabs = {
+    general: {
+        label: 'General',
+        url: '#general'
+    },
+    date: {
+        label: 'Dates',
+        url: '#dates'
+    },
+    pages: {
+        label: 'Pages',
+        url: '#pages'
+    }
+} %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="plugins/save-plugin-settings">
+    <input type="hidden" name="pluginHandle" value="commerce-widgets">
+    {{ csrfInput() }}
+
+    <div id="general">
+
+        {{ forms.textField({
+            first: true,
+            label: 'Plugin Name',
+            id: 'pluginName',
+            name: 'settings[pluginName]',
+            value: settings.pluginName
+        }) }}
+
+        {{ forms.textField({
+            label: 'Cache Duration',
+            id: 'cacheDuration',
+            name: 'settings[cacheDuration]',
+            instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
+            value: settings.cacheDuration
+        }) }}
+
+        {{ forms.textareaField({
+            label: 'Exclude Email Addresses',
+            id: 'excludeEmailAddresses',
+            name: 'settings[excludeEmailAddresses]',
+            instructions: 'Email addresses to exclude across all widgets (one per line). Useful for excluding test or admin accounts.',
+            value: settings.excludeEmailAddresses | join('\n'),
+            rows: 4
+        }) }}
+
+        <hr>
+
+        {{ forms.autosuggestField({
+            label: 'Mapbox Access Token',
+            id: 'mapboxAccessToken',
+            name: 'settings[mapboxAccessToken]',
+            instructions: 'Required for the Locations widget map. Get a token from <a href="https://account.mapbox.com/access-tokens/" target="_blank">mapbox.com</a>.',
+            value: settings.mapboxAccessToken,
+            suggestEnvVars: true
+        }) }}
+
+    </div>
+
+    <div id="dates" class="hidden">
+
+        {{ forms.selectField({
+            first: true,
+            label: 'Default Target Duration',
+            id: 'defaultTargetDuration',
+            name: 'settings[defaultTargetDuration]',
+            instructions: 'The default target duration used by widgets when set to "Plugin Default".',
+            value: settings.defaultTargetDuration,
+            options: [
+                { label: 'Daily', value: 'daily' },
+                { label: 'Weekly', value: 'weekly' },
+                { label: 'Monthly', value: 'monthly' },
+                { label: 'Yearly', value: 'yearly' },
+                { label: 'Fiscal Year', value: 'fiscalYear' },
+                { label: 'All Time', value: 'allTime' }
+            ]
+        }) }}
+
+        {% set dayOptions = [] %}
+        {% for d in 1..31 %}
+            {% set dayOptions = dayOptions|merge([{ label: d, value: d }]) %}
+        {% endfor %}
+
+        {% set monthOptions = [
             { label: 'January', value: 'january' },
             { label: 'February', value: 'february' },
             { label: 'March', value: 'march' },
@@ -33,20 +104,102 @@
             { label: 'October', value: 'october' },
             { label: 'November', value: 'november' },
             { label: 'December', value: 'december' }
-         ]
-      }
-   )
-}}
+        ] %}
 
-{{
-   forms.textareaField(
-      {
-         label: 'Exclude Email Addresses',
-         id: 'excludeEmailAddresses',
-         name: 'excludeEmailAddresses',
-         instructions: 'Email addresses to exclude across all widgets (one per line). Useful for excluding test or admin accounts.',
-         value: settings.excludeEmailAddresses | join('\n'),
-         rows: 4
-      }
-   )
-}}
+        <div class="field">
+            <div class="heading">
+                <label>Fiscal Year Start</label>
+                <div class="instructions"><p>The day and month your financial/tax year starts.</p></div>
+            </div>
+            <div class="input" style="display: flex; gap: 8px;">
+                <div class="select">
+                    <select name="settings[fiscalYearStartDay]">
+                        {% for opt in dayOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearStartDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="select">
+                    <select name="settings[fiscalYearStartMonth]">
+                        {% for opt in monthOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearStartMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label>Fiscal Year End</label>
+                <div class="instructions"><p>The day and month your financial/tax year ends.</p></div>
+            </div>
+            <div class="input" style="display: flex; gap: 8px;">
+                <div class="select">
+                    <select name="settings[fiscalYearEndDay]">
+                        {% for opt in dayOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearEndDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="select">
+                    <select name="settings[fiscalYearEndMonth]">
+                        {% for opt in monthOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearEndMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        {{ forms.selectField({
+            label: 'Week Start',
+            id: 'weekStart',
+            name: 'settings[weekStart]',
+            value: settings.weekStart,
+            options: [
+                { label: 'Monday', value: 'monday' },
+                { label: 'Tuesday', value: 'tuesday' },
+                { label: 'Wednesday', value: 'wednesday' },
+                { label: 'Thursday', value: 'thursday' },
+                { label: 'Friday', value: 'friday' },
+                { label: 'Saturday', value: 'saturday' },
+                { label: 'Sunday', value: 'sunday' }
+            ]
+        }) }}
+
+        {{ forms.selectField({
+            label: 'Comparison Mode',
+            id: 'comparisonMode',
+            name: 'settings[comparisonMode]',
+            value: settings.comparisonMode,
+            options: [
+                { label: 'Full Period', value: 'full' },
+                { label: 'To Date', value: 'toDate' }
+            ]
+        }) }}
+
+    </div>
+
+    <div id="pages" class="hidden">
+
+        {{ forms.lightswitchField({
+            first: true,
+            label: 'Enable Pages',
+            id: 'enablePages',
+            name: 'settings[enablePages]',
+            instructions: 'Allow users to add pages to the sidebar navigation.',
+            on: settings.enablePages
+        }) }}
+
+        {{ forms.checkboxGroupField({
+            label: 'Default Page Widgets',
+            name: 'settings[defaultPageWidgets]',
+            instructions: 'Choose which widgets appear on the default Overview page for new users.',
+            options: availableWidgetTypes|map(t => { label: t.name, value: t.class|split('\\')|last }),
+            values: settings.defaultPageWidgets
+        }) }}
+
+    </div>
+
+{% endblock %}
