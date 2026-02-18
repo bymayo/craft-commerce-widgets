@@ -9,14 +9,12 @@ use bymayo\commercewidgets\services\Products;
 use bymayo\commercewidgets\services\Carts;
 use bymayo\commercewidgets\services\Subscriptions;
 use bymayo\commercewidgets\services\Pages;
-use bymayo\commercewidgets\variables\CommerceWidgetsVariable;
 use bymayo\commercewidgets\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
-use craft\web\twig\variables\CraftVariable;
 use craft\services\Dashboard;
 use craft\events\RegisterComponentTypesEvent;
 use craft\web\UrlManager;
@@ -86,16 +84,6 @@ class CommerceWidgets extends Plugin
             $event->types[] = \bymayo\commercewidgets\widgets\NewVsReturningCustomers::class;
             $event->types[] = \bymayo\commercewidgets\widgets\OrdersMap::class;
 
-            }
-        );
-
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            function (Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('commercewidgets', CommerceWidgetsVariable::class);
             }
         );
 
