@@ -9,7 +9,7 @@ Commerce Widgets is a Craft CMS plugin that gives you insightful dashboard widge
 ## Features
 
 - 11 widgets covering revenue, orders, customers, products, carts, subscriptions and more
-- Custom dashboard pages with drag-and-drop widget management per user
+- Custom pages with drag-and-drop widget management per user
 - Change indicators comparing current vs previous periods with "To Date" mode
 - Configurable caching for performance on large stores
 - Granular user permissions for widget access and page management
