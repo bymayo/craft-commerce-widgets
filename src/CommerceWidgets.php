@@ -196,7 +196,10 @@ class CommerceWidgets extends Plugin
     {
         return Craft::$app->getView()->renderTemplate(
             'commerce-widgets/_settings',
-            ['settings' => $this->getSettings()]
+            [
+                'settings' => $this->getSettings(),
+                'availableWidgetTypes' => self::$plugin->pages->getAvailableWidgetTypes(),
+            ]
         );
     }
 

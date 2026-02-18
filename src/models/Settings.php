@@ -21,7 +21,8 @@ class Settings extends Model
     public $fiscalYearEndMonth = 'march';
     public $weekStart = 'monday';
     public $excludeEmailAddresses = array();
-    public $enablePages = true;
+    public $enablePages = false;
+    public $defaultPageWidgets = [];
     public $mapboxAccessToken = '';
 
     // Public Methods
@@ -50,6 +51,7 @@ class Settings extends Model
             [['weekStart'], 'string'],
             [['excludeEmailAddresses'], 'safe'],
             [['enablePages'], 'boolean'],
+            [['defaultPageWidgets'], 'safe'],
             [['mapboxAccessToken'], 'string']
         ];
     }

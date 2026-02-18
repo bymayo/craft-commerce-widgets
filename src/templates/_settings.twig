@@ -13,6 +13,18 @@
 }}
 
 {{
+   forms.checkboxGroupField(
+      {
+         label: 'Default Page Widgets',
+         name: 'defaultPageWidgets',
+         instructions: 'Choose which widgets appear on the default Overview page for new users.',
+         options: availableWidgetTypes|map(t => { label: t.name, value: t.class|split('\\')|last }),
+         values: settings.defaultPageWidgets
+      }
+   )
+}}
+
+{{
    forms.textField(
       {
          label: 'Plugin Name',

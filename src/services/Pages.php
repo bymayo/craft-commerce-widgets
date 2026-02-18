@@ -210,9 +210,19 @@ class Pages extends Component
 
     public function seedDefaultWidgets(int $userId, int $pageId): void
     {
-        $this->addWidget($userId, \bymayo\commercewidgets\widgets\TotalRevenueOrders::class, 2, [], $pageId);
-        $this->addWidget($userId, \bymayo\commercewidgets\widgets\OrdersRecent::class, 1, [], $pageId);
-        $this->addWidget($userId, \bymayo\commercewidgets\widgets\TopCustomers::class, 1, [], $pageId);
+        $settings = CommerceWidgets::$plugin->getSettings();
+        $widgetClasses = $settings->defaultPageWidgets;
+
+        if (empty($widgetClasses)) {
+            return;
+        }
+
+        foreach ($widgetClasses as $className) {
+            $fullClass = 'bymayo\\commercewidgets\\widgets\\' . $className;
+            if (class_exists($fullClass) && is_subclass_of($fullClass, BaseWidget::class)) {
+                $this->addWidget($userId, $fullClass, 1, [], $pageId);
+            }
+        }
     }
 
 }

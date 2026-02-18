@@ -62,6 +62,7 @@
 - Removed unused bar chart template
 
 ### Fixed
+- Error when adding Top Customers and Top Products widgets
 - Subscription Plans widget only counting active subscriptions, now correctly counts all subscription states
 - Responsive layout issues on widgets
 - Widget refresh and resize behaviour

@@ -10,7 +10,8 @@ return array(
         'fiscalYearEndMonth' => 'march',
         'weekStart' => 'monday',
         'excludeEmailAddresses' => array(),
-        'enablePages' => true,
+        'enablePages' => false,
+        'defaultPageWidgets' => array(),
         'mapboxAccessToken' => ''
     )
 );
