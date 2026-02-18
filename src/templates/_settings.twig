@@ -1,180 +1,194 @@
-{% import "_includes/forms" as forms %}
+{% extends '_layouts/cp' %}
 
-{{
-   forms.lightswitchField(
-      {
-         label: 'Enable Pages',
-         id: 'enablePages',
-         name: 'enablePages',
-         instructions: 'Allow users to add pages to the sidebar navigation.',
-         on: settings.enablePages
-      }
-   )
-}}
+{% import '_includes/forms' as forms %}
 
-{{
-   forms.checkboxGroupField(
-      {
-         label: 'Default Page Widgets',
-         name: 'defaultPageWidgets',
-         instructions: 'Choose which widgets appear on the default Overview page for new users.',
-         options: availableWidgetTypes|map(t => { label: t.name, value: t.class|split('\\')|last }),
-         values: settings.defaultPageWidgets
-      }
-   )
-}}
+{% set fullPageForm = true %}
 
-{{
-   forms.textField(
-      {
-         label: 'Plugin Name',
-         id: 'pluginName',
-         name: 'pluginName',
-         value: settings.pluginName
-      }
-   )
-}}
+{% set title = 'Commerce Widgets Settings' %}
 
-{{
-   forms.textField(
-      {
-         label: 'Cache Duration',
-         id: 'cacheDuration',
-         name: 'cacheDuration',
-         instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
-         value: settings.cacheDuration
-      }
-   )
-}}
+{% set tabs = {
+    general: {
+        label: 'General',
+        url: '#general'
+    },
+    date: {
+        label: 'Dates',
+        url: '#dates'
+    },
+    pages: {
+        label: 'Pages',
+        url: '#pages'
+    }
+} %}
 
-{{
-   forms.selectField(
-      {
-         label: 'Default Target Duration',
-         id: 'defaultTargetDuration',
-         name: 'defaultTargetDuration',
-         instructions: 'The default target duration used by widgets when set to "Plugin Default".',
-         value: settings.defaultTargetDuration,
-         options: [
-            { label: 'Daily', value: 'daily' },
-            { label: 'Weekly', value: 'weekly' },
-            { label: 'Monthly', value: 'monthly' },
-            { label: 'Yearly', value: 'yearly' },
-            { label: 'Fiscal Year', value: 'fiscalYear' },
-            { label: 'All Time', value: 'allTime' }
-         ]
-      }
-   )
-}}
+{% block content %}
 
-{% set dayOptions = [] %}
-{% for d in 1..31 %}
-   {% set dayOptions = dayOptions|merge([{ label: d, value: d }]) %}
-{% endfor %}
+    <input type="hidden" name="action" value="plugins/save-plugin-settings">
+    <input type="hidden" name="pluginHandle" value="commerce-widgets">
+    {{ csrfInput() }}
 
-{% set monthOptions = [
-   { label: 'January', value: 'january' },
-   { label: 'February', value: 'february' },
-   { label: 'March', value: 'march' },
-   { label: 'April', value: 'april' },
-   { label: 'May', value: 'may' },
-   { label: 'June', value: 'june' },
-   { label: 'July', value: 'july' },
-   { label: 'August', value: 'august' },
-   { label: 'September', value: 'september' },
-   { label: 'October', value: 'october' },
-   { label: 'November', value: 'november' },
-   { label: 'December', value: 'december' }
-] %}
+    <div id="general">
 
-<div class="field">
-   <div class="heading">
-      <label>Fiscal Year Start</label>
-      <div class="instructions"><p>The day and month your financial/tax year starts.</p></div>
-   </div>
-   <div class="input" style="display: flex; gap: 8px;">
-      <div class="select">
-         <select name="fiscalYearStartDay">
-            {% for opt in dayOptions %}
-               <option value="{{ opt.value }}"{{ settings.fiscalYearStartDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
-            {% endfor %}
-         </select>
-      </div>
-      <div class="select">
-         <select name="fiscalYearStartMonth">
-            {% for opt in monthOptions %}
-               <option value="{{ opt.value }}"{{ settings.fiscalYearStartMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
-            {% endfor %}
-         </select>
-      </div>
-   </div>
-</div>
+        {{ forms.textField({
+            first: true,
+            label: 'Plugin Name',
+            id: 'pluginName',
+            name: 'settings[pluginName]',
+            value: settings.pluginName
+        }) }}
 
-<div class="field">
-   <div class="heading">
-      <label>Fiscal Year End</label>
-      <div class="instructions"><p>The day and month your financial/tax year ends.</p></div>
-   </div>
-   <div class="input" style="display: flex; gap: 8px;">
-      <div class="select">
-         <select name="fiscalYearEndDay">
-            {% for opt in dayOptions %}
-               <option value="{{ opt.value }}"{{ settings.fiscalYearEndDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
-            {% endfor %}
-         </select>
-      </div>
-      <div class="select">
-         <select name="fiscalYearEndMonth">
-            {% for opt in monthOptions %}
-               <option value="{{ opt.value }}"{{ settings.fiscalYearEndMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
-            {% endfor %}
-         </select>
-      </div>
-   </div>
-</div>
+        {{ forms.textField({
+            label: 'Cache Duration',
+            id: 'cacheDuration',
+            name: 'settings[cacheDuration]',
+            instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
+            value: settings.cacheDuration
+        }) }}
 
-{{
-   forms.selectField(
-      {
-         label: 'Week Start',
-         id: 'weekStart',
-         name: 'weekStart',
-         value: settings.weekStart,
-         options: [
-            { label: 'Monday', value: 'monday' },
-            { label: 'Tuesday', value: 'tuesday' },
-            { label: 'Wednesday', value: 'wednesday' },
-            { label: 'Thursday', value: 'thursday' },
-            { label: 'Friday', value: 'friday' },
-            { label: 'Saturday', value: 'saturday' },
-            { label: 'Sunday', value: 'sunday' }
-         ]
-      }
-   )
-}}
+        {{ forms.textareaField({
+            label: 'Exclude Email Addresses',
+            id: 'excludeEmailAddresses',
+            name: 'settings[excludeEmailAddresses]',
+            instructions: 'Email addresses to exclude across all widgets (one per line). Useful for excluding test or admin accounts.',
+            value: settings.excludeEmailAddresses | join('\n'),
+            rows: 4
+        }) }}
 
-{{
-   forms.textareaField(
-      {
-         label: 'Exclude Email Addresses',
-         id: 'excludeEmailAddresses',
-         name: 'excludeEmailAddresses',
-         instructions: 'Email addresses to exclude across all widgets (one per line). Useful for excluding test or admin accounts.',
-         value: settings.excludeEmailAddresses | join('\n'),
-         rows: 4
-      }
-   )
-}}
+        <hr>
 
-{{
-   forms.autosuggestField(
-      {
-         label: 'Mapbox Access Token',
-         id: 'mapboxAccessToken',
-         name: 'mapboxAccessToken',
-         instructions: 'Required for the Locations widget map. Get a token from <a href="https://account.mapbox.com/access-tokens/" target="_blank">mapbox.com</a>.',
-         value: settings.mapboxAccessToken,
-         suggestEnvVars: true
-      }
-   )
-}}
+        {{ forms.autosuggestField({
+            label: 'Mapbox Access Token',
+            id: 'mapboxAccessToken',
+            name: 'settings[mapboxAccessToken]',
+            instructions: 'Required for the Locations widget map. Get a token from <a href="https://account.mapbox.com/access-tokens/" target="_blank">mapbox.com</a>.',
+            value: settings.mapboxAccessToken,
+            suggestEnvVars: true
+        }) }}
+
+    </div>
+
+    <div id="dates" class="hidden">
+
+        {{ forms.selectField({
+            first: true,
+            label: 'Default Target Duration',
+            id: 'defaultTargetDuration',
+            name: 'settings[defaultTargetDuration]',
+            instructions: 'The default target duration used by widgets when set to "Plugin Default".',
+            value: settings.defaultTargetDuration,
+            options: [
+                { label: 'Daily', value: 'daily' },
+                { label: 'Weekly', value: 'weekly' },
+                { label: 'Monthly', value: 'monthly' },
+                { label: 'Yearly', value: 'yearly' },
+                { label: 'Fiscal Year', value: 'fiscalYear' },
+                { label: 'All Time', value: 'allTime' }
+            ]
+        }) }}
+
+        {% set dayOptions = [] %}
+        {% for d in 1..31 %}
+            {% set dayOptions = dayOptions|merge([{ label: d, value: d }]) %}
+        {% endfor %}
+
+        {% set monthOptions = [
+            { label: 'January', value: 'january' },
+            { label: 'February', value: 'february' },
+            { label: 'March', value: 'march' },
+            { label: 'April', value: 'april' },
+            { label: 'May', value: 'may' },
+            { label: 'June', value: 'june' },
+            { label: 'July', value: 'july' },
+            { label: 'August', value: 'august' },
+            { label: 'September', value: 'september' },
+            { label: 'October', value: 'october' },
+            { label: 'November', value: 'november' },
+            { label: 'December', value: 'december' }
+        ] %}
+
+        <div class="field">
+            <div class="heading">
+                <label>Fiscal Year Start</label>
+                <div class="instructions"><p>The day and month your financial/tax year starts.</p></div>
+            </div>
+            <div class="input" style="display: flex; gap: 8px;">
+                <div class="select">
+                    <select name="settings[fiscalYearStartDay]">
+                        {% for opt in dayOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearStartDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="select">
+                    <select name="settings[fiscalYearStartMonth]">
+                        {% for opt in monthOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearStartMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label>Fiscal Year End</label>
+                <div class="instructions"><p>The day and month your financial/tax year ends.</p></div>
+            </div>
+            <div class="input" style="display: flex; gap: 8px;">
+                <div class="select">
+                    <select name="settings[fiscalYearEndDay]">
+                        {% for opt in dayOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearEndDay == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="select">
+                    <select name="settings[fiscalYearEndMonth]">
+                        {% for opt in monthOptions %}
+                            <option value="{{ opt.value }}"{{ settings.fiscalYearEndMonth == opt.value ? ' selected' }}>{{ opt.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        {{ forms.selectField({
+            label: 'Week Start',
+            id: 'weekStart',
+            name: 'settings[weekStart]',
+            value: settings.weekStart,
+            options: [
+                { label: 'Monday', value: 'monday' },
+                { label: 'Tuesday', value: 'tuesday' },
+                { label: 'Wednesday', value: 'wednesday' },
+                { label: 'Thursday', value: 'thursday' },
+                { label: 'Friday', value: 'friday' },
+                { label: 'Saturday', value: 'saturday' },
+                { label: 'Sunday', value: 'sunday' }
+            ]
+        }) }}
+
+    </div>
+
+    <div id="pages" class="hidden">
+
+        {{ forms.lightswitchField({
+            first: true,
+            label: 'Enable Pages',
+            id: 'enablePages',
+            name: 'settings[enablePages]',
+            instructions: 'Allow users to add pages to the sidebar navigation.',
+            on: settings.enablePages
+        }) }}
+
+        {{ forms.checkboxGroupField({
+            label: 'Default Page Widgets',
+            name: 'settings[defaultPageWidgets]',
+            instructions: 'Choose which widgets appear on the default Overview page for new users.',
+            options: availableWidgetTypes|map(t => { label: t.name, value: t.class|split('\\')|last }),
+            values: settings.defaultPageWidgets
+        }) }}
+
+    </div>
+
+{% endblock %}

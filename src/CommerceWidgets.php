@@ -192,9 +192,9 @@ class CommerceWidgets extends Plugin
         return new Settings();
     }
 
-    protected function settingsHtml(): ?string
+    public function getSettingsResponse(): mixed
     {
-        return Craft::$app->getView()->renderTemplate(
+        return Craft::$app->controller->renderTemplate(
             'commerce-widgets/_settings',
             [
                 'settings' => $this->getSettings(),
