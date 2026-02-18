@@ -1,5 +1,14 @@
 # Commerce Widgets Changelog
 
+## 5.1.1 - 2026-02-18
+
+### Improved
+- Removed unused code, imports, and dead methods across the plugin
+- Widgets now gracefully handle unknown saved properties instead of throwing errors
+
+### Fixed
+- Migration to remove deprecated `groupBy` setting from saved Top Customers widgets
+
 ## 5.1.0 - 2026-02-18
 
 > [!IMPORTANT]  

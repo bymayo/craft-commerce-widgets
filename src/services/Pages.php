@@ -130,14 +130,6 @@ class Pages extends Component
             ->all();
     }
 
-    public function getWidgetsForUser(int $userId): array
-    {
-        return Widget::find()
-            ->where(['userId' => $userId])
-            ->orderBy(['sortOrder' => SORT_ASC])
-            ->all();
-    }
-
     public function addWidget(int $userId, string $type, int $colspan = 1, array $settings = [], ?int $pageId = null): Widget
     {
         $maxSort = Widget::find()

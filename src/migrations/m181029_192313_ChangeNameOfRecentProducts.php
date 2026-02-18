@@ -2,9 +2,7 @@
 
 namespace bymayo\commercewidgets\migrations;
 
-use Craft;
 use craft\db\Migration;
-use craft\db\Query;
 
 class m181029_192313_ChangeNameOfRecentProducts extends Migration
 {

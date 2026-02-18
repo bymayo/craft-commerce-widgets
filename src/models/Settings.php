@@ -2,9 +2,6 @@
 
 namespace bymayo\commercewidgets\models;
 
-use bymayo\commercewidgets\CommerceWidgets;
-
-use Craft;
 use craft\base\Model;
 
 class Settings extends Model

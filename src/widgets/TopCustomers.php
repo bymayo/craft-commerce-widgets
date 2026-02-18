@@ -16,7 +16,6 @@ class TopCustomers extends BaseWidget
 
     public $includeGuests = 1;
     public $orderBy = 'totalRevenue';
-    public $groupBy;
     public $limit = 5;
     public $targetDuration = 'default';
     public $excludeAdmins = false;

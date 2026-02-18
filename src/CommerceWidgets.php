@@ -13,8 +13,6 @@ use bymayo\commercewidgets\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\services\Dashboard;
 use craft\events\RegisterComponentTypesEvent;
 use craft\web\UrlManager;
@@ -36,7 +34,7 @@ class CommerceWidgets extends Plugin
     // Public Properties
     // =========================================================================
 
-    public string $schemaVersion = '4.2.0';
+    public string $schemaVersion = '5.1.1';
     public bool $hasCpSettings = true;
     public bool $hasCpSection = true;
 
@@ -84,15 +82,6 @@ class CommerceWidgets extends Plugin
             $event->types[] = \bymayo\commercewidgets\widgets\NewVsReturningCustomers::class;
             $event->types[] = \bymayo\commercewidgets\widgets\OrdersMap::class;
 
-            }
-        );
-
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                }
             }
         );
 

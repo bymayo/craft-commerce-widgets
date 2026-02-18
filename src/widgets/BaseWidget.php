@@ -7,6 +7,14 @@ use craft\base\Widget;
 
 abstract class BaseWidget extends Widget
 {
+    public function __set($name, $value)
+    {
+        try {
+            parent::__set($name, $value);
+        } catch (\yii\base\UnknownPropertyException) {
+        }
+    }
+
     public static function isSelectable(): bool
     {
         $user = Craft::$app->getUser()->getIdentity();
