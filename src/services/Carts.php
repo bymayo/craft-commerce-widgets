@@ -241,17 +241,10 @@ class Carts extends Component
                     $result['completedChart'][$previousIdx]
                 );
 
-                // Invert direction for abandoned: decrease = good (up/green), increase = bad (down/red)
-                $abandonedChange = CommerceWidgets::$plugin->helpers->calculateChange(
+                $result['abandonedChange'] = CommerceWidgets::$plugin->helpers->calculateChange(
                     $result['abandonedChart'][$currentIdx],
                     $result['abandonedChart'][$previousIdx]
                 );
-                if ($abandonedChange['direction'] === 'up') {
-                    $abandonedChange['direction'] = 'down';
-                } elseif ($abandonedChange['direction'] === 'down') {
-                    $abandonedChange['direction'] = 'up';
-                }
-                $result['abandonedChange'] = $abandonedChange;
             }
 
         }

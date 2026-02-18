@@ -1,6 +1,7 @@
 {% set padding = padding ?? true %}
 {% set border = border ?? true %}
 {% set style = style ?? 'base' %}
+{% set invertSentiment = invertSentiment ?? false %}
 
 <div class="cw:text-lg cw:space-y-0.5 {{ padding ? 'cw:p-3' }} {{ border ? 'cw:border-1! cw:border-solid cw:border-gray-300 cw:rounded-md' }}">
     {% if heading is defined and heading|length %}
@@ -11,7 +12,9 @@
     <div class="cw:w-auto">
         <span class="cw:font-semibold {{ style == 'small' ? 'cw:text-xl' : 'cw:text-2xl' }}">{{ statistic }}</span>
         {% if changeIndicator is defined and changeIndicator is not null %}
-            <span class="cw:text-xs cw:cursor-help {% if changeDirection is defined and changeDirection == 'up' %}cw:text-green-600{% elseif changeDirection is defined and changeDirection == 'down' %}cw:text-red-600{% else %}cw:text-[var(--disabled-color)]{% endif %}" {% if changeTooltip is defined %}title="{{ changeTooltip }}"{% endif %}>
+            {% set positiveColor = invertSentiment ? 'cw:text-red-600' : 'cw:text-green-600' %}
+            {% set negativeColor = invertSentiment ? 'cw:text-green-600' : 'cw:text-red-600' %}
+            <span class="cw:text-xs cw:cursor-help {% if changeDirection is defined and changeDirection == 'up' %}{{ positiveColor }}{% elseif changeDirection is defined and changeDirection == 'down' %}{{ negativeColor }}{% else %}cw:text-[var(--disabled-color)]{% endif %}" {% if changeTooltip is defined %}title="{{ changeTooltip }}"{% endif %}>
                 {% if changeDirection is defined and changeDirection == 'up' %}↗{% elseif changeDirection is defined and changeDirection == 'down' %}↘{% else %}→{% endif %} {{ changeIndicator }}
             </span>
         {% endif %}
