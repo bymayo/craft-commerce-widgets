@@ -108,6 +108,10 @@ The Locations widget requires a Mapbox access token to display the interactive 3
 
 The field supports environment variables (e.g. `$MAPBOX_ACCESS_TOKEN`).
 
+### Clearing Caches
+
+Widget data is cached based on the `cacheDuration` setting (default: 1 hour). To see fresh data immediately, go to **Utilities > Caches** in the control panel and clear **Commerce Widgets data**. The "Data last refreshed" timestamp at the bottom of custom pages shows when the cache was last rebuilt.
+
 ### Purge Inactive Carts Duration
 
 The Cart Abandonment widget chart displays data for the previous N periods (configured via the "Previous Amount" widget setting). Craft Commerce purges inactive carts after 3 months by default, which can cause missing data on the chart. It's recommended to increase the [`purgeInactiveCartsDuration`](https://craftcms.com/docs/commerce/5.x/system/orders.html#purging-inactive-carts) setting to cover at least as many periods as your widget displays (e.g. `P1Y` for yearly, `P6M` for monthly with 6 previous amounts).
