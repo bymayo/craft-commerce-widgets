@@ -30,85 +30,95 @@ class Carts extends Component
     {
         $targetDuration = CommerceWidgets::$plugin->helpers->getTargetDuration($targetDuration);
         $settings = CommerceWidgets::$plugin->getSettings();
+        $helpers = CommerceWidgets::$plugin->helpers;
+        $now = $helpers->craftNow();
         $periods = [];
 
         switch ($targetDuration) {
             case 'daily':
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
-                    $date = strtotime("-$i days");
+                    $day = (clone $now)->modify("-$i days");
+                    $start = (clone $day)->setTime(0, 0, 0);
+                    $end = (clone $day)->setTime(23, 59, 59);
                     $periods[] = [
-                        'label' => date('D j', $date),
-                        'start' => date('Y-m-d', $date),
-                        'end' => date('Y-m-d', $date),
+                        'label' => $day->format('D j'),
+                        'start' => $helpers->toUtc($start),
+                        'end' => $helpers->toUtc($end),
                     ];
                 }
                 break;
 
             case 'weekly':
                 $weekStart = $settings->weekStart ?? 'monday';
+                $tomorrow = (clone $now)->modify('+1 day');
+                $thisWeekStart = (clone $tomorrow)->modify("last $weekStart");
+
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
-                    $start = strtotime("last $weekStart -" . ($i - 1) . " weeks");
-                    if ($i === 0) {
-                        $start = strtotime("last $weekStart", strtotime('tomorrow'));
-                    }
-                    $end = strtotime('+6 days', $start);
+                    $start = (clone $thisWeekStart)->modify("-$i weeks")->setTime(0, 0, 0);
+                    $end = (clone $start)->modify('+6 days')->setTime(23, 59, 59);
                     $periods[] = [
-                        'label' => date('j M', $start),
-                        'start' => date('Y-m-d', $start),
-                        'end' => date('Y-m-d', $end),
+                        'label' => $start->format('j M'),
+                        'start' => $helpers->toUtc($start),
+                        'end' => $helpers->toUtc($end),
                     ];
                 }
                 break;
 
             case 'monthly':
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
-                    $date = strtotime("-$i months");
-                    $label = date('M', $date);
-                    if (date('Y', $date) !== date('Y')) {
-                        $label .= " '" . date('y', $date);
+                    $month = (clone $now)->modify("-$i months");
+                    $start = (clone $month)->modify('first day of this month')->setTime(0, 0, 0);
+                    $end = (clone $month)->modify('last day of this month')->setTime(23, 59, 59);
+                    $label = $month->format('M');
+                    if ($month->format('Y') !== $now->format('Y')) {
+                        $label .= " '" . $month->format('y');
                     }
                     $periods[] = [
                         'label' => $label,
-                        'start' => date('Y-m-01', $date),
-                        'end' => date('Y-m-t', $date),
+                        'start' => $helpers->toUtc($start),
+                        'end' => $helpers->toUtc($end),
                     ];
                 }
                 break;
 
             case 'yearly':
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
-                    $year = (int) date('Y') - $i;
+                    $year = (int) $now->format('Y') - $i;
+                    $start = $helpers->craftDate("first day of january $year")->setTime(0, 0, 0);
+                    $end = $helpers->craftDate("last day of december $year")->setTime(23, 59, 59);
                     $periods[] = [
                         'label' => (string) $year,
-                        'start' => "$year-01-01",
-                        'end' => "$year-12-31",
+                        'start' => $helpers->toUtc($start),
+                        'end' => $helpers->toUtc($end),
                     ];
                 }
                 break;
 
             case 'fiscalYear':
-                $fiscal = CommerceWidgets::$plugin->helpers->getFiscalYearDates();
+                $fiscal = $helpers->getFiscalYearDates();
 
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
                     $sYear = $fiscal['startYear'] - $i;
                     $eYear = $sYear + 1;
-                    $start = date('Y-m-d', strtotime("{$fiscal['startDay']} {$fiscal['startMonth']} $sYear"));
-                    $end = date('Y-m-d', strtotime("{$fiscal['endDay']} {$fiscal['endMonth']} $eYear"));
+                    $start = $helpers->craftDate("{$fiscal['startDay']} {$fiscal['startMonth']} $sYear")->setTime(0, 0, 0);
+                    $end = $helpers->craftDate("{$fiscal['endDay']} {$fiscal['endMonth']} $eYear")->setTime(23, 59, 59);
                     $periods[] = [
                         'label' => 'FY ' . substr((string) $sYear, 2) . '/' . substr((string) $eYear, 2),
-                        'start' => $start,
-                        'end' => $end,
+                        'start' => $helpers->toUtc($start),
+                        'end' => $helpers->toUtc($end),
                     ];
                 }
                 break;
 
             case 'allTime':
                 for ($i = $previousAmount - 1; $i >= 0; $i--) {
-                    $year = (int) date('Y') - $i;
+                    $year = (int) $now->format('Y') - $i;
+                    $start = $helpers->craftDate("first day of january $year")->setTime(0, 0, 0);
+                    $end = $helpers->craftDate("last day of december $year")->setTime(23, 59, 59);
                     $periods[] = [
                         'label' => (string) $year,
-                        'start' => "$year-01-01",
-                        'end' => "$year-12-31",
+                        'start' => $helpers->toUtc($start),
+                        'end' => $helpers->toUtc($end),
                     ];
                 }
                 break;
@@ -145,16 +155,15 @@ class Carts extends Component
 
         try {
 
-            // Chart data: completed + abandoned in one query
+            // Chart data: fetch individual rows for timezone-correct bucketing
             $chartQuery = (new Query())
                 ->select([
-                    'DATE(orders.dateCreated) AS orderDate',
+                    'orders.dateCreated',
                     'orders.isCompleted',
-                    'COUNT(orders.id) AS count'
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-                ->where(['between', 'orders.dateCreated', $startDate, $endDate . ' 23:59:59'])
+                ->where(['between', 'orders.dateCreated', $startDate, $endDate])
                 ->andWhere(['elements.dateDeleted' => null])
                 ->andWhere([
                     'or',
@@ -164,37 +173,28 @@ class Carts extends Component
                         ['orders.isCompleted' => 0],
                         ['<', 'elements.dateUpdated', $cutoff]
                     ]
-                ])
-                ->groupBy(['orderDate', 'orders.isCompleted']);
+                ]);
 
             $chartRows = $chartQuery->cache($cacheDuration, $dependency)->all();
 
-            // Build date maps keyed by isCompleted
-            $completedMap = [];
-            $abandonedMap = [];
+            // Bucket into periods using full datetime comparison
             foreach ($chartRows as $row) {
-                if ((int) $row['isCompleted'] === 1) {
-                    $completedMap[$row['orderDate']] = (int) $row['count'];
-                } else {
-                    $abandonedMap[$row['orderDate']] = (int) $row['count'];
-                }
-            }
+                $orderDate = $row['dateCreated'];
+                $isCompleted = (int) $row['isCompleted'];
 
-            // Bucket into periods
-            foreach ($periods as $i => $period) {
-                foreach ($completedMap as $date => $count) {
-                    if ($date >= $period['start'] && $date <= $period['end']) {
-                        $result['completedChart'][$i] += $count;
-                    }
-                }
-                foreach ($abandonedMap as $date => $count) {
-                    if ($date >= $period['start'] && $date <= $period['end']) {
-                        $result['abandonedChart'][$i] += $count;
+                foreach ($periods as $i => $period) {
+                    if ($orderDate >= $period['start'] && $orderDate <= $period['end']) {
+                        if ($isCompleted === 1) {
+                            $result['completedChart'][$i]++;
+                        } else {
+                            $result['abandonedChart'][$i]++;
+                        }
+                        break;
                     }
                 }
             }
 
-            // Totals for current period: completed + abandoned in one query
+            // Totals for current period
             $totalsQuery = (new Query())
                 ->select([
                     'orders.isCompleted',
@@ -203,7 +203,7 @@ class Carts extends Component
                 ])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
-                ->where(['between', 'orders.dateCreated', $currentPeriod['start'], $currentPeriod['end'] . ' 23:59:59'])
+                ->where(['between', 'orders.dateCreated', $currentPeriod['start'], $currentPeriod['end']])
                 ->andWhere(['elements.dateDeleted' => null])
                 ->andWhere([
                     'or',

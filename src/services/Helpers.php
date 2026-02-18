@@ -4,8 +4,12 @@ namespace bymayo\commercewidgets\services;
 
 use bymayo\commercewidgets\CommerceWidgets;
 
+use Craft;
 use craft\base\Component;
 use craft\db\Query;
+
+use DateTime;
+use DateTimeZone;
 
 class Helpers extends Component
 {
@@ -13,6 +17,23 @@ class Helpers extends Component
     public function getPluginName(): string
     {
         return CommerceWidgets::$plugin->getSettings()->pluginName ?: 'Commerce Widgets';
+    }
+
+    public function craftNow(): DateTime
+    {
+        return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
+    }
+
+    public function craftDate(string $dateString): DateTime
+    {
+        return new DateTime($dateString, new DateTimeZone(Craft::$app->getTimeZone()));
+    }
+
+    public function toUtc(DateTime $dt): string
+    {
+        $utc = clone $dt;
+        $utc->setTimezone(new DateTimeZone('UTC'));
+        return $utc->format('Y-m-d H:i:s');
     }
 
     public function getTargetDuration($targetDuration): string
@@ -31,22 +52,34 @@ class Helpers extends Component
         $startMonth = $settings->fiscalYearStartMonth;
         $endDay = (int) $settings->fiscalYearEndDay;
         $endMonth = $settings->fiscalYearEndMonth;
-        $fiscalMonth = date('n', strtotime("1 $startMonth"));
-        $currentMonth = (int) date('n');
-        $currentYear = (int) date('Y');
 
-        if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && (int) date('j') >= $startDay)) {
+        $now = $this->craftNow();
+        $fiscalMonth = (int) $this->craftDate("1 $startMonth")->format('n');
+        $currentMonth = (int) $now->format('n');
+        $currentDay = (int) $now->format('j');
+        $currentYear = (int) $now->format('Y');
+
+        if ($currentMonth > $fiscalMonth || ($currentMonth == $fiscalMonth && $currentDay >= $startDay)) {
             $startYear = $currentYear;
         } else {
             $startYear = $currentYear - 1;
         }
         $endYear = $startYear + 1;
 
+        $start = $this->craftDate("$startDay $startMonth $startYear");
+        $start->setTime(0, 0, 0);
+        $end = $this->craftDate("$endDay $endMonth $endYear");
+        $end->setTime(23, 59, 59);
+        $prevStart = $this->craftDate("$startDay $startMonth " . ($startYear - 1));
+        $prevStart->setTime(0, 0, 0);
+        $prevEnd = $this->craftDate("$endDay $endMonth $startYear");
+        $prevEnd->setTime(23, 59, 59);
+
         return [
-            'start' => date('Y-m-d', strtotime("$startDay $startMonth $startYear")),
-            'end' => date('Y-m-d', strtotime("$endDay $endMonth $endYear")),
-            'prevStart' => date('Y-m-d', strtotime("$startDay $startMonth " . ($startYear - 1))),
-            'prevEnd' => date('Y-m-d', strtotime("$endDay $endMonth $startYear")),
+            'start' => $this->toUtc($start),
+            'end' => $this->toUtc($end),
+            'prevStart' => $this->toUtc($prevStart),
+            'prevEnd' => $this->toUtc($prevEnd),
             'startYear' => $startYear,
             'endYear' => $endYear,
             'startDay' => $startDay,
@@ -59,40 +92,34 @@ class Helpers extends Component
     public function applyDateFilter(Query $query, string $targetDuration, string $dateColumn = 'orders.datePaid'): Query
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
+        $now = $this->craftNow();
 
         switch ($targetDuration) {
             case 'daily':
-                $query->andWhere([
-                    "DATE_FORMAT($dateColumn, \"%Y-%m-%d\")" => date('Y-m-d')
-                ]);
+                $start = (clone $now)->setTime(0, 0, 0);
+                $end = (clone $now)->setTime(23, 59, 59);
+                $query->andWhere(['between', $dateColumn, $this->toUtc($start), $this->toUtc($end)]);
                 break;
             case 'weekly':
-                $query->andWhere([
-                    'WEEK(' . $dateColumn . ', 1)' => date('W'),
-                    'YEAR(' . $dateColumn . ')' => date('Y')
-                ]);
+                $start = (clone $now)->modify('monday this week')->setTime(0, 0, 0);
+                $end = (clone $start)->modify('+6 days')->setTime(23, 59, 59);
+                $query->andWhere(['between', $dateColumn, $this->toUtc($start), $this->toUtc($end)]);
                 break;
             case 'monthly':
-                $query->andWhere([
-                    'MONTH(' . $dateColumn . ')' => date('n'),
-                    'YEAR(' . $dateColumn . ')' => date('Y')
-                ]);
+                $start = (clone $now)->modify('first day of this month')->setTime(0, 0, 0);
+                $end = (clone $now)->modify('last day of this month')->setTime(23, 59, 59);
+                $query->andWhere(['between', $dateColumn, $this->toUtc($start), $this->toUtc($end)]);
                 break;
             case 'yearly':
-                $query->andWhere([
-                    'YEAR(' . $dateColumn . ')' => date('Y')
-                ]);
+                $start = (clone $now)->modify('first day of january this year')->setTime(0, 0, 0);
+                $end = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
+                $query->andWhere(['between', $dateColumn, $this->toUtc($start), $this->toUtc($end)]);
                 break;
             case 'fiscalYear':
                 $fiscal = $this->getFiscalYearDates();
-
-                $query->andWhere(['and',
-                    ['>=', $dateColumn, $fiscal['start']],
-                    ['<=', $dateColumn, $fiscal['end'] . ' 23:59:59']
-                ]);
+                $query->andWhere(['between', $dateColumn, $fiscal['start'], $fiscal['end']]);
                 break;
             case 'allTime':
-                // No date filter
                 break;
         }
 
@@ -102,34 +129,50 @@ class Helpers extends Component
     public function getDateRange(string $targetDuration, string $dateColumn = 'orders.dateCreated'): array
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
+        $now = $this->craftNow();
 
         switch ($targetDuration) {
             case 'daily':
+                $todayStart = (clone $now)->setTime(0, 0, 0);
+                $todayEnd = (clone $now)->setTime(23, 59, 59);
+                $yesterdayStart = (clone $todayStart)->modify('-1 day');
+                $yesterdayEnd = (clone $todayEnd)->modify('-1 day');
                 return [
-                    'current' => ["DATE_FORMAT($dateColumn, \"%Y-%m-%d\")" => date('Y-m-d')],
-                    'previous' => ["DATE_FORMAT($dateColumn, \"%Y-%m-%d\")" => date('Y-m-d', strtotime('-1 day'))],
+                    'current' => ['between', $dateColumn, $this->toUtc($todayStart), $this->toUtc($todayEnd)],
+                    'previous' => ['between', $dateColumn, $this->toUtc($yesterdayStart), $this->toUtc($yesterdayEnd)],
                 ];
             case 'weekly':
+                $thisWeekStart = (clone $now)->modify('monday this week')->setTime(0, 0, 0);
+                $thisWeekEnd = (clone $thisWeekStart)->modify('+6 days')->setTime(23, 59, 59);
+                $lastWeekStart = (clone $thisWeekStart)->modify('-7 days');
+                $lastWeekEnd = (clone $thisWeekEnd)->modify('-7 days');
                 return [
-                    'current' => ['between', $dateColumn, date('Y-m-d', strtotime('monday this week')), date('Y-m-d', strtotime('sunday this week')) . ' 23:59:59'],
-                    'previous' => ['between', $dateColumn, date('Y-m-d', strtotime('monday last week')), date('Y-m-d', strtotime('sunday last week')) . ' 23:59:59'],
+                    'current' => ['between', $dateColumn, $this->toUtc($thisWeekStart), $this->toUtc($thisWeekEnd)],
+                    'previous' => ['between', $dateColumn, $this->toUtc($lastWeekStart), $this->toUtc($lastWeekEnd)],
                 ];
             case 'monthly':
+                $thisMonthStart = (clone $now)->modify('first day of this month')->setTime(0, 0, 0);
+                $thisMonthEnd = (clone $now)->modify('last day of this month')->setTime(23, 59, 59);
+                $lastMonthStart = (clone $now)->modify('first day of last month')->setTime(0, 0, 0);
+                $lastMonthEnd = (clone $now)->modify('last day of last month')->setTime(23, 59, 59);
                 return [
-                    'current' => ['between', $dateColumn, date('Y-m-d', strtotime('first day of this month')), date('Y-m-d', strtotime('last day of this month')) . ' 23:59:59'],
-                    'previous' => ['between', $dateColumn, date('Y-m-d', strtotime('first day of last month')), date('Y-m-d', strtotime('last day of last month')) . ' 23:59:59'],
+                    'current' => ['between', $dateColumn, $this->toUtc($thisMonthStart), $this->toUtc($thisMonthEnd)],
+                    'previous' => ['between', $dateColumn, $this->toUtc($lastMonthStart), $this->toUtc($lastMonthEnd)],
                 ];
             case 'yearly':
+                $thisYearStart = (clone $now)->modify('first day of january this year')->setTime(0, 0, 0);
+                $thisYearEnd = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
+                $lastYearStart = (clone $thisYearStart)->modify('-1 year');
+                $lastYearEnd = (clone $thisYearEnd)->modify('-1 year');
                 return [
-                    'current' => ["YEAR($dateColumn)" => date('Y')],
-                    'previous' => ["YEAR($dateColumn)" => date('Y', strtotime('-1 year'))],
+                    'current' => ['between', $dateColumn, $this->toUtc($thisYearStart), $this->toUtc($thisYearEnd)],
+                    'previous' => ['between', $dateColumn, $this->toUtc($lastYearStart), $this->toUtc($lastYearEnd)],
                 ];
             case 'fiscalYear':
                 $fiscal = $this->getFiscalYearDates();
-
                 return [
-                    'current' => ['between', $dateColumn, $fiscal['start'], $fiscal['end'] . ' 23:59:59'],
-                    'previous' => ['between', $dateColumn, $fiscal['prevStart'], $fiscal['prevEnd'] . ' 23:59:59'],
+                    'current' => ['between', $dateColumn, $fiscal['start'], $fiscal['end']],
+                    'previous' => ['between', $dateColumn, $fiscal['prevStart'], $fiscal['prevEnd']],
                 ];
             case 'allTime':
             default:
@@ -187,28 +230,31 @@ class Helpers extends Component
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
         $settings = CommerceWidgets::$plugin->getSettings();
+        $now = $this->craftNow();
 
         switch ($targetDuration) {
             case 'daily':
-                return date('j F Y');
+                return $now->format('j F Y');
             case 'weekly':
-                $start = strtotime("last {$settings->weekStart}", strtotime('tomorrow'));
-                $end = strtotime('+6 days', $start);
-                if (date('F', $start) === date('F', $end)) {
-                    return date('j', $start) . ' - ' . date('j F Y', $end);
+                $weekStart = $settings->weekStart ?? 'monday';
+                $tomorrow = (clone $now)->modify('+1 day');
+                $start = (clone $tomorrow)->modify("last $weekStart");
+                $end = (clone $start)->modify('+6 days');
+                if ($start->format('F') === $end->format('F')) {
+                    return $start->format('j') . ' - ' . $end->format('j F Y');
                 }
-                return date('j F', $start) . ' - ' . date('j F Y', $end);
+                return $start->format('j F') . ' - ' . $end->format('j F Y');
             case 'fiscalYear':
                 $fiscal = $this->getFiscalYearDates();
                 $startMonth = ucfirst($fiscal['startMonth']);
                 $endMonth = ucfirst($fiscal['endMonth']);
                 return "{$fiscal['startDay']} {$startMonth} {$fiscal['startYear']} - {$fiscal['endDay']} {$endMonth} {$fiscal['endYear']}";
             case 'yearly':
-                return date('Y');
+                return $now->format('Y');
             case 'allTime':
                 return 'All Time';
             default:
-                return date('F Y');
+                return $now->format('F Y');
         }
     }
 

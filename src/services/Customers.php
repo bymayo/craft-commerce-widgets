@@ -105,7 +105,7 @@ class Customers extends Component
 
             // Query 1: First order date for each customer (all time)
             $firstOrdersQuery = (new Query())
-                ->select(['orders.email', 'MIN(DATE(orders.datePaid)) as firstOrderDate'])
+                ->select(['orders.email', 'MIN(orders.datePaid) as firstOrderDate'])
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
                 ->where(['orders.isCompleted' => 1])
@@ -126,13 +126,13 @@ class Customers extends Component
 
             // Query 2: Distinct customer emails per day in the full date range
             $chartQuery = (new Query())
-                ->select(['DATE(orders.datePaid) AS orderDate', 'orders.email'])
+                ->select(['orders.datePaid AS orderDate', 'orders.email'])
                 ->distinct()
                 ->from(['orders' => '{{%commerce_orders}}'])
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
                 ->where(['orders.isCompleted' => 1])
                 ->andWhere(['elements.dateDeleted' => null])
-                ->andWhere(['between', 'orders.datePaid', $startDate, $endDate . ' 23:59:59']);
+                ->andWhere(['between', 'orders.datePaid', $startDate, $endDate]);
 
             if (!empty($excludeEmails)) {
                 $chartQuery->andWhere(['not in', 'orders.email', $excludeEmails]);
@@ -167,7 +167,7 @@ class Customers extends Component
                 ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
                 ->where(['orders.isCompleted' => 1])
                 ->andWhere(['elements.dateDeleted' => null])
-                ->andWhere(['between', 'orders.datePaid', $currentPeriod['start'], $currentPeriod['end'] . ' 23:59:59'])
+                ->andWhere(['between', 'orders.datePaid', $currentPeriod['start'], $currentPeriod['end']])
                 ->groupBy('orders.email');
 
             if (!empty($excludeEmails)) {
