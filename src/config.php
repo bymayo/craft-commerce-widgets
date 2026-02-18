@@ -3,7 +3,7 @@ return array(
     '*' => array(
         'pluginName' => 'Commerce Widgets',
         'cacheDuration' => 3600,
-        'defaultTargetDuration' => 'monthly',
+        'defaultTargetDuration' => 'yearly',
         'fiscalYearStartDay' => 1,
         'fiscalYearStartMonth' => 'april',
         'fiscalYearEndDay' => 31,
