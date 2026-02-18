@@ -98,6 +98,16 @@ The Top Products widget supports displaying product thumbnails. To enable this, 
 
 Once configured, the Top Products widget will display the product image.
 
+### Mapbox Access Token
+
+The Locations widget requires a Mapbox access token to display the interactive 3D globe. Without a token, the widget will show the top countries bar chart but no map.
+
+1. Create a free account at [mapbox.com](https://account.mapbox.com/access-tokens/)
+2. Copy your default public token
+3. Add it in **Settings > Plugins > Commerce Widgets > General > Mapbox Access Token**
+
+The field supports environment variables (e.g. `$MAPBOX_ACCESS_TOKEN`).
+
 ### Purge Inactive Carts Duration
 
 The Cart Abandonment widget chart displays data for the previous N periods (configured via the "Previous Amount" widget setting). Craft Commerce purges inactive carts after 3 months by default, which can cause missing data on the chart. It's recommended to increase the [`purgeInactiveCartsDuration`](https://craftcms.com/docs/commerce/5.x/system/orders.html#purging-inactive-carts) setting to cover at least as many periods as your widget displays (e.g. `P1Y` for yearly, `P6M` for monthly with 6 previous amounts).
