@@ -23,6 +23,7 @@ class Settings extends Model
     public $excludeEmailAddresses = array();
     public $enablePages = false;
     public $defaultPageWidgets = [];
+    public $comparisonMode = 'full';
     public $mapboxAccessToken = '';
 
     // Public Methods
@@ -52,6 +53,7 @@ class Settings extends Model
             [['excludeEmailAddresses'], 'safe'],
             [['enablePages'], 'boolean'],
             [['defaultPageWidgets'], 'safe'],
+            [['comparisonMode'], 'string'],
             [['mapboxAccessToken'], 'string']
         ];
     }

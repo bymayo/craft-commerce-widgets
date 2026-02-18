@@ -38,6 +38,14 @@ If you want to set your own config options, create a `commerce-widgets.php` file
 ### Exclude Email Addresses
 `excludeEmailAddresses` allows you to exclude certain email addresses/customers across all widgets. This is particularly useful if you use a specific user to debug orders, or if orders are created via the CP. Default: `null`
 
+### Comparison Mode
+`comparisonMode` controls how change indicators compare the current period to the previous period.
+
+- `full` (default) — Compares the entire current period against the entire previous period (e.g. all of 2026 vs all of 2025). This can result in unfair comparisons mid-way through a period since the current period is incomplete.
+- `toDate` — Compares only the elapsed portion of the current period against the equivalent portion of the previous period (e.g. Jan 1–Feb 18 2026 vs Jan 1–Feb 18 2025). This gives a fairer like-for-like comparison.
+
+This applies to all widgets with change indicators, across weekly, monthly, yearly and fiscal year durations.
+
 ### Config File Example
 
 ```

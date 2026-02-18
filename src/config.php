@@ -10,6 +10,7 @@ return array(
         'fiscalYearEndMonth' => 'march',
         'weekStart' => 'monday',
         'excludeEmailAddresses' => array(),
+        'comparisonMode' => 'full',
         'enablePages' => false,
         'defaultPageWidgets' => array(),
         'mapboxAccessToken' => ''

@@ -9,6 +9,7 @@
 > CP "Pages" is now possible to create custom pages/subpages full of widgets, as well as still having widgets on the CP dashboard.
 
 ### Added
+- Comparison Mode setting ("Full Period" or "To Date") for fairer change indicators — "To Date" compares equivalent elapsed portions (e.g. Jan 1–Feb 18 2026 vs Jan 1–Feb 18 2025)
 - "Data last refreshed" timestamp label on custom pages when caching is enabled
 - Revenue tooltip on Top Products and Top Customers widgets explaining the total
 - Install migration for fresh installs to create pages and widgets tables

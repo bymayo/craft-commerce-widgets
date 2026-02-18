@@ -73,13 +73,21 @@ class Orders extends Component
         $settings = CommerceWidgets::$plugin->getSettings();
         $helpers = CommerceWidgets::$plugin->helpers;
         $now = $helpers->craftNow();
+        $toDate = ($settings->comparisonMode ?? 'full') === 'toDate';
+        $suffix = $toDate ? ' (to date)' : '';
 
         $weekStart = $settings->weekStart ?? 'monday';
         $tomorrow = (clone $now)->modify('+1 day');
         $weekStartDate = (clone $tomorrow)->modify("last $weekStart")->setTime(0, 0, 0);
         $weekEndDate = (clone $weekStartDate)->modify('+6 days')->setTime(23, 59, 59);
         $prevWeekStartDate = (clone $weekStartDate)->modify('-7 days');
-        $prevWeekEndDate = (clone $weekEndDate)->modify('-7 days');
+        if ($toDate) {
+            $weekEndDate = clone $now;
+            $elapsed = $weekStartDate->diff($now);
+            $prevWeekEndDate = (clone $prevWeekStartDate)->add($elapsed);
+        } else {
+            $prevWeekEndDate = (clone $weekEndDate)->modify('-7 days');
+        }
 
         $todayStart = (clone $now)->setTime(0, 0, 0);
         $todayEnd = (clone $now)->setTime(23, 59, 59);
@@ -89,14 +97,39 @@ class Orders extends Component
         $thisMonthStart = (clone $now)->modify('first day of this month')->setTime(0, 0, 0);
         $thisMonthEnd = (clone $now)->modify('last day of this month')->setTime(23, 59, 59);
         $lastMonthStart = (clone $now)->modify('first day of last month')->setTime(0, 0, 0);
-        $lastMonthEnd = (clone $now)->modify('last day of last month')->setTime(23, 59, 59);
+        if ($toDate) {
+            $thisMonthEnd = clone $now;
+            $elapsed = $thisMonthStart->diff($now);
+            $lastMonthEnd = (clone $lastMonthStart)->add($elapsed);
+        } else {
+            $lastMonthEnd = (clone $now)->modify('last day of last month')->setTime(23, 59, 59);
+        }
 
         $thisYearStart = (clone $now)->modify('first day of january this year')->setTime(0, 0, 0);
-        $thisYearEnd = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
         $lastYearStart = (clone $thisYearStart)->modify('-1 year');
-        $lastYearEnd = (clone $thisYearEnd)->modify('-1 year');
+        if ($toDate) {
+            $thisYearEnd = clone $now;
+            $elapsed = $thisYearStart->diff($now);
+            $lastYearEnd = (clone $lastYearStart)->add($elapsed);
+        } else {
+            $thisYearEnd = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
+            $lastYearEnd = (clone $thisYearEnd)->modify('-1 year');
+        }
 
         $fiscal = $helpers->getFiscalYearDates();
+        $fiscalCurrent = $fiscal['start'];
+        $fiscalPrev = $fiscal['prevStart'];
+        $fiscalCurrentEnd = $fiscal['end'];
+        $fiscalPrevEnd = $fiscal['prevEnd'];
+        if ($toDate) {
+            $fiscalCurrentEnd = $helpers->toUtc($now);
+            $fiscalStart = $helpers->craftDate($fiscal['startDay'] . ' ' . $fiscal['startMonth'] . ' ' . $fiscal['startYear']);
+            $fiscalStart->setTime(0, 0, 0);
+            $elapsed = $fiscalStart->diff($now);
+            $prevFiscalStart = $helpers->craftDate($fiscal['startDay'] . ' ' . $fiscal['startMonth'] . ' ' . ($fiscal['startYear'] - 1));
+            $prevFiscalStart->setTime(0, 0, 0);
+            $fiscalPrevEnd = $helpers->toUtc((clone $prevFiscalStart)->add($elapsed));
+        }
 
         return [
             [
@@ -107,27 +140,27 @@ class Orders extends Component
             ],
             [
                 'label' => 'Week',
-                'changeTooltip' => 'Compared to previous week',
+                'changeTooltip' => 'Compared to previous week' . $suffix,
                 'current' => ['between', 'orders.datePaid', $helpers->toUtc($weekStartDate), $helpers->toUtc($weekEndDate)],
                 'previous' => ['between', 'orders.datePaid', $helpers->toUtc($prevWeekStartDate), $helpers->toUtc($prevWeekEndDate)],
             ],
             [
                 'label' => 'Month',
-                'changeTooltip' => 'Compared to previous month',
+                'changeTooltip' => 'Compared to previous month' . $suffix,
                 'current' => ['between', 'orders.datePaid', $helpers->toUtc($thisMonthStart), $helpers->toUtc($thisMonthEnd)],
                 'previous' => ['between', 'orders.datePaid', $helpers->toUtc($lastMonthStart), $helpers->toUtc($lastMonthEnd)],
             ],
             [
                 'label' => 'Year',
-                'changeTooltip' => 'Compared to previous year',
+                'changeTooltip' => 'Compared to previous year' . $suffix,
                 'current' => ['between', 'orders.datePaid', $helpers->toUtc($thisYearStart), $helpers->toUtc($thisYearEnd)],
                 'previous' => ['between', 'orders.datePaid', $helpers->toUtc($lastYearStart), $helpers->toUtc($lastYearEnd)],
             ],
             [
                 'label' => 'Fiscal Year',
-                'changeTooltip' => 'Compared to previous fiscal year',
-                'current' => ['between', 'orders.datePaid', $fiscal['start'], $fiscal['end']],
-                'previous' => ['between', 'orders.datePaid', $fiscal['prevStart'], $fiscal['prevEnd']],
+                'changeTooltip' => 'Compared to previous fiscal year' . $suffix,
+                'current' => ['between', 'orders.datePaid', $fiscalCurrent, $fiscalCurrentEnd],
+                'previous' => ['between', 'orders.datePaid', $fiscalPrev, $fiscalPrevEnd],
             ],
             [
                 'label' => 'All Time',

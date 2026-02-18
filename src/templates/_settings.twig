@@ -168,6 +168,19 @@
             ]
         }) }}
 
+        <hr>
+
+        {{ forms.selectField({
+            label: 'Comparison Mode',
+            id: 'comparisonMode',
+            name: 'settings[comparisonMode]',
+            value: settings.comparisonMode,
+            options: [
+                { label: 'Full Period', value: 'full' },
+                { label: 'To Date', value: 'toDate' }
+            ]
+        }) }}
+
     </div>
 
     <div id="pages" class="hidden">

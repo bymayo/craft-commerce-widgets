@@ -130,6 +130,7 @@ class Helpers extends Component
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
         $now = $this->craftNow();
+        $toDate = (CommerceWidgets::$plugin->getSettings()->comparisonMode ?? 'full') === 'toDate';
 
         switch ($targetDuration) {
             case 'daily':
@@ -145,7 +146,13 @@ class Helpers extends Component
                 $thisWeekStart = (clone $now)->modify('monday this week')->setTime(0, 0, 0);
                 $thisWeekEnd = (clone $thisWeekStart)->modify('+6 days')->setTime(23, 59, 59);
                 $lastWeekStart = (clone $thisWeekStart)->modify('-7 days');
-                $lastWeekEnd = (clone $thisWeekEnd)->modify('-7 days');
+                if ($toDate) {
+                    $thisWeekEnd = clone $now;
+                    $elapsed = $thisWeekStart->diff($now);
+                    $lastWeekEnd = (clone $lastWeekStart)->add($elapsed);
+                } else {
+                    $lastWeekEnd = (clone $thisWeekEnd)->modify('-7 days');
+                }
                 return [
                     'current' => ['between', $dateColumn, $this->toUtc($thisWeekStart), $this->toUtc($thisWeekEnd)],
                     'previous' => ['between', $dateColumn, $this->toUtc($lastWeekStart), $this->toUtc($lastWeekEnd)],
@@ -154,22 +161,47 @@ class Helpers extends Component
                 $thisMonthStart = (clone $now)->modify('first day of this month')->setTime(0, 0, 0);
                 $thisMonthEnd = (clone $now)->modify('last day of this month')->setTime(23, 59, 59);
                 $lastMonthStart = (clone $now)->modify('first day of last month')->setTime(0, 0, 0);
-                $lastMonthEnd = (clone $now)->modify('last day of last month')->setTime(23, 59, 59);
+                if ($toDate) {
+                    $thisMonthEnd = clone $now;
+                    $elapsed = $thisMonthStart->diff($now);
+                    $lastMonthEnd = (clone $lastMonthStart)->add($elapsed);
+                } else {
+                    $lastMonthEnd = (clone $now)->modify('last day of last month')->setTime(23, 59, 59);
+                }
                 return [
                     'current' => ['between', $dateColumn, $this->toUtc($thisMonthStart), $this->toUtc($thisMonthEnd)],
                     'previous' => ['between', $dateColumn, $this->toUtc($lastMonthStart), $this->toUtc($lastMonthEnd)],
                 ];
             case 'yearly':
                 $thisYearStart = (clone $now)->modify('first day of january this year')->setTime(0, 0, 0);
-                $thisYearEnd = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
                 $lastYearStart = (clone $thisYearStart)->modify('-1 year');
-                $lastYearEnd = (clone $thisYearEnd)->modify('-1 year');
+                if ($toDate) {
+                    $thisYearEnd = clone $now;
+                    $elapsed = $thisYearStart->diff($now);
+                    $lastYearEnd = (clone $lastYearStart)->add($elapsed);
+                } else {
+                    $thisYearEnd = (clone $now)->modify('last day of december this year')->setTime(23, 59, 59);
+                    $lastYearEnd = (clone $thisYearEnd)->modify('-1 year');
+                }
                 return [
                     'current' => ['between', $dateColumn, $this->toUtc($thisYearStart), $this->toUtc($thisYearEnd)],
                     'previous' => ['between', $dateColumn, $this->toUtc($lastYearStart), $this->toUtc($lastYearEnd)],
                 ];
             case 'fiscalYear':
                 $fiscal = $this->getFiscalYearDates();
+                if ($toDate) {
+                    $currentEnd = $this->toUtc($now);
+                    $fiscalStart = $this->craftDate($fiscal['startDay'] . ' ' . $fiscal['startMonth'] . ' ' . $fiscal['startYear']);
+                    $fiscalStart->setTime(0, 0, 0);
+                    $elapsed = $fiscalStart->diff($now);
+                    $prevFiscalStart = $this->craftDate($fiscal['startDay'] . ' ' . $fiscal['startMonth'] . ' ' . ($fiscal['startYear'] - 1));
+                    $prevFiscalStart->setTime(0, 0, 0);
+                    $prevEnd = (clone $prevFiscalStart)->add($elapsed);
+                    return [
+                        'current' => ['between', $dateColumn, $fiscal['start'], $currentEnd],
+                        'previous' => ['between', $dateColumn, $fiscal['prevStart'], $this->toUtc($prevEnd)],
+                    ];
+                }
                 return [
                     'current' => ['between', $dateColumn, $fiscal['start'], $fiscal['end']],
                     'previous' => ['between', $dateColumn, $fiscal['prevStart'], $fiscal['prevEnd']],
@@ -207,18 +239,20 @@ class Helpers extends Component
     public function getChangeTooltip(string $targetDuration): string
     {
         $targetDuration = $this->getTargetDuration($targetDuration);
+        $toDate = (CommerceWidgets::$plugin->getSettings()->comparisonMode ?? 'full') === 'toDate';
+        $suffix = $toDate ? ' (to date)' : '';
 
         switch ($targetDuration) {
             case 'daily':
                 return 'Compared to previous day';
             case 'weekly':
-                return 'Compared to previous week';
+                return 'Compared to previous week' . $suffix;
             case 'monthly':
-                return 'Compared to previous month';
+                return 'Compared to previous month' . $suffix;
             case 'yearly':
-                return 'Compared to previous year';
+                return 'Compared to previous year' . $suffix;
             case 'fiscalYear':
-                return 'Compared to previous fiscal year';
+                return 'Compared to previous fiscal year' . $suffix;
             case 'allTime':
                 return 'Compared to previous year';
             default:
