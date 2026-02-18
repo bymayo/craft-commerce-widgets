@@ -9,6 +9,7 @@ use bymayo\commercewidgets\records\Widget;
 
 use Craft;
 use craft\web\Controller;
+use yii\caching\TagDependency;
 use yii\web\Response;
 
 class PagesController extends Controller
@@ -59,6 +60,19 @@ class PagesController extends Controller
         $user = Craft::$app->getUser()->getIdentity();
         $canManagePages = $user && ($user->admin || $user->can('commerceWidgets-managePages'));
 
+        // Track when cached data was last refreshed (shares tag with widget data)
+        $cacheDuration = (int) ($settings->cacheDuration ?? 3600);
+        $cachedAt = null;
+        if ($cacheDuration > 0) {
+            $cache = Craft::$app->getCache();
+            $cacheKey = 'commerce-widgets-cached-at';
+            $cachedAt = $cache->get($cacheKey);
+            if ($cachedAt === false) {
+                $cachedAt = time();
+                $cache->set($cacheKey, $cachedAt, $cacheDuration, new TagDependency(['tags' => 'commerce-widgets']));
+            }
+        }
+
         return $this->renderTemplate('commerce-widgets/pages/index', [
             'widgets' => $widgets,
             'availableTypes' => $availableTypes,
@@ -68,6 +82,7 @@ class PagesController extends Controller
             'selectedSubnavItem' => 'page-' . $activePage->id,
             'enablePages' => $settings->enablePages,
             'canManagePages' => $canManagePages,
+            'cachedAt' => $cachedAt,
         ]);
     }
 

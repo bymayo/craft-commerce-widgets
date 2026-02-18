@@ -57,4 +57,10 @@
 
   </div>
 
+  {% if cachedAt %}
+    <p style="text-align: center; margin-top: 24px; color: var(--gray-500); font-size: 11px;">
+      Data last refreshed {{ cachedAt|datetime('short') }}
+    </p>
+  {% endif %}
+
 {% endblock %}
