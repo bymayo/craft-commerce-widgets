@@ -2,6 +2,10 @@
 
 {% block widget %}
 
+{% if mapboxError %}
+<div class="cw:text-gray-400 cw:text-sm cw:py-4">Add a Mapbox Access Token in the plugin settings to show the map.</div>
+{% endif %}
+
 {% if showMap %}
 <div id="orders-map-{{ widgetId }}" style="width: 100%; height: 380px; background: #f0f1f4; border-radius: 6px; overflow: hidden; position: relative;">
     {% if ordersByCountry is empty %}

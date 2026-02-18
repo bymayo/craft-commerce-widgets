@@ -62,10 +62,11 @@ class OrdersMap extends BaseWidget
     {
         $showMap = (bool) $this->showMap;
         $settings = CommerceWidgets::$plugin->getSettings();
-        $mapboxAccessToken = $showMap ? App::parseEnv($settings->mapboxAccessToken) : null;
+        $mapboxAccessToken = App::parseEnv($settings->mapboxAccessToken);
+        $mapboxError = $showMap && empty($mapboxAccessToken);
 
-        if ($showMap && empty($mapboxAccessToken)) {
-            return '<div class="cw:text-gray-400 cw:text-sm cw:py-4">Add a Mapbox Access Token in the plugin settings to use this widget.</div>';
+        if ($mapboxError) {
+            $showMap = false;
         }
 
         Craft::$app->getView()->registerAssetBundle(CommerceWidgetsAsset::class);
@@ -75,6 +76,7 @@ class OrdersMap extends BaseWidget
             [
                 'widgetId' => $this->id,
                 'showMap' => $showMap,
+                'mapboxError' => $mapboxError,
                 'statType' => $this->statType,
                 'mapboxAccessToken' => $mapboxAccessToken,
                 'limit' => (int) $this->limit,
