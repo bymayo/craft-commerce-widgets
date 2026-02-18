@@ -68,11 +68,12 @@
    } %}
 
    {% if topCountries|length %}
-      <div id="orders-map-countries-{{ widgetId }}" class="{{ showMap ? 'cw:mt-4' }} cw:flex cw:flex-col cw:gap-y-1">
+      <p class="cw:text-sm cw:text-gray-700 cw:font-semibold {{ showMap ? 'cw:mt-4' }} cw:mb-1.5">Top {{ limit }} {{ statType == 'customerCount' ? 'Customer' : 'Order' }} Locations</p>
+      <div id="orders-map-countries-{{ widgetId }}" class="cw:flex cw:flex-col cw:gap-y-1">
          {% set maxValue = topCountries[0].statValue %}
          {% for country in topCountries %}
             <div class="cw:bg-blue-50 cw:h-9 cw:relative cw:rounded-md cw:overflow-hidden">
-               <div class="cw:absolute cw:w-full cw:h-full cw:flex cw:items-center cw:px-4">
+               <div class="cw:absolute cw:w-full cw:h-full cw:flex cw:items-center cw:px-3">
                   <span class="cw:font-semibold cw:flex cw:items-center cw:gap-1.5">
                      {% if country.countryCode matches '/^[A-Z]{2}$/' %}
                         <span>{{ regionalIndicators[country.countryCode|first] ~ regionalIndicators[country.countryCode|last] }}</span>
@@ -81,7 +82,7 @@
                   </span>
                   <span class="cw:ml-auto cw:tabular-nums">{{ country.statValue|number_format() }}</span>
                </div>
-               <div class="cw:bg-blue-100 cw:h-full cw:rounded-md" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
+               <div class="cw:bg-linear-to-r cw:from-blue-100 cw:to-blue-300 cw:h-full cw:rounded-md" style="width: {{ (country.statValue / maxValue * 100)|round }}%"></div>
             </div>
          {% endfor %}
       </div>
