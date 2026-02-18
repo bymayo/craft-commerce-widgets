@@ -1,6 +1,12 @@
 # Commerce Widgets Changelog
 
-## 6.0.0 - 2026-02-17
+## 5.1.0 - 2026-02-18
+
+> [!IMPORTANT]  
+> This is a major overhal of the plugin, with a complete visual redesign of all widgets (+ New widgets) and a new page system. You may need to save some settings on each widget after updating. I've tried my best to keep these where possible.
+
+> [!NOTE]  
+> CP "Pages" is now possible to create custom pages/subpages full of widgets, as well as still having widgets on the CP dashboard.
 
 ### Added
 - Cancelled and Expired columns on Subscription Plans widget
