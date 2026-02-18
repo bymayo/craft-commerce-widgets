@@ -2,12 +2,12 @@
      data-id="{{ widget.id }}"
      data-type="{{ widget.type }}"
      data-colspan="{{ widget.colspan }}">
-  <div style="background: #fff; border-radius: 6px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+  <div class="cw:bg-white cw:rounded-md cw:p-5 cw:shadow-sm cw:overflow-hidden">
+    <div class="cw:flex cw:justify-between cw:items-start cw:mb-3">
       <div>
-        <h2 class="cw-widget-title" style="margin: 0;">{{ widget.title }}</h2>
+        <h2 class="cw-widget-title cw:m-0">{{ widget.title }}</h2>
         {% if widget.subtitle %}
-          <p class="light cw-widget-subtitle" style="margin: 0;">{{ widget.subtitle }}</p>
+          <p class="light cw-widget-subtitle cw:m-0">{{ widget.subtitle }}</p>
         {% endif %}
       </div>
       <button type="button" class="cw-widget-settings-btn" title="Widget Settings">
