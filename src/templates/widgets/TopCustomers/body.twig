@@ -63,6 +63,7 @@
                   {% include 'commerce-widgets/_includes/statistic' with {
                      statistic: customer.totalOrders|number_format(),
                      statisticSecondary: customer.totalRevenue|currency(commerce.currency),
+                     statisticSecondaryTooltip: 'Total revenue for this customer across all orders',
                      changeIndicator: customer.changeIndicator|default(null),
                      changeDirection: customer.changeDirection|default('neutral'),
                      changeTooltip: changeTooltip,
