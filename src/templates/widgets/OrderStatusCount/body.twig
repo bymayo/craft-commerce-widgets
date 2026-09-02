@@ -1,0 +1,24 @@
+{% extends 'commerce-widgets/layout' %}
+
+{% block widget %}
+
+  {% if not configured %}
+
+    <p class="light">Map order statuses in <a href="{{ cpUrl('settings/plugins/commerce-widgets') }}#statuses">settings</a>.</p>
+
+  {% else %}
+
+    {% include 'commerce-widgets/_includes/statistic' with {
+      statistic: total|number_format(),
+      statisticSecondary: '',
+      changeIndicator: change.percentage,
+      changeDirection: change.direction,
+      changeTooltip: changeTooltip,
+      invertSentiment: invertSentiment,
+      padding: false,
+      border: false
+    } only %}
+
+  {% endif %}
+
+{% endblock %}

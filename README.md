@@ -8,7 +8,7 @@ Commerce Widgets is a Craft CMS plugin that gives you insightful dashboard widge
 
 ## Features
 
-- 11 widgets covering revenue, orders, customers, products, carts, subscriptions and more
+- 15 widgets covering revenue, orders, customers, products, carts, subscriptions and more
 - Analytics bars above the Commerce order and product indexes, following whatever the index is filtered to
 - Custom pages with drag-and-drop widget management per user
 - Change indicators comparing current vs previous periods with "To Date" mode
@@ -30,6 +30,10 @@ Commerce Widgets is a Craft CMS plugin that gives you insightful dashboard widge
 | Recent Orders | Latest completed orders with optional order status filtering |
 | Recent Products | Recently added products with optional product type filtering |
 | Locations | Interactive 3D Mapbox globe showing order/customer locations by country |
+| Orders to Fulfil | Count of orders awaiting fulfilment, with period comparison |
+| Orders Fulfilled | Count of fulfilled orders, with period comparison |
+| Orders Shipped | Count of shipped orders, with period comparison |
+| Orders Returned | Count of returned orders, with period comparison |
 | Subscription Plans | Overview of subscription plans with active, cancelled and expired counts |
 
 ## Analytics Bar
@@ -46,6 +50,7 @@ Configure both under **Settings &rarr; Plugins &rarr; Commerce Widgets &rarr; An
 | Revenue | Total paid |
 | Avg Order Value | Revenue divided by order count |
 | Orders to Fulfil | Orders in the statuses mapped as awaiting fulfilment |
+| Orders Fulfilled | Orders in the statuses mapped as fulfilled |
 | Awaiting Payment | Orders Commerce reports as unpaid or part paid |
 | Orders Shipped | Orders in the statuses mapped as shipped |
 | Orders Returned | Orders in the statuses mapped as returned |
@@ -107,6 +112,7 @@ return [
     'enableOrdersAnalyticsBar' => true,
     'ordersAnalyticsBarStats' => ['orders', 'revenue', 'averageOrderValue', 'toFulfil', 'shipped', 'itemsOrdered'],
     'orderStatusesToFulfil' => [],
+    'orderStatusesFulfilled' => [],
     'orderStatusesShipped' => [],
     'orderStatusesReturned' => [],
     'enableProductsAnalyticsBar' => true,
@@ -131,8 +137,9 @@ return [
 | `defaultPageWidgets` | `[]` | Widget types to add to the default Overview page for new users |
 | `mapboxAccessToken` | `''` | Mapbox access token for the Locations widget map. Supports environment variables |
 | `enableOrdersAnalyticsBar` | `true` | Show the analytics bar above the Commerce order index |
-| `ordersAnalyticsBarStats` | six of nine | Which stats to show, left to right. Six at most. Options: `orders`, `revenue`, `averageOrderValue`, `toFulfil`, `awaitingPayment`, `shipped`, `returned`, `itemsOrdered`, `customers` |
+| `ordersAnalyticsBarStats` | six of nine | Which stats to show, left to right. Six at most. Options: `orders`, `revenue`, `averageOrderValue`, `toFulfil`, `fulfilled`, `awaitingPayment`, `shipped`, `returned`, `itemsOrdered`, `customers` |
 | `orderStatusesToFulfil` | `[]` | Order status handles counted as awaiting fulfilment. The stat is hidden while this is empty |
+| `orderStatusesFulfilled` | `[]` | Order status handles counted as fulfilled. The stat is hidden while this is empty |
 | `orderStatusesShipped` | `[]` | Order status handles counted as shipped. The stat is hidden while this is empty |
 | `orderStatusesReturned` | `[]` | Order status handles counted as returned. The stat is hidden while this is empty |
 | `enableProductsAnalyticsBar` | `true` | Show the analytics bar above the Commerce product index |

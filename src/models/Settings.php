@@ -28,6 +28,7 @@ class Settings extends Model
     public $enableOrdersAnalyticsBar = true;
     public $ordersAnalyticsBarStats = ['orders', 'revenue', 'averageOrderValue', 'toFulfil', 'shipped', 'itemsOrdered'];
     public $orderStatusesToFulfil = array();
+    public $orderStatusesFulfilled = array();
     public $orderStatusesShipped = array();
     public $orderStatusesReturned = array();
     public $enableProductsAnalyticsBar = true;
@@ -47,7 +48,7 @@ class Settings extends Model
 
         $this->cacheDuration = (int) $this->cacheDuration;
 
-        foreach (['ordersAnalyticsBarStats', 'productsAnalyticsBarStats', 'orderStatusesToFulfil', 'orderStatusesShipped', 'orderStatusesReturned'] as $attribute) {
+        foreach (['ordersAnalyticsBarStats', 'productsAnalyticsBarStats', 'orderStatusesToFulfil', 'orderStatusesFulfilled', 'orderStatusesShipped', 'orderStatusesReturned'] as $attribute) {
             if (!is_array($this->$attribute)) {
                 $this->$attribute = $this->$attribute === null || $this->$attribute === '' ? [] : [$this->$attribute];
             }
@@ -80,7 +81,7 @@ class Settings extends Model
             [['enableProductsAnalyticsBar'], 'boolean'],
             [['productsAnalyticsBarStats'], 'safe'],
             [['lowStockThreshold'], 'integer'],
-            [['orderStatusesToFulfil', 'orderStatusesShipped', 'orderStatusesReturned'], 'safe']
+            [['orderStatusesToFulfil', 'orderStatusesFulfilled', 'orderStatusesShipped', 'orderStatusesReturned'], 'safe']
         ];
     }
 }

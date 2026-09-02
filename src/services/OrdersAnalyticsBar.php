@@ -8,6 +8,8 @@ use Craft;
 use craft\base\Component;
 use craft\commerce\elements\db\OrderQuery;
 use craft\commerce\Plugin as Commerce;
+use craft\db\Query;
+use yii\caching\TagDependency;
 
 use Exception;
 
@@ -48,6 +50,11 @@ class OrdersAnalyticsBar extends Component
             'label' => 'Orders to Fulfil',
             'format' => 'number',
             'statusSetting' => 'orderStatusesToFulfil',
+        ],
+        'fulfilled' => [
+            'label' => 'Orders Fulfilled',
+            'format' => 'number',
+            'statusSetting' => 'orderStatusesFulfilled',
         ],
         'awaitingPayment' => [
             'label' => 'Awaiting Payment',
@@ -246,6 +253,62 @@ class OrdersAnalyticsBar extends Component
         }
 
         return array_values(array_unique($ids));
+    }
+
+    /**
+     * Counts the orders sitting in a mapped status bucket over a widget's target duration, with the
+     * change against the previous period.
+     *
+     * Shares the status mappings with the analytics bar, so a store configures them once.
+     */
+    public function getStatusCountData(string $statusSetting, string $targetDuration): array
+    {
+        $helpers = CommerceWidgets::$plugin->helpers;
+        $statusIds = $this->getOrderStatusIds(
+            CommerceWidgets::$plugin->getSettings()->$statusSetting ?: []
+        );
+
+        $result = [
+            'configured' => !empty($statusIds),
+            'total' => 0,
+            'change' => ['percentage' => null, 'direction' => 'neutral'],
+            'changeTooltip' => $helpers->getChangeTooltip($targetDuration),
+        ];
+
+        if (empty($statusIds)) {
+            return $result;
+        }
+
+        $dateRange = $helpers->getDateRange($targetDuration, 'orders.dateOrdered');
+        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $dependency = new TagDependency(['tags' => 'commerce-widgets']);
+        $totals = ['current' => 0, 'previous' => 0];
+
+        try {
+            foreach (['current', 'previous'] as $period) {
+                $query = (new Query())
+                    ->select(['COALESCE(COUNT(orders.id), 0) as total'])
+                    ->from(['orders' => '{{%commerce_orders}}'])
+                    ->join('INNER JOIN', '{{%elements}} elements', 'elements.id = orders.id')
+                    ->where(['orders.isCompleted' => 1])
+                    ->andWhere(['elements.dateDeleted' => null])
+                    ->andWhere(['orders.orderStatusId' => $statusIds]);
+
+                if ($dateRange[$period] !== null) {
+                    $query->andWhere($dateRange[$period]);
+                }
+
+                $row = $query->cache($cacheDuration, $dependency)->one();
+                $totals[$period] = $row ? (int) $row['total'] : 0;
+            }
+
+            $result['total'] = $totals['current'];
+            $result['change'] = $helpers->calculateChange($totals['current'], $totals['previous']);
+        } catch (Exception $e) {
+            // Fall through with the defaults
+        }
+
+        return $result;
     }
 
     /**

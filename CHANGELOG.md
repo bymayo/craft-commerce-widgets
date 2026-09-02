@@ -1,15 +1,23 @@
 # Commerce Widgets Changelog
 
-## Unreleased
+## 5.2.0 - 2026-09-02
+
+> [!NOTE]  
+> This release adds 4 new widgets, taking the total to 15, and 2 analytics bars — one above Commerce → Orders and one above Commerce → Products.
 
 ### Added
-- *NEW* Orders analytics bar - a row of stats above Commerce &rarr; Orders showing Orders, Revenue, Avg Order Value, Orders to Fulfil, Awaiting Payment, Orders Shipped, Orders Returned, Items Ordered and Customers
-- The orders analytics bar follows the current view, so the selected source, order status, search, custom filters and date range all apply to them
-- The orders analytics bar compares against the period of equal length immediately before the selected date range, hiding the change indicator when no date range is set
-- "Enable Analytics Bar" settings with per-stat toggles (six at most), plus a Statuses tab for mapping order statuses to Orders to Fulfil, Orders Shipped and Orders Returned
-- "View Orders Analytics Bar" user permission
-- *NEW* Products analytics bar - a row of stats above Commerce &rarr; Products showing Products, Out of Stock, Low Stock, Avg Price, Stock Value, On Promotion, Unavailable and Variants
-- Low Stock Threshold plugin setting, and a "View Products Analytics Bar" user permission
+- *NEW WIDGET* Orders to Fulfil - count of orders awaiting fulfilment, with target duration and period comparison
+- *NEW WIDGET* Orders Fulfilled - count of fulfilled orders, with target duration and period comparison
+- *NEW WIDGET* Orders Shipped - count of shipped orders, with target duration and period comparison
+- *NEW WIDGET* Orders Returned - count of returned orders, with target duration and period comparison
+- *NEW* Analytics bar above Commerce &rarr; Orders showing Orders, Revenue, Avg Order Value, Orders to Fulfil, Orders Fulfilled, Awaiting Payment, Orders Shipped, Orders Returned, Items Ordered and Customers
+- *NEW* Analytics bar above Commerce &rarr; Products showing Products, Out of Stock, Low Stock, Avg Price, Stock Value, On Promotion, Unavailable and Variants
+- Analytics bars are driven by the same query as the index beneath them, so the selected source, status, search, custom filters and date range all apply to the stats
+- Order analytics bar stats compare against the period of equal length immediately before the selected date range, hiding the change indicator when no date range is set
+- Analytics Bars settings tab, with an enable switch and per-stat toggles (six at most) for each bar
+- Statuses settings tab for mapping order statuses to Orders to Fulfil, Orders Fulfilled, Orders Shipped and Orders Returned, shared by the analytics bar and the new widgets
+- Low Stock Threshold setting, used by the Low Stock product stat
+- "View Orders Analytics Bar" and "View Products Analytics Bar" user permissions
 
 ## 5.1.1 - 2026-02-18
 

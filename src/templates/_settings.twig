@@ -444,6 +444,16 @@
             }) }}
 
             {{ forms.selectizeField({
+                label: 'Orders Fulfilled',
+                id: 'orderStatusesFulfilled',
+                name: 'settings[orderStatusesFulfilled]',
+                instructions: 'Order statuses that mean an order has been fulfilled.',
+                options: orderStatusOptions,
+                values: settings.orderStatusesFulfilled,
+                multi: true
+            }) }}
+
+            {{ forms.selectizeField({
                 label: 'Orders Shipped',
                 id: 'orderStatusesShipped',
                 name: 'settings[orderStatusesShipped]',

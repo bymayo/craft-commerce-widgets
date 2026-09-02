@@ -17,6 +17,7 @@ return array(
         'enableOrdersAnalyticsBar' => true,
         'ordersAnalyticsBarStats' => array('orders', 'revenue', 'averageOrderValue', 'toFulfil', 'shipped', 'itemsOrdered'),
         'orderStatusesToFulfil' => array(),
+        'orderStatusesFulfilled' => array(),
         'orderStatusesShipped' => array(),
         'orderStatusesReturned' => array(),
         'enableProductsAnalyticsBar' => true,

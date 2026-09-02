@@ -132,6 +132,10 @@ class CommerceWidgets extends Plugin
             $event->types[] = \bymayo\commercewidgets\widgets\ConversionRate::class;
             $event->types[] = \bymayo\commercewidgets\widgets\NewVsReturningCustomers::class;
             $event->types[] = \bymayo\commercewidgets\widgets\OrdersMap::class;
+            $event->types[] = \bymayo\commercewidgets\widgets\OrdersToFulfil::class;
+            $event->types[] = \bymayo\commercewidgets\widgets\OrdersFulfilled::class;
+            $event->types[] = \bymayo\commercewidgets\widgets\OrdersShipped::class;
+            $event->types[] = \bymayo\commercewidgets\widgets\OrdersReturned::class;
 
             }
         );
