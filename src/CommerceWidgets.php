@@ -9,6 +9,9 @@ use bymayo\commercewidgets\services\Products;
 use bymayo\commercewidgets\services\Carts;
 use bymayo\commercewidgets\services\Subscriptions;
 use bymayo\commercewidgets\services\Pages;
+use bymayo\commercewidgets\services\OrdersAnalyticsBar;
+use bymayo\commercewidgets\services\ProductsAnalyticsBar;
+use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 use bymayo\commercewidgets\models\Settings;
 
 use Craft;
@@ -21,6 +24,9 @@ use craft\services\UserPermissions;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\utilities\ClearCaches;
 use craft\events\RegisterCacheOptionsEvent;
+use craft\web\View;
+use craft\events\TemplateEvent;
+use craft\helpers\Json;
 
 use yii\base\Event;
 
@@ -54,6 +60,8 @@ class CommerceWidgets extends Plugin
             'carts' => Carts::class,
             'subscriptions' => Subscriptions::class,
             'pages' => Pages::class,
+            'ordersAnalyticsBar' => OrdersAnalyticsBar::class,
+            'productsAnalyticsBar' => ProductsAnalyticsBar::class,
         ]);
 
         Event::on(
@@ -62,6 +70,49 @@ class CommerceWidgets extends Plugin
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['commerce-widgets'] = 'commerce-widgets/pages/index';
                 $event->rules['commerce-widgets/page/<pageId:\d+>'] = 'commerce-widgets/pages/index';
+            }
+        );
+
+        // Commerce offers no template hook on either index, so the bars are hung off the template
+        // render itself and the JS places them above the element index.
+        Event::on(
+            View::class,
+            View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE,
+            function (TemplateEvent $event) {
+                $bars = [
+                    'commerce/orders/_index' => [
+                        'setting' => 'enableOrdersAnalyticsBar',
+                        'service' => $this->ordersAnalyticsBar,
+                        'action' => 'commerce-widgets/orders-analytics-bar/get-stats',
+                    ],
+                    'commerce/products/_index' => [
+                        'setting' => 'enableProductsAnalyticsBar',
+                        'service' => $this->productsAnalyticsBar,
+                        'action' => 'commerce-widgets/products-analytics-bar/get-stats',
+                    ],
+                ];
+
+                $bar = $bars[$event->template] ?? null;
+
+                if ($bar === null || !$this->getSettings()->{$bar['setting']} || !$bar['service']->canView()) {
+                    return;
+                }
+
+                $stats = $bar['service']->getEnabledStatsForJs();
+
+                if (empty($stats)) {
+                    return;
+                }
+
+                $view = Craft::$app->getView();
+                $view->registerAssetBundle(CommerceWidgetsAsset::class);
+                $view->registerJs(
+                    'window.CommerceWidgetsAnalyticsBar = ' . Json::encode([
+                        'action' => $bar['action'],
+                        'stats' => $stats,
+                    ]) . ';',
+                    View::POS_HEAD
+                );
             }
         );
 
@@ -100,6 +151,12 @@ class CommerceWidgets extends Plugin
                         ],
                         'commerceWidgets-accessWidgets' => [
                             'label' => 'Access Widgets',
+                        ],
+                        'commerceWidgets-viewOrdersAnalyticsBar' => [
+                            'label' => 'View Orders Analytics Bar',
+                        ],
+                        'commerceWidgets-viewProductsAnalyticsBar' => [
+                            'label' => 'View Products Analytics Bar',
                         ],
                     ],
                 ];
@@ -176,6 +233,12 @@ class CommerceWidgets extends Plugin
             [
                 'settings' => $this->getSettings(),
                 'availableWidgetTypes' => self::$plugin->pages->getAvailableWidgetTypes(),
+                'ordersBarStatOptions' => self::$plugin->ordersAnalyticsBar->getStatOptions(),
+                'orderStatusOptions' => self::$plugin->ordersAnalyticsBar->getOrderStatusOptions(),
+                'ordersBarStatsMax' => OrdersAnalyticsBar::MAX_STATS,
+                'ordersBarStatusSettings' => self::$plugin->ordersAnalyticsBar->getStatStatusSettings(),
+                'productsBarStatOptions' => self::$plugin->productsAnalyticsBar->getStatOptions(),
+                'productsBarStatsMax' => ProductsAnalyticsBar::MAX_STATS,
             ]
         );
     }

@@ -15,6 +15,14 @@
         label: 'Dates',
         url: '#dates'
     },
+    statuses: {
+        label: 'Statuses',
+        url: '#statuses'
+    },
+    analyticsBars: {
+        label: 'Analytics Bars',
+        url: '#analytics-bars'
+    },
     pages: {
         label: 'Pages',
         url: '#pages'
@@ -22,6 +30,14 @@
 } %}
 
 {% block content %}
+
+    {# Bleed the section dividers out through the pane's padding so they read as full-width rules. #}
+    {% css %}
+        #content hr {
+            margin-inline: var(--neg-padding);
+        }
+    {% endcss %}
+
 
     <input type="hidden" name="action" value="plugins/save-plugin-settings">
     <input type="hidden" name="pluginHandle" value="commerce-widgets">
@@ -43,6 +59,15 @@
             name: 'settings[cacheDuration]',
             instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
             value: settings.cacheDuration
+        }) }}
+
+        {{ forms.textField({
+            label: 'Low Stock Threshold',
+            id: 'lowStockThreshold',
+            name: 'settings[lowStockThreshold]',
+            instructions: 'Stock level at or below which a product counts towards Low Stock.',
+            value: settings.lowStockThreshold,
+            size: 5
         }) }}
 
         {{ forms.textareaField({
@@ -199,6 +224,250 @@
             options: availableWidgetTypes|map(t => { label: t.name, value: t.class|split('\\')|last }),
             values: settings.defaultPageWidgets
         }) }}
+
+    </div>
+
+    <div id="analytics-bars" class="hidden">
+
+        <h2>Orders</h2>
+
+        {{ forms.lightswitchField({
+            first: true,
+            label: 'Enable Analytics Bar',
+            id: 'enableOrdersAnalyticsBar',
+            name: 'settings[enableOrdersAnalyticsBar]',
+            instructions: 'Show a row of analytics above Commerce &rarr; Orders.',
+            on: settings.enableOrdersAnalyticsBar,
+            toggle: 'orders-analytics-bar-settings'
+        }) }}
+
+        <div id="orders-analytics-bar-settings" class="{{ not settings.enableOrdersAnalyticsBar ? 'hidden' }}">
+
+            {{ forms.checkboxGroupField({
+                label: 'Stats',
+                id: 'ordersAnalyticsBarStats',
+                name: 'settings[ordersAnalyticsBarStats]',
+                instructions: 'Choose up to ' ~ ordersBarStatsMax ~ '.',
+                options: ordersBarStatOptions,
+                values: settings.ordersAnalyticsBarStats
+            }) }}
+
+            {#
+                Keeps the picker honest as you go: a stat whose order statuses aren't mapped can't be
+                shown, and the cap greys out the rest once it's reached. Both react to changes on this
+                page, so mapping a status frees its stat up without having to save first.
+            #}
+            {% js %}
+                (() => {
+                    const max = {{ ordersBarStatsMax }};
+                    const statusSettings = {{ ordersBarStatusSettings|json_encode|raw }};
+                    const boxes = Array.from(
+                        document.querySelectorAll('input[name="settings[ordersAnalyticsBarStats][]"]')
+                    );
+
+                    if (!boxes.length) {
+                        return;
+                    }
+
+                    const unmapped = (handle) => {
+                        const setting = statusSettings[handle];
+
+                        if (!setting) {
+                            return false;
+                        }
+
+                        const field = document.getElementById(setting);
+
+                        if (!field) {
+                            return true;
+                        }
+
+                        // Selectize moves the options out of the original select, so its selectedOptions
+                        // can't be trusted — ask selectize itself where one is attached.
+                        const selectize = $(field).data('selectize');
+                        const value = selectize
+                            ? selectize.getValue()
+                            : Array.from(field.selectedOptions).map((option) => option.value);
+
+                        return !value || value.length === 0;
+                    };
+
+                    const field = document.getElementById('ordersAnalyticsBarStats').closest('.field');
+                    let notice = null;
+
+                    // Mirrors the markup Craft's own field warnings use, so it picks up their styling.
+                    const warn = (labels) => {
+                        if (!labels.length) {
+                            if (notice) {
+                                notice.remove();
+                                notice = null;
+                            }
+
+                            return;
+                        }
+
+                        if (!notice) {
+                            notice = document.createElement('p');
+                            notice.className = 'warning has-icon';
+                            notice.innerHTML =
+                                '<span class="icon" aria-hidden="true"></span>' +
+                                '<span class="visually-hidden">Warning: </span>' +
+                                '<span></span>';
+                            field.appendChild(notice);
+                        }
+
+                        const names =
+                            labels.length === 1
+                                ? labels[0]
+                                : labels.slice(0, -1).join(', ') + ' and ' + labels[labels.length - 1];
+
+                        notice.lastElementChild.textContent =
+                            names + " can't be selected until order statuses are mapped under the Statuses tab.";
+                    };
+
+                    const sync = () => {
+                        // An unmappable stat can never reach the bar, so it shouldn't hold a slot either.
+                        boxes.forEach((box) => {
+                            if (unmapped(box.value)) {
+                                box.checked = false;
+                            }
+                        });
+
+                        const selected = boxes.filter((box) => box.checked).length;
+
+                        boxes.forEach((box) => {
+                            box.disabled =
+                                unmapped(box.value) || (!box.checked && selected >= max);
+                        });
+
+                        warn(
+                            boxes
+                                .filter((box) => unmapped(box.value))
+                                .map((box) => (box.labels[0] ? box.labels[0].textContent.trim() : box.value))
+                        );
+                    };
+
+                    boxes.forEach((box) => box.addEventListener('change', sync));
+
+                    // Two gotchas here: selectize fires its change through jQuery, which native listeners
+                    // never see, and it initialises after this block runs — so a handler bound straight
+                    // to the field is discarded. Delegating from the document survives both.
+                    Object.values(statusSettings).forEach((setting) => {
+                        $(document).on('change', '#' + setting, sync);
+                    });
+
+                    sync();
+                })();
+            {% endjs %}
+
+        </div>
+
+        <hr>
+
+        <h2>Products</h2>
+
+        {{ forms.lightswitchField({
+            label: 'Enable Analytics Bar',
+            id: 'enableProductsAnalyticsBar',
+            name: 'settings[enableProductsAnalyticsBar]',
+            instructions: 'Show a row of analytics above Commerce &rarr; Products.',
+            on: settings.enableProductsAnalyticsBar,
+            toggle: 'products-analytics-bar-settings'
+        }) }}
+
+        <div id="products-analytics-bar-settings" class="{{ not settings.enableProductsAnalyticsBar ? 'hidden' }}">
+
+            {{ forms.checkboxGroupField({
+                label: 'Stats',
+                id: 'productsAnalyticsBarStats',
+                name: 'settings[productsAnalyticsBarStats]',
+                instructions: 'Choose up to ' ~ productsBarStatsMax ~ '.',
+                options: productsBarStatOptions,
+                values: settings.productsAnalyticsBarStats
+            }) }}
+
+            {% js %}
+                (() => {
+                    const max = {{ productsBarStatsMax }};
+                    const boxes = Array.from(
+                        document.querySelectorAll('input[name="settings[productsAnalyticsBarStats][]"]')
+                    );
+
+                    if (!boxes.length) {
+                        return;
+                    }
+
+                    const sync = () => {
+                        const selected = boxes.filter((box) => box.checked).length;
+
+                        boxes.forEach((box) => {
+                            box.disabled = !box.checked && selected >= max;
+                        });
+                    };
+
+                    boxes.forEach((box) => box.addEventListener('change', sync));
+                    sync();
+                })();
+            {% endjs %}
+
+        </div>
+
+    </div>
+
+    <div id="statuses" class="hidden">
+
+        {#
+            Craft's CP styles treat any selectize option valued "new" as an "add new…" action, adding a
+            plus icon and a trailing ellipsis to it. Commerce's default order status handle is "new", so
+            our status fields collide with it. Neutralise it here; the only selectize fields on this page
+            are the ones below.
+        #}
+        {% css %}
+            body .selectize-dropdown-content > div[data-value="new"]:before,
+            body .selectize-dropdown-content > div[data-value="new"]:after {
+                content: none;
+                margin-inline-end: 0;
+            }
+        {% endcss %}
+
+        {% if orderStatusOptions|length %}
+
+            {{ forms.selectizeField({
+                first: true,
+                label: 'Orders to Fulfil',
+                id: 'orderStatusesToFulfil',
+                name: 'settings[orderStatusesToFulfil]',
+                instructions: 'Order statuses that mean an order is still waiting to be fulfilled.',
+                options: orderStatusOptions,
+                values: settings.orderStatusesToFulfil,
+                multi: true
+            }) }}
+
+            {{ forms.selectizeField({
+                label: 'Orders Shipped',
+                id: 'orderStatusesShipped',
+                name: 'settings[orderStatusesShipped]',
+                instructions: 'Order statuses that mean an order has been dispatched.',
+                options: orderStatusOptions,
+                values: settings.orderStatusesShipped,
+                multi: true
+            }) }}
+
+            {{ forms.selectizeField({
+                label: 'Orders Returned',
+                id: 'orderStatusesReturned',
+                name: 'settings[orderStatusesReturned]',
+                instructions: 'Order statuses that mean an order has been sent back.',
+                options: orderStatusOptions,
+                values: settings.orderStatusesReturned,
+                multi: true
+            }) }}
+
+        {% else %}
+
+            <p class="light">No order statuses have been set up yet. Add some under Commerce &rarr; Store Management &rarr; Order Statuses, then come back to map them.</p>
+
+        {% endif %}
 
     </div>
 

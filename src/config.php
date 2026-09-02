@@ -13,6 +13,14 @@ return array(
         'comparisonMode' => 'full',
         'enablePages' => false,
         'defaultPageWidgets' => array(),
-        'mapboxAccessToken' => ''
+        'mapboxAccessToken' => '',
+        'enableOrdersAnalyticsBar' => true,
+        'ordersAnalyticsBarStats' => array('orders', 'revenue', 'averageOrderValue', 'toFulfil', 'shipped', 'itemsOrdered'),
+        'orderStatusesToFulfil' => array(),
+        'orderStatusesShipped' => array(),
+        'orderStatusesReturned' => array(),
+        'enableProductsAnalyticsBar' => true,
+        'productsAnalyticsBarStats' => array('products', 'outOfStock', 'lowStock', 'averagePrice', 'stockValue', 'onPromotion'),
+        'lowStockThreshold' => 5
     )
 );

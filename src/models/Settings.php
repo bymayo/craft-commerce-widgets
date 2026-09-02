@@ -2,6 +2,9 @@
 
 namespace bymayo\commercewidgets\models;
 
+use bymayo\commercewidgets\services\OrdersAnalyticsBar;
+use bymayo\commercewidgets\services\ProductsAnalyticsBar;
+
 use craft\base\Model;
 
 class Settings extends Model
@@ -22,6 +25,14 @@ class Settings extends Model
     public $defaultPageWidgets = [];
     public $comparisonMode = 'full';
     public $mapboxAccessToken = '';
+    public $enableOrdersAnalyticsBar = true;
+    public $ordersAnalyticsBarStats = ['orders', 'revenue', 'averageOrderValue', 'toFulfil', 'shipped', 'itemsOrdered'];
+    public $orderStatusesToFulfil = array();
+    public $orderStatusesShipped = array();
+    public $orderStatusesReturned = array();
+    public $enableProductsAnalyticsBar = true;
+    public $productsAnalyticsBarStats = ['products', 'outOfStock', 'lowStock', 'averagePrice', 'stockValue', 'onPromotion'];
+    public $lowStockThreshold = 5;
 
     // Public Methods
     // =========================================================================
@@ -35,6 +46,18 @@ class Settings extends Model
         }
 
         $this->cacheDuration = (int) $this->cacheDuration;
+
+        foreach (['ordersAnalyticsBarStats', 'productsAnalyticsBarStats', 'orderStatusesToFulfil', 'orderStatusesShipped', 'orderStatusesReturned'] as $attribute) {
+            if (!is_array($this->$attribute)) {
+                $this->$attribute = $this->$attribute === null || $this->$attribute === '' ? [] : [$this->$attribute];
+            }
+
+            $this->$attribute = array_values(array_filter($this->$attribute, fn($value) => $value !== '' && $value !== null));
+        }
+
+        $this->ordersAnalyticsBarStats = array_slice($this->ordersAnalyticsBarStats, 0, OrdersAnalyticsBar::MAX_STATS);
+        $this->productsAnalyticsBarStats = array_slice($this->productsAnalyticsBarStats, 0, ProductsAnalyticsBar::MAX_STATS);
+        $this->lowStockThreshold = max(0, (int) $this->lowStockThreshold);
 
         return parent::beforeValidate();
     }
@@ -51,7 +74,13 @@ class Settings extends Model
             [['enablePages'], 'boolean'],
             [['defaultPageWidgets'], 'safe'],
             [['comparisonMode'], 'string'],
-            [['mapboxAccessToken'], 'string']
+            [['mapboxAccessToken'], 'string'],
+            [['enableOrdersAnalyticsBar'], 'boolean'],
+            [['ordersAnalyticsBarStats'], 'safe'],
+            [['enableProductsAnalyticsBar'], 'boolean'],
+            [['productsAnalyticsBarStats'], 'safe'],
+            [['lowStockThreshold'], 'integer'],
+            [['orderStatusesToFulfil', 'orderStatusesShipped', 'orderStatusesReturned'], 'safe']
         ];
     }
 }

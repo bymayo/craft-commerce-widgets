@@ -1,5 +1,16 @@
 # Commerce Widgets Changelog
 
+## Unreleased
+
+### Added
+- *NEW* Orders analytics bar - a row of stats above Commerce &rarr; Orders showing Orders, Revenue, Avg Order Value, Orders to Fulfil, Awaiting Payment, Orders Shipped, Orders Returned, Items Ordered and Customers
+- The orders analytics bar follows the current view, so the selected source, order status, search, custom filters and date range all apply to them
+- The orders analytics bar compares against the period of equal length immediately before the selected date range, hiding the change indicator when no date range is set
+- "Enable Analytics Bar" settings with per-stat toggles (six at most), plus a Statuses tab for mapping order statuses to Orders to Fulfil, Orders Shipped and Orders Returned
+- "View Orders Analytics Bar" user permission
+- *NEW* Products analytics bar - a row of stats above Commerce &rarr; Products showing Products, Out of Stock, Low Stock, Avg Price, Stock Value, On Promotion, Unavailable and Variants
+- Low Stock Threshold plugin setting, and a "View Products Analytics Bar" user permission
+
 ## 5.1.1 - 2026-02-18
 
 ### Improved

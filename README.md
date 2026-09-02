@@ -9,10 +9,11 @@ Commerce Widgets is a Craft CMS plugin that gives you insightful dashboard widge
 ## Features
 
 - 11 widgets covering revenue, orders, customers, products, carts, subscriptions and more
+- Analytics bars above the Commerce order and product indexes, following whatever the index is filtered to
 - Custom pages with drag-and-drop widget management per user
 - Change indicators comparing current vs previous periods with "To Date" mode
 - Configurable caching for performance on large stores
-- Granular user permissions for widget access and page management
+- Granular user permissions for widget access, page management and each analytics bar
 - Fiscal year, daily, weekly, monthly, yearly and all time durations
 
 ## Widgets
@@ -30,6 +31,43 @@ Commerce Widgets is a Craft CMS plugin that gives you insightful dashboard widge
 | Recent Products | Recently added products with optional product type filtering |
 | Locations | Interactive 3D Mapbox globe showing order/customer locations by country |
 | Subscription Plans | Overview of subscription plans with active, cancelled and expired counts |
+
+## Analytics Bar
+
+A row of stats above **Commerce &rarr; Orders** and **Commerce &rarr; Products**, driven by the same query as the table beneath it &mdash; whatever source, status, search, filter or date range the index is showing applies to the stats too.
+
+Configure both under **Settings &rarr; Plugins &rarr; Commerce Widgets &rarr; Analytics Bars**, choosing up to six stats each. Access is controlled by the **View Orders Analytics Bar** and **View Products Analytics Bar** permissions.
+
+### Orders
+
+| Stat | Description |
+|---|---|
+| Orders | Orders in the current view |
+| Revenue | Total paid |
+| Avg Order Value | Revenue divided by order count |
+| Orders to Fulfil | Orders in the statuses mapped as awaiting fulfilment |
+| Awaiting Payment | Orders Commerce reports as unpaid or part paid |
+| Orders Shipped | Orders in the statuses mapped as shipped |
+| Orders Returned | Orders in the statuses mapped as returned |
+| Items Ordered | Total item quantity |
+| Customers | Distinct customers |
+
+With a date range selected, each stat also shows how it compares to the preceding period of equal length. Map the order statuses under **Statuses**.
+
+### Products
+
+| Stat | Description |
+|---|---|
+| Products | Products in the current view |
+| Out of Stock | Tracked products with no stock across any variant |
+| Low Stock | Tracked products at or below the low stock threshold |
+| Avg Price | Average of the products' default prices |
+| Stock Value | Stock multiplied by price, across all variants |
+| On Promotion | Products with a promotional price on at least one variant |
+| Unavailable | Products not available for purchase |
+| Variants | Variants across the products in view |
+
+Commerce's product index has no date range picker, so there's no period to compare against and these stats show no change indicators. Stock stats only count products with **inventory tracking enabled** &mdash; an untracked product has no stock figure to read, so counting it as out of stock would be misleading.
 
 ## Install
 
@@ -66,6 +104,14 @@ return [
     'enablePages' => false,
     'defaultPageWidgets' => [],
     'mapboxAccessToken' => '',
+    'enableOrdersAnalyticsBar' => true,
+    'ordersAnalyticsBarStats' => ['orders', 'revenue', 'averageOrderValue', 'toFulfil', 'shipped', 'itemsOrdered'],
+    'orderStatusesToFulfil' => [],
+    'orderStatusesShipped' => [],
+    'orderStatusesReturned' => [],
+    'enableProductsAnalyticsBar' => true,
+    'productsAnalyticsBarStats' => ['products', 'outOfStock', 'lowStock', 'averagePrice', 'stockValue', 'onPromotion'],
+    'lowStockThreshold' => 5,
 ];
 ```
 
@@ -84,6 +130,14 @@ return [
 | `enablePages` | `false` | Allow users to create multiple dashboard pages in the CP sidebar |
 | `defaultPageWidgets` | `[]` | Widget types to add to the default Overview page for new users |
 | `mapboxAccessToken` | `''` | Mapbox access token for the Locations widget map. Supports environment variables |
+| `enableOrdersAnalyticsBar` | `true` | Show the analytics bar above the Commerce order index |
+| `ordersAnalyticsBarStats` | six of nine | Which stats to show, left to right. Six at most. Options: `orders`, `revenue`, `averageOrderValue`, `toFulfil`, `awaitingPayment`, `shipped`, `returned`, `itemsOrdered`, `customers` |
+| `orderStatusesToFulfil` | `[]` | Order status handles counted as awaiting fulfilment. The stat is hidden while this is empty |
+| `orderStatusesShipped` | `[]` | Order status handles counted as shipped. The stat is hidden while this is empty |
+| `orderStatusesReturned` | `[]` | Order status handles counted as returned. The stat is hidden while this is empty |
+| `enableProductsAnalyticsBar` | `true` | Show the analytics bar above the Commerce product index |
+| `productsAnalyticsBarStats` | six of eight | Which stats to show, left to right. Six at most. Options: `products`, `outOfStock`, `lowStock`, `averagePrice`, `stockValue`, `onPromotion`, `unavailable`, `variants` |
+| `lowStockThreshold` | `5` | Stock level at or below which a tracked product counts towards Low Stock |
 
 ## Recommendations
 

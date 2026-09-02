@@ -1,0 +1,100 @@
+/* Stats bar above the Commerce order index. Deliberately plain CSS built on Craft's own CP custom
+   properties, so it inherits light/dark mode and any theme tweaks for free. */
+
+.cw-analytics-bar {
+  display: grid;
+  /* Column count is worked out in JS so rows stay balanced — see layoutColumns(). */
+  grid-template-columns: repeat(var(--cw-columns, 1), 1fr);
+  margin-block-end: 14px;
+  overflow: hidden;
+  background: var(--pane-bg, var(--white));
+  border-radius: var(--radius-lg, 8px);
+  box-shadow: var(--pane-shadow, 0 0 0 1px rgba(0, 0, 0, 0.1));
+}
+
+.cw-analytics-bar__stat {
+  padding: 14px 18px;
+  min-width: 0;
+  /* Each cell draws its own top and left hairline; the ones on the outer edges fall outside the
+     container and are clipped by its overflow, so dividers land correctly however the grid wraps. */
+  box-shadow:
+    -1px 0 0 var(--border-hairline, rgba(0, 0, 0, 0.1)),
+    0 -1px 0 var(--border-hairline, rgba(0, 0, 0, 0.1));
+}
+
+.cw-analytics-bar__label {
+  font-size: 13px;
+  color: var(--fg-subtle, #606d7b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cw-analytics-bar__value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-block-start: 2px;
+}
+
+.cw-analytics-bar__number {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-color, #3f4d5a);
+}
+
+.cw-analytics-bar__change {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: help;
+  color: var(--fg-subtle, #606d7b);
+}
+
+.cw-analytics-bar__change--up {
+  color: var(--green-600, #16a34a);
+}
+
+.cw-analytics-bar__change--down {
+  color: var(--red-600, #dc2626);
+}
+
+/* Some stats are better going down, so their sentiment colours are flipped. */
+.cw-analytics-bar__stat[data-handle='returned'] .cw-analytics-bar__change--up,
+.cw-analytics-bar__stat[data-handle='awaitingPayment'] .cw-analytics-bar__change--up,
+.cw-analytics-bar__stat[data-handle='outOfStock'] .cw-analytics-bar__change--up,
+.cw-analytics-bar__stat[data-handle='lowStock'] .cw-analytics-bar__change--up {
+  color: var(--red-600, #dc2626);
+}
+
+.cw-analytics-bar__stat[data-handle='returned'] .cw-analytics-bar__change--down,
+.cw-analytics-bar__stat[data-handle='awaitingPayment'] .cw-analytics-bar__change--down,
+.cw-analytics-bar__stat[data-handle='outOfStock'] .cw-analytics-bar__change--down,
+.cw-analytics-bar__stat[data-handle='lowStock'] .cw-analytics-bar__change--down {
+  color: var(--green-600, #16a34a);
+}
+
+.cw-analytics-bar.is-loading .cw-analytics-bar__number,
+.cw-analytics-bar.is-loading .cw-analytics-bar__change {
+  opacity: 0.35;
+}
+
+/* Tighter type once the bar stacks into a narrow two-column grid. */
+@media (max-width: 767px) {
+  .cw-analytics-bar__stat {
+    padding: 11px 14px;
+  }
+
+  .cw-analytics-bar__label {
+    font-size: 12px;
+  }
+
+  .cw-analytics-bar__number {
+    font-size: 18px;
+  }
+
+  .cw-analytics-bar__change {
+    font-size: 11px;
+  }
+}
