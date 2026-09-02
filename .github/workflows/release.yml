@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - craft-5
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if version changed
+        id: version
+        run: |
+          CURRENT=$(jq -r '.version' composer.json)
+          PREVIOUS=$(git show HEAD~1:composer.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "")
+
+          if [ "$CURRENT" != "$PREVIOUS" ] && [ -n "$CURRENT" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "tag=$CURRENT" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create release
+        if: steps.version.outputs.changed == 'true'
+        run: gh release create "${{ steps.version.outputs.tag }}" --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
