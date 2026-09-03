@@ -177,3 +177,34 @@
   padding: 48px;
 }
 
+
+/* "Data last refreshed" refresh button */
+.cw-refresh-data {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cw-refresh-data:hover {
+  color: #374151;
+}
+
+.cw-refresh-data[disabled] {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.cw-refresh-data.cw-refreshing svg {
+  animation: cw-refresh-spin 0.8s linear infinite;
+}
+
+@keyframes cw-refresh-spin {
+  to { transform: rotate(360deg); }
+}

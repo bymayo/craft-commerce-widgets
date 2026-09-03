@@ -1,5 +1,14 @@
 # Commerce Widgets Changelog
 
+## 5.2.1 - 2026-09-03
+
+### Added
+- "Refresh" button next to the "Data last refreshed" timestamp on custom pages, which clears the cached widget data and reloads the page
+
+### Changed
+- Shortened the Cache Duration setting instructions, which now link to the Caches utility
+- Settings instructions now link straight to Orders, Products and Order Statuses instead of spelling out their control panel paths
+
 ## 5.2.0 - 2026-09-02
 
 > [!NOTE]  

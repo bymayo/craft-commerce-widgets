@@ -124,7 +124,7 @@ return [
 | Setting | Default | Description |
 |---|---|---|
 | `pluginName` | `Commerce Widgets` | Custom name displayed across all widgets, permissions and cache labels |
-| `cacheDuration` | `3600` | How long (in seconds) widget data is cached. Set to `0` to disable |
+| `cacheDuration` | `3600` | How long (in seconds) widget data is cached. Set to `0` to disable. Clear it via the **Refresh** button on a page, or under **Utilities > Caches** |
 | `defaultTargetDuration` | `yearly` | Default time period for widgets when set to "Plugin Default". Options: `daily`, `weekly`, `monthly`, `yearly`, `fiscalYear`, `allTime` |
 | `fiscalYearStartDay` | `1` | Day of the month your fiscal year starts |
 | `fiscalYearStartMonth` | `april` | Month your fiscal year starts |
@@ -171,7 +171,12 @@ The field supports environment variables (e.g. `$MAPBOX_ACCESS_TOKEN`).
 
 ### Clearing Caches
 
-Widget data is cached based on the `cacheDuration` setting (default: 1 hour). To see fresh data immediately, go to **Utilities > Caches** in the control panel and clear **Commerce Widgets data**. The "Data last refreshed" timestamp at the bottom of custom pages shows when the cache was last rebuilt.
+Widget data is cached based on the `cacheDuration` setting (default: 1 hour). The "Data last refreshed" timestamp at the bottom of custom pages shows when the cache was last rebuilt.
+
+To see fresh data immediately, either:
+
+- Click **Refresh** next to the "Data last refreshed" timestamp at the bottom of any custom page
+- Go to **Utilities > Caches** in the control panel and clear **Commerce Widgets data**
 
 ### Purge Inactive Carts Duration
 

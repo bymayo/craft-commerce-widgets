@@ -130,6 +130,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Refresh cached data
+    const refreshBtn = document.querySelector('.cw-refresh-data');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            refreshBtn.disabled = true;
+            refreshBtn.classList.add('cw-refreshing');
+
+            Craft.sendActionRequest('POST', 'commerce-widgets/pages/refresh-data')
+                .then(response => {
+                    if (!response.data.success) throw new Error();
+                    window.location.reload();
+                })
+                .catch(() => {
+                    refreshBtn.disabled = false;
+                    refreshBtn.classList.remove('cw-refreshing');
+                    Craft.cp.displayError('Could not refresh data.');
+                });
+        });
+    }
+
     // Bind actions on existing widgets
     grid.querySelectorAll('.cw-dashboard-widget').forEach(bindWidgetActions);
 

@@ -57,7 +57,7 @@
             label: 'Cache Duration',
             id: 'cacheDuration',
             name: 'settings[cacheDuration]',
-            instructions: 'How long widget data is cached in seconds. Useful for stores with large amounts of orders/customers.',
+            instructions: 'How long widget data is cached, in seconds. Clear via the Refresh buttons or <a href="' ~ cpUrl('utilities/clear-caches') ~ '">Caches</a>.',
             value: settings.cacheDuration
         }) }}
 
@@ -236,7 +236,7 @@
             label: 'Enable Analytics Bar',
             id: 'enableOrdersAnalyticsBar',
             name: 'settings[enableOrdersAnalyticsBar]',
-            instructions: 'Show a row of analytics above Commerce &rarr; Orders.',
+            instructions: 'Show a row of analytics above <a href="' ~ cpUrl('commerce/orders') ~ '">Orders</a>.',
             on: settings.enableOrdersAnalyticsBar,
             toggle: 'orders-analytics-bar-settings'
         }) }}
@@ -370,7 +370,7 @@
             label: 'Enable Analytics Bar',
             id: 'enableProductsAnalyticsBar',
             name: 'settings[enableProductsAnalyticsBar]',
-            instructions: 'Show a row of analytics above Commerce &rarr; Products.',
+            instructions: 'Show a row of analytics above <a href="' ~ cpUrl('commerce/products') ~ '">Products</a>.',
             on: settings.enableProductsAnalyticsBar,
             toggle: 'products-analytics-bar-settings'
         }) }}
@@ -475,7 +475,7 @@
 
         {% else %}
 
-            <p class="light">No order statuses have been set up yet. Add some under Commerce &rarr; Store Management &rarr; Order Statuses, then come back to map them.</p>
+            <p class="light">No order statuses have been set up yet. Add some under <a href="{{ cpUrl('commerce/settings/orderstatuses') }}">Order Statuses</a>, then come back to map them.</p>
 
         {% endif %}
 

@@ -86,6 +86,16 @@ class PagesController extends Controller
         ]);
     }
 
+    public function actionRefreshData(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        TagDependency::invalidate(Craft::$app->getCache(), 'commerce-widgets');
+
+        return $this->asJson(['success' => true]);
+    }
+
     public function actionAddWidget(): Response
     {
         $this->requirePostRequest();
