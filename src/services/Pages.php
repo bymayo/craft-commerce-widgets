@@ -103,7 +103,7 @@ class Pages extends Component
         foreach (glob($dir . '/*.php') as $file) {
             $className = 'bymayo\\commercewidgets\\widgets\\' . basename($file, '.php');
 
-            if (!class_exists($className) || !is_subclass_of($className, BaseWidget::class)) {
+            if (!class_exists($className) || !is_subclass_of($className, BaseWidget::class) || (new \ReflectionClass($className))->isAbstract()) {
                 continue;
             }
 

@@ -280,7 +280,7 @@ class OrdersAnalyticsBar extends Component
         }
 
         $dateRange = $helpers->getDateRange($targetDuration, 'orders.dateOrdered');
-        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
         $totals = ['current' => 0, 'previous' => 0];
 

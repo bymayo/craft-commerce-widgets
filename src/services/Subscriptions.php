@@ -41,7 +41,7 @@ class Subscriptions extends Component
                 ->orderBy($safeOrderBy)
                 ->limit($limit);
 
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
             $dependency = new TagDependency(['tags' => 'commerce-widgets']);
             $result = $query->cache($cacheDuration, $dependency)->all();
 

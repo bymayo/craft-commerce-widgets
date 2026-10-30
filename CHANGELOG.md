@@ -1,5 +1,13 @@
 # Commerce Widgets Changelog
 
+## 5.2.2 - 2026-10-29
+
+### Fixed
+- Custom pages now properly check user permissions
+- Setting Cache Duration to `0` now turns caching off, instead of caching forever
+- Top Customers shows results again when "Include Guest Customers" is off
+- Removed a broken widget option from the "Add Widget" menu on custom pages
+
 ## 5.2.1 - 2026-09-03
 
 ### Added

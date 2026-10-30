@@ -149,7 +149,7 @@ class Carts extends Component
         $startDate = $periods[0]['start'];
         $endDate = end($periods)['end'];
         $cutoff = $this->getInactiveCartCutoff();
-        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
         $currentPeriod = end($periods);
 

@@ -48,7 +48,7 @@ class Products extends Component
 
             $safeOrderBy = self::ALLOWED_ORDER_BY[$orderBy] ?? 'totalRevenue desc';
             $dateRange = CommerceWidgets::$plugin->helpers->getDateRange($targetDuration, 'orders.datePaid');
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
             $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
             // Current period

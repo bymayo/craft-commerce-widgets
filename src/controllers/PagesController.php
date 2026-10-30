@@ -6,14 +6,34 @@ use bymayo\commercewidgets\CommerceWidgets;
 use bymayo\commercewidgets\assetbundles\commercewidgets\CommerceWidgetsAsset;
 
 use bymayo\commercewidgets\records\Widget;
+use bymayo\commercewidgets\widgets\BaseWidget;
 
 use Craft;
 use craft\web\Controller;
 use yii\caching\TagDependency;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class PagesController extends Controller
 {
+
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        $this->requireCpRequest();
+
+        if (!CommerceWidgets::$plugin->getSettings()->enablePages) {
+            throw new NotFoundHttpException('Pages are disabled.');
+        }
+
+        $this->requirePermission('accessPlugin-commerce-widgets');
+        $this->requirePermission('commerceWidgets-viewPages');
+
+        return true;
+    }
 
     public function actionIndex(?int $pageId = null)
     {
@@ -319,12 +339,19 @@ class PagesController extends Controller
     {
         $type = $record->type;
 
-        if (!class_exists($type)) {
+        if (!class_exists($type) || !is_subclass_of($type, BaseWidget::class) || (new \ReflectionClass($type))->isAbstract()) {
             return null;
         }
 
         $settings = $record->settings ? json_decode($record->settings, true) : [];
-        $widget = new $type($settings);
+
+        try {
+            $widget = new $type($settings ?: []);
+        } catch (\Throwable $e) {
+            Craft::warning("Unable to load widget {$type}: {$e->getMessage()}", __METHOD__);
+            return null;
+        }
+
         $widget->id = $record->id;
 
         $view = Craft::$app->getView();

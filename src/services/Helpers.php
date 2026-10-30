@@ -19,6 +19,13 @@ class Helpers extends Component
         return CommerceWidgets::$plugin->getSettings()->pluginName ?: 'Commerce Widgets';
     }
 
+    // Yii's Query::cache() treats 0 as "never expire" and a negative value as "don't cache"
+    public function getCacheDuration(): int
+    {
+        $duration = (int) (CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600);
+        return $duration > 0 ? $duration : -1;
+    }
+
     public function craftNow(): DateTime
     {
         return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));

@@ -42,7 +42,7 @@ class Orders extends Component
 
         try {
 
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
             $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
             $query = (new Query())
@@ -193,7 +193,7 @@ class Orders extends Component
     public function getConversionData(string $targetDuration): array
     {
         $dateRange = CommerceWidgets::$plugin->helpers->getDateRange($targetDuration);
-        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
         $result = [
@@ -262,7 +262,7 @@ class Orders extends Component
     {
         try {
 
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
             $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
             $statExpression = self::ALLOWED_STAT_TYPES[$statType] ?? self::ALLOWED_STAT_TYPES['orderCount'];
@@ -293,7 +293,7 @@ class Orders extends Component
 
     public function getRevenueOrders(): array
     {
-        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
         $data = [];
 

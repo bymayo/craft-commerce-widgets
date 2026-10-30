@@ -25,7 +25,7 @@ class Customers extends Component
 
             $safeOrderBy = self::ALLOWED_ORDER_BY[$orderBy] ?? 'totalRevenue desc';
             $dateRange = CommerceWidgets::$plugin->helpers->getDateRange($targetDuration, 'orders.datePaid');
-            $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+            $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
             $dependency = new TagDependency(['tags' => 'commerce-widgets']);
 
             // Current period
@@ -97,7 +97,7 @@ class Customers extends Component
         $startDate = $periods[0]['start'];
         $endDate = end($periods)['end'];
         $currentPeriod = end($periods);
-        $cacheDuration = CommerceWidgets::$plugin->getSettings()->cacheDuration ?? 3600;
+        $cacheDuration = CommerceWidgets::$plugin->helpers->getCacheDuration();
         $dependency = new TagDependency(['tags' => 'commerce-widgets']);
         $excludeEmails = CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses ?? [];
 
@@ -240,16 +240,17 @@ class Customers extends Component
             $query->andWhere(['not in', 'orders.email', CommerceWidgets::$plugin->getSettings()->excludeEmailAddresses]);
         }
 
+        if ($includeGuests === false || $excludeAdmins) {
+            $query->join('LEFT JOIN', '{{%users}} users', 'orders.customerId = users.id');
+        }
+
+        // Commerce 5 guests are credential-less users (inactive and not pending)
         if ($includeGuests === false) {
-            $query
-                ->join('INNER JOIN', '{{%commerce_customers}} customers', 'orders.customerId = customers.id')
-                ->andWhere(['not', ['customers.userId' => null]]);
+            $query->andWhere(['or', ['users.active' => true], ['users.pending' => true]]);
         }
 
         if ($excludeAdmins) {
-            $query
-                ->join('LEFT JOIN', '{{%users}} users', 'orders.customerId = users.id')
-                ->andWhere(['or', ['users.admin' => false], ['users.id' => null]]);
+            $query->andWhere(['or', ['users.admin' => false], ['users.id' => null]]);
         }
 
         return $query;
